@@ -1,0 +1,9 @@
+job:
+  script: "hydra"
+  stage: build
+  tags:
+    - hydra
+  variables:
+    HYDRA_PROJECT: "blog"
+    HYDRA_JOBSET: "pages"
+    HYDRA_JOB: "blog"

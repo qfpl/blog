@@ -1,0 +1,26 @@
+<header class="page-header">
+  <h1>$title$</h1>
+  <small>Posted on $date$</small>
+</header>
+
+$body$
+
+<hr>
+
+$if(project)$
+<div class="row">
+<div class="col-md-12">
+    $project$
+</div>
+</div>
+$endif$
+
+$if(authors)$
+<div class="row">
+$for(authors)$
+<div class="col-md-6">
+    $body$
+</div>
+$endfor$
+</div>
+$endif$
