@@ -1,7 +1,7 @@
 ---
-title: The Functional Infrastructure Project
+title: The FPL infrastructure work
 link: /projects/infra.html
 order: 1
 ---
 
-This is the page snippet for the Functional Infrastructure Project.
+We're using functional programming to set up the infrastructure that we use from day to day.
