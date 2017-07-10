@@ -1,6 +1,7 @@
 ---
 title: Getting started with Nix for Haskell development
 date: 2017-05-23
+authors: dlaing
 ---
 
 # Installing Nix
