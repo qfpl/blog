@@ -1,4 +1,4 @@
-This is a the FPL team blog.
+This is the FPL team blog.
 
 Build this locally with: 
 ```
