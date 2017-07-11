@@ -3,4 +3,4 @@ title: Dave Laing
 order: 2
 ---
 
-This is the page snippet for Dave Laing.
+Dave is a programmer working at the Data61 Functional Programming Labs.

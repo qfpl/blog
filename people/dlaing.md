@@ -3,4 +3,4 @@ title: Dave Laing
 id: dlaing
 ---
 
-This is the main page for Dave Laing.
+Dave is a programmer working at the Data61 Functional Programming Labs.

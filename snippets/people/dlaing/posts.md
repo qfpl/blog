@@ -2,4 +2,4 @@
 title: Dave Laing
 ---
 
-This is the posts snippet for Dave Laing.
+Dave is programmer working at the Data61 Functional Programming Labs.
