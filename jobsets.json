@@ -3,7 +3,7 @@
     "hidden": false,
     "description": "jobsets",
     "nixexprinput": "blog",
-    "nixexprpath": "release.nix",
+    "nixexprpath": "jobsets.nix",
     "checkinterval": 300,
     "schedulingshares": 1,
     "enableemail": false,
