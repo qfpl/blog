@@ -47,7 +47,7 @@ in
   # implementation
   config = mkIf cfg.enable {
 
-    services.blog.package = mkDefault ((import ./release.nix).blog);  
+    services.blog.package = mkDefault ((import ./default.nix));  
     services.nginx = {
       enable = true;
       recommendedOptimisation = true;
