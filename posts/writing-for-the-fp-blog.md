@@ -95,7 +95,12 @@ At the moment these are pretty free-form, but in the future we might add more st
 
 #### 1. Write an author page
 
-Write a page about the author at `./people/<author-nickname>.md`
+Write a page about the author at `./people/<author-nickname>.md` with the following property block at the start of the document:
+```
+---
+title: <Author name here>
+---
+```
 
 #### 2. Write a snippet for the page listing the team members
 
@@ -127,7 +132,12 @@ At the moment these are pretty free-form, but in the future we might add more st
 
 #### 1. Write a project page
 
-Write a page about the project at `./projects/<project-nickname>.md`
+Write a page about the project at `./projects/<project-nickname>.md` with the following property block at the strat of the document:
+```
+---
+title: <Project name here>
+---
+```
 
 #### 2. Write a snippet for the page listing the current projects
 
