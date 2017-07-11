@@ -19,6 +19,7 @@ import Posts.Context
 import Projects.Common
 import Projects.Context
 import Util.Order
+import Util.Nick
 import Util.Pandoc
 
 getProjectPosts :: String -> Compiler [Item String]
@@ -39,13 +40,19 @@ projectRules pmcf = do
     pandocMathCompiler = pmcfCompiler pmcf
   match "snippets/projects/*/page.md" $ do
       route $ setExtension "html"
-      compile $ pandocMathCompiler
-          >>= loadAndApplyTemplate "templates/project-page-snippet.html" defaultContext
+      compile $ do
+        nickCtx <- mkNickCtx "snippets/projects/*/page.md"
+        let projectCtx = nickCtx `mappend` defaultContext
+        pandocMathCompiler
+          >>= loadAndApplyTemplate "templates/project-page-snippet.html" projectCtx
 
   match "snippets/projects/*/posts.md" $ do
       route $ setExtension "html"
-      compile $ pandocMathCompiler
-          >>= loadAndApplyTemplate "templates/project-posts-snippet.html" defaultContext
+      compile $ do
+        nickCtx <- mkNickCtx "snippets/projects/*/posts.md"
+        let projectCtx = nickCtx `mappend` defaultContext
+        pandocMathCompiler
+          >>= loadAndApplyTemplate "templates/project-posts-snippet.html" projectCtx
 
   create ["projects.html"] $ do
       route idRoute

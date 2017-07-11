@@ -1,6 +1,5 @@
 ---
 title: Dave Laing
-link: /people/dlaing.html
 order: 2
 ---
 

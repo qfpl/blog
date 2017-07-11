@@ -1,6 +1,5 @@
 ---
 title: The FPL infrastructure work
-link: /projects/infra.html
 order: 1
 ---
 

@@ -16,6 +16,7 @@ executable site
                   , Projects.Common
                   , Projects.Context
                   , Util.Order
+                  , Util.Nick
                   , Util.Pandoc
   build-depends:    base == 4.*
                   , hakyll == 4.9.*

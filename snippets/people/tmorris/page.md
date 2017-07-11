@@ -1,6 +1,5 @@
 ---
 title: Tony Morris
-link: /people/tmorris.html
 order: 1
 ---
 

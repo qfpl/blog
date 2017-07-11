@@ -19,6 +19,7 @@ import Posts.Context
 import People.Common
 import People.Context
 import Util.Order
+import Util.Nick
 import Util.Pandoc
 
 getPeoplePosts :: String -> Compiler [Item String]
@@ -38,15 +39,22 @@ peopleRules :: PandocMathCompilerFunctions -> Rules ()
 peopleRules pmcf = do
   let
     pandocMathCompiler = pmcfCompiler pmcf
+
   match "snippets/people/*/page.md" $ do
       route $ setExtension "html"
-      compile $ pandocMathCompiler
-          >>= loadAndApplyTemplate "templates/people-page-snippet.html" defaultContext
+      compile $ do
+        nickCtx <- mkNickCtx "snippets/people/*/page.md"
+        let peopleCtx = nickCtx `mappend` defaultContext
+        pandocMathCompiler
+          >>= loadAndApplyTemplate "templates/people-page-snippet.html" peopleCtx
 
   match "snippets/people/*/posts.md" $ do
       route $ setExtension "html"
-      compile $ pandocMathCompiler
-          >>= loadAndApplyTemplate "templates/people-posts-snippet.html" defaultContext
+      compile $ do
+        nickCtx <- mkNickCtx "snippets/people/*/posts.md"
+        let peopleCtx = nickCtx `mappend` defaultContext
+        pandocMathCompiler
+          >>= loadAndApplyTemplate "templates/people-posts-snippet.html" peopleCtx
 
   create ["people.html"] $ do
       route idRoute
