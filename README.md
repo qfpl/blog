@@ -1,18 +1,22 @@
 This is the FPL team blog.
 
-Build this locally with: 
+You can build the contents of the blog locally with: 
 ```
-nix-build
+nix-build release.nix -A blog
 ```
-where the output will be in `./release/blog`
+where the output will be in `release/blog`
 
-Get to a local preview server with:
+You can build the site generator with:
 ```
-nix-shell
-cabal configure
-cabal build
-./dist/build/site/site watch
+nix-build release.nix -A generator
 ```
-where the content will be served from http://localhost:8000/
+where the output will be the executable  `release/site`
+
+You can use that to bring up a local preview server with:
+```
+cd ../content
+../result/site watch
+```
+and the content will be served from http://localhost:8000/
 
 There is a post in there describing how to contribute, which you can reach [here](https://github.com/qfpl/blog/blob/master/posts/writing-for-the-fp-blog.md).
