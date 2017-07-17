@@ -10,6 +10,10 @@ let
   });
 
   generator = import ../generator;
+
+  activate = pkgs.writeScriptBin "activate" ''
+    #!${pkgs.bash}/bin/bash -e
+    '';
   
 in
   pkgs.stdenv.mkDerivation {
@@ -31,6 +35,8 @@ in
     installPhase = ''
       mkdir -p $out/blog
       cp -r _site/* $out/blog/
+      mkdir -p $out/bin
+      ln -sv ${activate}/bin/activate $out/bin
     '';
 
     phases = ["unpackPhase" "buildPhase" "installPhase"];
