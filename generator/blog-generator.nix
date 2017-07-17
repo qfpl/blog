@@ -3,7 +3,7 @@
 , stdenv, text, unordered-containers
 }:
 mkDerivation {
-  pname = "blog";
+  pname = "blog-generator";
   version = "0.1.0.0";
   src = ./.;
   isLibrary = false;

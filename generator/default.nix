@@ -9,6 +9,6 @@ let
     };
   };
 
-  blog = modifiedHaskellPackages.callPackage ./blog.nix {};
+  blog = modifiedHaskellPackages.callPackage ./blog-generator.nix {};
 in
   blog
