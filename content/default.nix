@@ -36,7 +36,7 @@ in
       mkdir -p $out/blog
       cp -r _site/* $out/blog/
       mkdir -p $out/bin
-      ln -sv ${activate}/bin/activate $out/bin
+      cp ${activate}/bin/activate $out/bin/
     '';
 
     phases = ["unpackPhase" "buildPhase" "installPhase"];
