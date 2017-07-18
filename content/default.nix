@@ -12,7 +12,7 @@ let
   generator = import ../generator;
 
   activate = pkgs.writeScriptBin "activate" ''
-    #!$/bin/sh
+    #!${pkgs.stdenv.shell}
 
     '';
   
@@ -37,7 +37,7 @@ in
       mkdir -p $out/blog
       cp -r _site/* $out/blog/
       mkdir -p $out/bin
-      cp ${activate}/bin/activate $out/bin/
+      ln -sv ${activate}/bin/activate $out/bin/
     '';
 
     phases = ["unpackPhase" "buildPhase" "installPhase"];
