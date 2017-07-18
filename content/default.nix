@@ -12,7 +12,7 @@ let
   generator = import ../generator;
 
   activate = pkgs.writeScriptBin "activate" ''
-    #!${pkgs.bash}/bin/bash -e
+    #!$/bin/sh
 
     '';
   
