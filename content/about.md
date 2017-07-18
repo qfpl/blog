@@ -12,9 +12,15 @@ Level 2, T C Beirne Centre, 315 Brunswick Street, Fortitude Valley 4006 QLD
 
 ![Way in from Brunswick Street](http://i.imgur.com/H442iX3.jpg)
 
+<a href="http://i.imgur.com/H442iX3.jpg">
+  <img src="http://i.imgur.com/H442iX3.jpg" width="1042" height="437" alt="Way in from Brunswick Street" />
+</a>
+<p class="caption">Way in from Brunswick Street</p>
+
 <a href="http://i.imgur.com/HfrKK7I.jpg">
   <img src="http://i.imgur.com/HfrKK7I.jpg" width="928" height="696" alt="Brunswick Street Entrance" />
 </a>
+<p class="caption">Brunswick Street Entrance</p>
 
 ### Maps 
 
