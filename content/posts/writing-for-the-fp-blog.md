@@ -77,10 +77,16 @@ to set up a preview server on `localhost:8000` that will update as you work on y
 If you just want to get hold of a build of the site you can use `nix-build release.nix -A blog`.
 After that has finished running, the blog will be in `./result/blog`.
 
-## The proposed Hakyll workflow
+## The Hakyll workflow
 
-Once we have the blog managed by Hydra, you should be able to publish posts by pushing your changes to the `master` branch of the repository.
-From there, Hydra will build the site generator, generate the pages, and push them to the `gh-pages` branch so that they appear on our public facing site.
+You should be able to publish posts by pushing your changes to the `master` branch of the repository.
+
+The rest is taken care of by Hydra (a continuous integration system for Nix) and Hail (a continuous deployment system for Nix).
+
+From there
+
+  - Hydra will build the site generator and use that to generate the site
+  - Hail will pick up the changes and update the content of the blog
 
 If you are working on a draft post, then it is recommended that you do so in a branch so that you don't end up with half-finished posts being published.
 
