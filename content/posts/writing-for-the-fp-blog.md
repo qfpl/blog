@@ -54,22 +54,23 @@ The post will also have footer entries which link to that main pages of each aut
 
 ## How to test out changes locally
 
-If you have nix installed, you can use `nix-shell` to get into an environment that is ready to go.
-This will include `LaTeX` and the various packages needed by the blog.
+There are two directories in the blog repository.
 
-From there you can run
-```
-cabal build
-```
-to create the site generator.
+The `generator` directory has the site generator, and the `content` directory has the site content.
 
-After that you can run
+If you have Nix installed, you can use
 ```
-./dist/build/site/site build
+nix-build release.nix -A generator
+```
+to build the site generator, which will be available in `result/bin/site`.
+
+After that you can head to the `content` directory and run
+```
+../result/bin/site build
 ```
 to build the site in `_site`, or
 ```
-./dist/build/site/site watch
+../result/bin/site watch
 ```
 to set up a preview server on `localhost:8000` that will update as you work on your posts.
 
