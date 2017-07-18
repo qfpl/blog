@@ -24,7 +24,7 @@ Level 2, T C Beirne Centre, 315 Brunswick Street, Fortitude Valley 4006 QLD
 
 * [Google maps](https://www.google.com.au/maps/place/T+C+Beirne+Centre,+315+Brunswick+St,+Fortitude+Valley+QLD+4006/@-27.4583876,153.03261,17z/data=!4m5!3m4!1s0x6b9159f3b8dd8281:0xb3b4cbfdbe14177f!8m2!3d-27.4583798!4d153.0341671)
 
-* [OpenStreetMap](http://www.openstreetmap.org/#map=18/-27.45817/153.03443)
+* [OpenStreetMap](http://www.openstreetmap.org/?mlat=-27.45817&mlon=153.03443#map=18/-27.45817/153.03443)
 
 ### Latitude, Longitude, Height
 
