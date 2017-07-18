@@ -13,6 +13,7 @@ let
 
   activate = pkgs.writeScriptBin "activate" ''
     #!${pkgs.bash}/bin/bash -e
+
     '';
   
 in
