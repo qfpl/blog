@@ -2,7 +2,7 @@
 title: Home
 ---
 
-# Data61 Functional Programming Lab
+# Queensland Functional Programming Lab
 
 We should put some kind of summary of the lab here ...
 

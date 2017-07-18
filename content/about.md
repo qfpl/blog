@@ -2,7 +2,7 @@
 title: About
 ---
 
-## Data 61, CSIRO, Fortitude Valley
+## Queensland Functional Programming Lab, Fortitude Valley
 
 ### Address
 
