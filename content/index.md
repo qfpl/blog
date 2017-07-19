@@ -15,4 +15,4 @@ We should put some kind of summary of the lab here ...
 The most recent blog posts are:
 $partial("templates/post-list.html")$
 
-The whole backlog is available from the [archives](./archives.html).
+The whole backlog is available from the [archives](./archive).

@@ -11,13 +11,14 @@ import Posts.Context
 import People.Context
 import Projects.Context
 import Util.Pandoc
+import Util.Index
 
 postRules :: PandocMathCompilerFunctions -> Rules ()
 postRules pmcf = do
   let
     pandocMathCompiler = pmcfCompiler pmcf
   match "posts/*" $ do
-      route $ setExtension "html"
+      route niceRoute
       compile $ do
 
         let
@@ -28,8 +29,9 @@ postRules pmcf = do
           >>= loadAndApplyTemplate "templates/post.html"    projectCtx
           >>= loadAndApplyTemplate "templates/default.html" projectCtx
           >>= relativizeUrls
+          >>= removeIndexHtml
 
-  create ["archive.html"] $ do
+  create ["archive/index.html"] $ do
       route idRoute
       compile $ do
           posts <- recentFirst =<< loadAll "posts/*"
@@ -43,3 +45,4 @@ postRules pmcf = do
               >>= loadAndApplyTemplate "templates/archive.html" archiveCtx
               >>= loadAndApplyTemplate "templates/default.html" archiveCtx
               >>= relativizeUrls
+              >>= removeIndexHtml

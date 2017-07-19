@@ -14,6 +14,7 @@ import People.Context
 import Util.Order
 import Util.Nick
 import Util.Pandoc
+import Util.Index
 
 getPeoplePosts :: String -> Compiler [Item String]
 getPeoplePosts person = do
@@ -50,7 +51,7 @@ peopleRules pmcf = do
           >>= loadAndApplyTemplate "templates/people-posts-snippet.html" peopleCtx
 
   create ["people.html"] $ do
-      route idRoute
+      route niceRoute
       compile $ do
           authors <- orderItems =<< loadAll "snippets/people/*/page.md"
           let authorsCtx =
@@ -63,9 +64,10 @@ peopleRules pmcf = do
               >>= loadAndApplyTemplate "templates/people.html" authorsCtx
               >>= loadAndApplyTemplate "templates/default.html" authorsCtx
               >>= relativizeUrls
+          >>= removeIndexHtml
 
   match "people/*" $ do
-      route $ setExtension "html"
+      route niceRoute
       compile $ do
         identifier <- getUnderlying
         let
@@ -85,3 +87,4 @@ peopleRules pmcf = do
           >>= loadAndApplyTemplate "templates/person.html"  peopleCtx
           >>= loadAndApplyTemplate "templates/default.html" peopleCtx
           >>= relativizeUrls
+          >>= removeIndexHtml

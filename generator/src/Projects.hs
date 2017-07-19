@@ -14,6 +14,7 @@ import Projects.Context
 import Util.Order
 import Util.Nick
 import Util.Pandoc
+import Util.Index
 
 getProjectPosts :: String -> Compiler [Item String]
 getProjectPosts project = do
@@ -48,7 +49,7 @@ projectRules pmcf = do
           >>= loadAndApplyTemplate "templates/project-posts-snippet.html" projectCtx
 
   create ["projects.html"] $ do
-      route idRoute
+      route niceRoute
       compile $ do
           projects <- orderItems =<< loadAll "snippets/projects/*/page.md"
           let projectsCtx =
@@ -61,9 +62,10 @@ projectRules pmcf = do
               >>= loadAndApplyTemplate "templates/projects.html" projectsCtx
               >>= loadAndApplyTemplate "templates/default.html" projectsCtx
               >>= relativizeUrls
+              >>= removeIndexHtml
 
   match "projects/*" $ do
-      route $ setExtension "html"
+      route niceRoute
       compile $ do
         identifier <- getUnderlying
         let
@@ -83,3 +85,4 @@ projectRules pmcf = do
           >>= loadAndApplyTemplate "templates/project.html" projectCtx
           >>= loadAndApplyTemplate "templates/default.html" projectCtx
           >>= relativizeUrls
+          >>= removeIndexHtml
