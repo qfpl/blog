@@ -1,6 +1,7 @@
-{ mkDerivation, aeson, base, hakyll, latex-formulae-hakyll
-, latex-formulae-image, latex-formulae-pandoc, pandoc, scientific
-, stdenv, text, unordered-containers
+{ mkDerivation, aeson, base, filepath, hakyll
+, latex-formulae-hakyll, latex-formulae-image
+, latex-formulae-pandoc, pandoc, scientific, stdenv, text
+, unordered-containers
 }:
 mkDerivation {
   pname = "blog-generator";
@@ -9,8 +10,9 @@ mkDerivation {
   isLibrary = false;
   isExecutable = true;
   executableHaskellDepends = [
-    aeson base hakyll latex-formulae-hakyll latex-formulae-image
-    latex-formulae-pandoc pandoc scientific text unordered-containers
+    aeson base filepath hakyll latex-formulae-hakyll
+    latex-formulae-image latex-formulae-pandoc pandoc scientific text
+    unordered-containers
   ];
   license = stdenv.lib.licenses.bsd3;
 }

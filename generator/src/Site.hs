@@ -8,6 +8,7 @@ import Posts
 import People
 import Projects
 import Util.Pandoc
+import Util.Index
 
 main :: IO ()
 main = do
@@ -35,22 +36,24 @@ main = do
         compile compressCssCompiler
 
     match "about.md" $ do
-        route   $ setExtension "html"
+        route niceRoute
         compile $ do
           let aboutCtx =
                 constField "about-active" "" `mappend` defaultContext
           pandocMathCompiler
             >>= loadAndApplyTemplate "templates/default.html" aboutCtx
             >>= relativizeUrls
+            >>= removeIndexHtml
 
     match "contact.md" $ do
-        route   $ setExtension "html"
+        route niceRoute
         compile $ do
           let contactCtx =
                 constField "contact-active" "true" `mappend` defaultContext
           pandocMathCompiler
             >>= loadAndApplyTemplate "templates/default.html" contactCtx
             >>= relativizeUrls
+            >>= removeIndexHtml
 
     projectRules pandocMathCompilerFns
 
@@ -73,5 +76,6 @@ main = do
                 >>= renderPandocMath
                 >>= loadAndApplyTemplate "templates/default.html" indexCtx
                 >>= relativizeUrls
+                >>= removeIndexHtml
 
     match "templates/*" $ compile templateBodyCompiler
