@@ -49,12 +49,25 @@ in
   # implementation
   config = mkIf cfg.enable {
 
-    services.nginx.virtualHosts."${cfg.virtualHost}".locations."/".root = "/nix/var/nix/profiles/${cfg.blogProfile}/blog/";
+    services.nginx = {
+      enable = true;
+      recommendedGzipSettings = true;
+      recommendedOptimisation = true;
+      recommendedProxySettings = true;
+      recommendedTlsSettings = true;
+      virtualHosts."${cfg.virtualHost}" = {
+        forceSSL = true;
+        enableACME = true;
+        locations."/".root = "/nix/var/nix/profiles/${cfg.blogProfile}/blog";
+      };
+    };
 
     systemd.services.blog-updater = {
       description = "Team blog updater";
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
+      path = [ pkgs.nix ];
+      environment = { HOME = "/var/lib/empty"; };
       stopIfChanged = false;
       serviceConfig = {
         ExecStart = "${pkgs.haskellPackages.hail}/bin/hail --profile ${cfg.blogProfile} --job-uri ${cfg.hydraJob}";
