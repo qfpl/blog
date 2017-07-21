@@ -19,4 +19,4 @@ cd ../content
 ```
 and the content will be served from http://localhost:8000/
 
-There is a post in there describing how to contribute, which you can reach [here](https://github.com/qfpl/blog/blob/master/posts/writing-for-the-fp-blog.md).
+There is a post in there describing how to contribute, which you can reach [here](https://github.com/qfpl/blog/blob/master/content/posts/writing-for-the-fp-blog.md).
