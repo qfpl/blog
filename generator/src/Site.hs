@@ -23,15 +23,15 @@ main = do
         route   idRoute
         compile copyFileCompiler
 
-    match "fonts/*" $ do
+    match "fonts/**" $ do
         route   idRoute
         compile copyFileCompiler
 
-    match "js/*" $ do
+    match "js/**" $ do
         route   idRoute
         compile copyFileCompiler
 
-    match "css/*" $ do
+    match "css/**" $ do
         route   idRoute
         compile compressCssCompiler
 
