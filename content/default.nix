@@ -30,7 +30,6 @@ in
       cd $name
       export LANG=en_US.UTF-8
       export LOCALE_ARCHIVE=/run/current-system/sw/lib/locale/locale-archive
-      site clean
       site build
     '';
 
