@@ -18,7 +18,7 @@ import Util.Index
 
 getProjectPosts :: String -> Compiler [Item String]
 getProjectPosts project = do
-  posts <- recentFirst =<< loadAll "posts/*"
+  posts <- recentFirst =<< loadAll "posts/**"
   let postMatches i = do
         p <- lookupProject i
         return $

@@ -18,7 +18,7 @@ import Util.Index
 
 getPeoplePosts :: String -> Compiler [Item String]
 getPeoplePosts person = do
-  posts <- recentFirst =<< loadAll "posts/*"
+  posts <- recentFirst =<< loadAll "posts/**"
   let postMatches i = do
         mAuthors <- lookupAuthors i
         return $

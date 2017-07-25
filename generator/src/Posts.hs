@@ -17,7 +17,7 @@ postRules :: PandocMathCompilerFunctions -> Rules ()
 postRules pmcf = do
   let
     pandocMathCompiler = pmcfCompiler pmcf
-  match "posts/*" $ do
+  match "posts/**" $ do
       route niceRoute
       compile $ do
 
@@ -34,7 +34,7 @@ postRules pmcf = do
   create ["archive/index.html"] $ do
       route idRoute
       compile $ do
-          posts <- recentFirst =<< loadAll "posts/*"
+          posts <- recentFirst =<< loadAll "posts/**"
           let archiveCtx =
                   constField "archive-active" ""           `mappend`
                   listField "posts" postCtx (return posts) `mappend`
