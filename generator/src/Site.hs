@@ -19,7 +19,7 @@ main = do
     renderPandocMath = pmcfRenderPandoc pandocMathCompilerFns
 
   hakyll $ do
-    match "images/*" $ do
+    match "images/**" $ do
         route   idRoute
         compile copyFileCompiler
 
