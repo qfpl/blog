@@ -1,4 +1,4 @@
-This is the FPL team blog.
+This is the QFPL team blog.
 
 You can build the contents of the blog locally with: 
 ```

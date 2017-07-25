@@ -1,5 +1,5 @@
 ---
-title: The FPL infrastructure work
+title: The QFPL infrastructure work
 order: 1
 ---
 
