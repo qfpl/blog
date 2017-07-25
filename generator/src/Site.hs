@@ -35,13 +35,13 @@ main = do
         route   idRoute
         compile compressCssCompiler
 
-    match "about.md" $ do
+    match "location.md" $ do
         route niceRoute
         compile $ do
-          let aboutCtx =
-                constField "about-active" "" `mappend` defaultContext
+          let locationCtx =
+                constField "location-active" "" `mappend` defaultContext
           pandocMathCompiler
-            >>= loadAndApplyTemplate "templates/default.html" aboutCtx
+            >>= loadAndApplyTemplate "templates/default.html" locationCtx
             >>= relativizeUrls
             >>= removeIndexHtml
 

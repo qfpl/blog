@@ -1,10 +1,8 @@
 ---
-title: About
+title: Location
 ---
 
 ## Queensland Functional Programming Lab, Fortitude Valley
-
-## Location
 
 #### Street Address
 
