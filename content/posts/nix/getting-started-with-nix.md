@@ -11,6 +11,11 @@ If you're running Linux or Mac OS X, you should be able to play along with the t
 Like this one
 ```
 
+If you're running on NixOS, then:
+
+- some of the details around paths and profiles and the like will be different
+- if you don't already know the things in this post then you've gotten here just in time
+
 # Installing Nix
 
 For the trusting, a quick way to do install Nix for a single user is:
