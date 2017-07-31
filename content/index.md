@@ -4,11 +4,9 @@ title: Home
 
 # Queensland Functional Programming Lab
 
-We should put some kind of summary of the lab here ...
-
 ## What we are working on?
 
-... followed by a high level overview of what we're working on ...
+Details are coming soon.
 
 ## Blog posts
 
