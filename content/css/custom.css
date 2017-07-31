@@ -1,4 +1,34 @@
 code {
-    color: #2352C7;
+    color: #007A53;
     background-color: #F5F5F5;
+}
+
+@font-face {
+  font-family: UnitRounded;
+  src: url("https://www.csiro.au/themes/default/font/UnitRoundedWeb-Black.woff") format("woff");
+  font-weight: 900;
+  font-style: normal; }
+@font-face {
+  font-family: UnitRounded;
+  src: url("https://www.csiro.au/themes/default/font/UnitRoundedWeb-Bold.woff") format("woff");
+  font-weight: bold;
+  font-style: normal; }
+@font-face {
+  font-family: UnitRounded;
+  src: url("https://www.csiro.au/themes/default/font/UnitRoundedWeb-Medium.woff") format("woff");
+  font-weight: 500;
+  font-style: normal; }
+
+body {
+  font-family: "Open sans", sans-serif;
+}
+
+a {
+    color: #2FB787;
+    font-family: UnitRounded, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #1D2021;
+  font-family: UnitRounded, sans-serif;
 }
