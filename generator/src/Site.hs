@@ -78,3 +78,4 @@ main = do
                 >>= removeIndexHtml
 
     match "templates/*" $ compile templateBodyCompiler
+
