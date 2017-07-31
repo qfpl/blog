@@ -15,7 +15,7 @@
             "schedulingshares": 1,
             "enableemail": false,
             "emailoverride": "",
-            "keepnr": 0,
+            "keepnr": 5,
             "inputs": {
                 "blog": { "type": "git", "value": "https://github.com/qfpl/blog", "emailresponsible": false },
                 "nixpkgs": { "type": "git", "value": "https://github.com/NixOS/nixpkgs.git release-17.03", "emailresponsible": false }
