@@ -18,7 +18,8 @@ In summary, we get these benefits:
 - our package descriptions always have a complete description of their dependencies
 - we can share a cache of build artifacts and know that we're getting the same outputs as if we'd built everything from the source code ourselves
 - we have atomic upgrades and rollbacks
-- we can have multiple versions of packages installed or multiple non-privileged users installing packages without issue
+- we can have multiple versions of packages installed
+- multiple non-privileged users installing packages without issue
 
 That idea can be extended to managing a whole Linux distribution (NixOS) a fleet of machines (NixOps), but we're going to start by looking at the package manager.
 
@@ -27,15 +28,14 @@ That idea can be extended to managing a whole Linux distribution (NixOS) a fleet
 A Nix derivation describes how to build something.
 It could be an executable, a library, a website, or anything really.
 
-A Nix package is usually a function which takes any build-time or run-time dependencies as arguments and producing a derivation.
+A Nix package is usually a function which takes any build-time or run-time dependencies as arguments and produces a derivation.
 Sometimes there are configuration options as well.
 
 The dependencies which are supplied as arguments are _also_ derivations.
 
-For every derivation you can compute a hash, and the hash is deterministic - the same inputs will lead to the same outputs.
+For every derivation you can compute a deterministic hash - the same inputs will lead to the same outputs.
 
 The inputs to the hash of a derivation come from the description of the derivation and the hashes of all of dependencies.
-A derivation will include a hash of any sources that it requires, and so we know that the same version of derivation will always be working from the same sources.
 
 So the hash will change if:
 
@@ -44,7 +44,11 @@ So the hash will change if:
 - you change the version of your compiler
 - you change the compiler flags of one of your dependencies
 
-This is what gives Nix good reproducibility - if we each have a derivation with the same hash, it is almost always going to build the same thing.
+This is what gives Nix high levels of reproducibility. 
+If we each have a derivation with the same hash, it is almost always going to build the same thing for each of us.
+
+There can be some side effects of some build processes that might make things non-deterministic, like build steps that rely on file modification dates.
+There are Nix tools which can take care of thse 
 
 The hashing scheme also enables binary substitution.
 If I store the outputs of the derivations that I have built, then I can share these as a Nix cache, keyed on the hashes of the deriviations.
@@ -62,7 +66,7 @@ It takes two derivations as inputs.
 { stdenv, fetchurl }:
 ```
 
-It uses `stdenv` to start build a derivation...
+It uses `stdenv` to start building a derivation...
 
 ```
 stdenv.mkDerivation rec {
@@ -114,7 +118,7 @@ stdenv.mkDerivation rec {
 
 A Nix package collection is a set of Nix packages - functions which take derivations as inputs and produce derivations as outputs - along with the Nix code required to wire things up so that all of the derivations are given their dependencies from the other packages within the package collection.
 
-This means that the contents of the package tree are ready-to-build derivation, since all of these deriviation-producing functions have been provided with their required arguments.
+This means that the contents of the package tree are ready-to-build derivations, since all of these deriviation-producing functions have been provided with their required arguments.
 
 You can grab the common package set used by the community here:
 ```
