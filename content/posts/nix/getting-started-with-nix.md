@@ -45,6 +45,7 @@ and deleting that extra line from `~/.profile`
 
 We _could_ get our packages by checking out a copy of the set of community packages:
 ```
+# About 500Mb is downloaded at the time of writing
 git clone https://github.com/NixOS/nixpkgs my-nixpkgs-checkout
 ```
 then finding the right branch and installing what we want.
@@ -90,8 +91,9 @@ Let's have a look for the package containing the `tree` utility.
 If we use `-q` on its own, we are querying the set of packages which is installed in this environment:
 ```
 > nix-env -q tree
-<no output>
+error: selector 'tree' matches no derivations
 ```
+It makes sense that we didn't find `tree`, since we haven't installed it yet.
 
 If we don't give a package to query for, we'll get a list of all of the packages installed in the environment:
 ```
@@ -148,7 +150,7 @@ nixos.tree    tree-1.7.0
 nixpkgs.tree  tree-1.7.0
 ```
 
-We can then use specify some or all of the attribute path to limit our search:
+We can then use some or all of the attribute path to limit our search:
 ```
 > nix-env -qaP -A nixpkgs tree
 nixpkgs.tree  tree-1.7.0
@@ -158,7 +160,7 @@ nixpkgs.tree  tree-1.7.0
 
 Let's tidy up our channels to keep the output of these commands a bit simpler:
 ```
-> nixos-channel --remove nixos
+> nix-channel --remove nixos
 uninstalling ‘nixos-17.03.1599.f1311880c7’
 ```
 
@@ -167,7 +169,7 @@ Some language ecosystems are namespaced away from the other packages via attribu
 
 Let's look for the `hail` package, which is written in Haskell:
 ```
-> nix-env -qaP -A nixpkgs 'hail.*'
+> nix-env -qaP 'hail.*'
 error: selector ‘hail’ matches no derivations
 ```
 
@@ -479,7 +481,7 @@ This happens because Nix hashes everything, and the hash of the user environment
 
 We've seen that erasing `tree` from the user environment doesn't remove it from the Nix store.
 
-Things are only removed from the Nix store when they aren't been used and a garbage collection is run.
+Things are only removed from the Nix store when they aren't being used and a garbage collection is run.
 
 There are options for deleting specific generations, or deleting generations that are more than a certain number of days old.
 That is covered pretty well in the [garbage collection](http://nixos.org/nix/manual/#sec-garbage-collection) section of the NixOS manual.
