@@ -30,9 +30,9 @@ Level 3, T C Beirne Centre, 315 Brunswick Street, Fortitude Valley 4006 QLD
 
 #### Latitude, Longitude, Height
 
-* `-27.45817, 153.03443, 34m AMSL`
+* **WGS84** `-27.45817, 153.03443, 34m AMSL`
 
-* `27° 27' 29"S, 153° 02' 04"E, 34m AMSL`
+* **WGS84** `27° 27' 29"S, 153° 02' 04"E, 34m AMSL`
 
 #### ECEF
 
