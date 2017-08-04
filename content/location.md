@@ -9,7 +9,7 @@ title: Location
 Level 3, T C Beirne Centre, 315 Brunswick Street, Fortitude Valley 4006 QLD
 
 <a href="/images/location/map.png">
-  <img src="TC Beirne Centre" alt="TC Beirne Centre" />
+  <img src="/images/location/map.png" alt="TC Beirne Centre" />
 </a>
 
 <a href="/images/location/brunswick-st.jpg">
