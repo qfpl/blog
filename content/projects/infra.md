@@ -6,6 +6,10 @@ This is the main page for all things related to how we at QFPL are setting up ou
 
 This includes this blog, and the Nix / Hydra / Hail tooling that builds it.
 
+## Hydra & Hail
+
+QFPL projects are built using [Hydra for continuous integration](http://hydra.qfpl.io/) and deployed using [Hail](https://github.com/TaktInc/hail).
+
 ## Hakyll
 
 The blog is written using [Hakyll](https://jaspervdj.be/hakyll/) - a static site generator written in Haskell - and is managed with [Nix](http://nixos.org/nix/).
