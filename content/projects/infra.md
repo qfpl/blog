@@ -33,5 +33,10 @@ If you're doing Haskell development, Nix is great for that:
 
 - [Working with Haskell and Nix](../../posts/nix/working-with-haskell-and-nix)
 - [Mixing Haskell and non-Haskell dependencies with Nix](../../posts/nix/mixing-haskell-and-non-haskell-dependencies-with-nix)
+
+Whether you are using Nix with Haskell or not, you can also make use of Hydra and Hail to build and deploy your code:
+
+- [Using Hydra for Continuous Integration](../../posts/nix/using-hydra-for-ci)
+- [Using Hail for Continuous Deployment](../../posts/nix/using-hail-for-cd)
 -->
 
