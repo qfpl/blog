@@ -45,6 +45,20 @@ postRules pmcf = do
           >>= relativizeUrls
           >>= removeIndexHtml
 
+  match "links/**" $ do
+      route niceRoute
+      compile $ do
+
+        let
+            projectCtx =
+              authorFieldCtx `mappend` projectFieldCtx `mappend` postCtx
+
+        pandocMathCompiler
+          >>= loadAndApplyTemplate "templates/post.html"    projectCtx
+          >>= loadAndApplyTemplate "templates/default.html" projectCtx
+          >>= relativizeUrls
+          >>= removeIndexHtml
+
   create ["archive/index.html"] $ do
       route idRoute
       compile $ do
