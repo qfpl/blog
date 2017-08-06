@@ -19,6 +19,13 @@ The first step is to checkout the blog from [github](https://github.com/qfpl/blo
 
 The blog posts are all in the `posts` directory, so that's where we add new ones.
 
+If you're working on a draft that you want to share with people in order to get feedback, you can put it in the `drafts` directory.
+It will be treated just like a regular post, but it won't be linked from any of the other pages.
+
+Similarly, you can add content to the `links` directory if you have information that you want to share with people that would be noisy or off-topic if it were linked from the other pages.
+
+In either case, the content will be viewable by anyone who has the URL of the content (or anyone clicking through the github repository for our blog), but otherwise won't be discoverable by people clicking around on the blog.
+
 They are written using [Pandoc's Markdown](http://pandoc.org/MANUAL.html#pandocs-markdown) syntax, which is worth getting familiar with.
 
 There is also support for `LaTeX`.
