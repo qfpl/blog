@@ -33,7 +33,7 @@ The Queensland Startup Precinct
 
 Level 2 TC Beirne Building, 315 Brunswick St, Fortitude Valley Q 4306.
 
-https://qfpl.io/location/
+[https://qfpl.io/location/](https://qfpl.io/location/)
 
 ### When
 
@@ -44,10 +44,10 @@ https://qfpl.io/location/
 
 Participants will be required to bring a suitable development machine (portable) for working through the exercises. That machine  will require:
 
-* install Glasgow Haskell Compiler (http://www.haskell.org/ghc/) version 7.10 or higher on that machine.
+* install Glasgow Haskell Compiler [http://www.haskell.org/ghc/](http://www.haskell.org/ghc/) version 7.10 or higher on that machine.
 
-* fork and clone the data61 FP course repository https://github.com/data61/fp-course
+* fork and clone the data61 FP course repository [https://github.com/data61/fp-course](https://github.com/data61/fp-course)
 
 ### Register
 
-(closes [date tbc]) [at this link TBC]
+Register on eventbrite at [https://www.eventbrite.com.au/e/introduction-to-functional-programming-tickets-36816673662](https://www.eventbrite.com.au/e/introduction-to-functional-programming-tickets-36816673662)
