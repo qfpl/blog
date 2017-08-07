@@ -25,7 +25,7 @@ Tony Morris, QFPL Team Lead
 
 The course is open and exclusive to Queensland Government employees who develop or maintain software. It is a fast-paced, hands-on course that is targetted toward those who seek to exploit Functional Programming for its technical advantages.
 
-The initial course offering will be repeated in early September, and late September, with a limited number of 20 people per course. If there are any special requirements, or greater demand, please contact Tony and amendments can be made to suit tony.morris@data61.csiro.au 
+The initial course offering will be repeated in early September, and late September, with a limited number of 20 people per course. If there are any special requirements, or greater demand, please contact Tony and amendments can be made to suit [tony.morris@data61.csiro.au](tony.morris@data61.csiro.au). 
 
 ### Where
 
