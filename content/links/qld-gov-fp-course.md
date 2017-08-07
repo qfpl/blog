@@ -37,8 +37,8 @@ Level 2 TC Beirne Building, 315 Brunswick St, Fortitude Valley Q 4306.
 
 ### When
 
-* 0900-1700, Tuesday 05-07 September 2017 *(limited to 20 people)*
-* 0900-1700, Tuesday 25-27 September 2017 *(limited to 20 people)*
+* 0900-1700, 05-07 September 2017 *(limited to 20 people)*
+* 0900-1700, 25-27 September 2017 *(limited to 20 people)*
 
 ### Pre-requisites
 
