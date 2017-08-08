@@ -12,8 +12,8 @@ assisting others in doing same.
 
 We have specific interests in:
 
-* programming language tools and particularly legacy programming languages such
-as python and javascript.
+* programming language tools and particularly, in assisting with the problems
+  associated with legacy programming languages, such as python and javascript.
 
 * numerical computing and associated tools.
 
