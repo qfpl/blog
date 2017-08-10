@@ -18,3 +18,4 @@ He has a [personal website](dlaing.org), which mostly contains similar writing t
 
 He also has [github page](http://github.com/dalaing) , which mostly contains similar code to what you'll see from him in the QFPL repository.
 
+### Blog posts
