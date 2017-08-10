@@ -20,7 +20,8 @@ Functional Programming fulfills the broken promises of OO. Software as component
 </div>
  
 Functional Programming builds on the shoulders of giants of mathematics to enable reliable software verification tools.
-<!-- See this week's costly software calamity. TODO -->
+
+See [this week's costly software calamity](./posts/2017-week-32-software-calamity/).
  
 <div class="page-header">
   <h2>Education, idea sharing, collaborative betterment</h2>
