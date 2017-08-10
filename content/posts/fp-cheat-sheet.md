@@ -300,7 +300,7 @@ given(func, x) {
 }
 ```
 
-The possibility for `null` can be simulated using the `Maybe` data type. Since `Maybe` can be treated as a list with a maximum length of `0`, we can also *sequence* this, and we can do it with many values that meet a certain pattern. A function that accepts one argument meets this pattern, so we can use `sequence` for this case.
+The possibility for `null` can be simulated using the `Maybe` data type. Since `Maybe` can be treated as a list with a maximum length of one, we can also *sequence* this, and we can do it with many values that meet a certain pattern. A function that accepts one argument meets this pattern, so we can use `sequence` for this case.
 
 ```haskell
 sequence func x
