@@ -26,6 +26,7 @@ postRules pmcf = do
               authorFieldCtx `mappend` projectFieldCtx `mappend` postCtx
 
         pandocMathCompiler
+          >>= saveSnapshot "post-content"
           >>= loadAndApplyTemplate "templates/post.html"    projectCtx
           >>= loadAndApplyTemplate "templates/default.html" projectCtx
           >>= relativizeUrls

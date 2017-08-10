@@ -79,3 +79,25 @@ main = do
 
     match "templates/*" $ compile templateBodyCompiler
 
+    -- http://jaspervdj.be/hakyll/tutorials/05-snapshots-feeds.html
+    let
+      rss name render' =
+        create [name] $ do
+          route idRoute
+          compile $ do
+            let feedCtx = postCtx `mappend` bodyField "description"
+            posts <- fmap (take 10) . recentFirst =<< loadAllSnapshots "posts/**" "post-content"
+            render' feedConfiguration feedCtx posts
+
+    rss "rss.xml" renderRss
+    rss "atom.xml" renderAtom
+
+feedConfiguration :: FeedConfiguration
+feedConfiguration =
+  FeedConfiguration {
+      feedTitle       = "Queensland Functional Programming Lab"
+    , feedDescription = ""
+    , feedAuthorName  = "QFPL"
+    , feedAuthorEmail = "contact@qfpl.io"
+    , feedRoot        = "https://blog.qfpl.io"
+    }
