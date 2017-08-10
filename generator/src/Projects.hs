@@ -73,10 +73,11 @@ projectRules pmcf = do
             case capture "projects/*.*" identifier of
               Just [ident, _] -> Just ident
               _ -> Nothing
+        projectPosts <- maybe (pure []) getProjectPosts mIdent
 
         let
           projectPostCtx =
-            maybe mempty (listField "posts" postCtx . getProjectPosts) mIdent
+            if null projectPosts then mempty else listField "posts" postCtx (pure projectPosts)
           projectCtx =
             projectPostCtx `mappend`
             defaultContext

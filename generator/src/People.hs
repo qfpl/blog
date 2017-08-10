@@ -75,10 +75,11 @@ peopleRules pmcf = do
             case capture "people/*.*" identifier of
               Just [ident, _] -> Just ident
               _ -> Nothing
+        peoplePosts <- maybe (pure []) getPeoplePosts mIdent
 
         let
           peoplePostCtx =
-            maybe mempty (listField "posts" postCtx . getPeoplePosts) mIdent
+            if null peoplePosts then mempty else listField "posts" postCtx (pure peoplePosts)
           peopleCtx =
             peoplePostCtx `mappend`
             defaultContext
