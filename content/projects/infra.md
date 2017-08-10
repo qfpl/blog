@@ -35,4 +35,5 @@ If you're doing Haskell development, Nix is great for that:
 - [Mixing Haskell and non-Haskell dependencies with Nix](../../posts/nix/mixing-haskell-and-non-haskell-dependencies-with-nix)
 -->
 
-## Recent posts
+### Blog posts
+
