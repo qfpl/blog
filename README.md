@@ -4,13 +4,13 @@ You can build the contents of the blog locally with:
 ```
 nix-build release.nix -A blog
 ```
-where the output will be in `release/blog`
+where the output will be in `result/blog`
 
 You can build the site generator with:
 ```
 nix-build release.nix -A generator
 ```
-where the output will be the executable  `release/site`
+where the output will be the executable  `result/site`
 
 You can use that to bring up a local preview server with:
 ```
