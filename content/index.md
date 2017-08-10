@@ -29,6 +29,13 @@ Functional Programming builds on the shoulders of giants of mathematics to enabl
 If Functional Programming is so much better, why isn't everyone using it yet? Because you haven't yet knocked on [our door](./contact).
 
 <div class="page-header">
+  <h3>Blog posts</h3>
+</div>
+
+The most recent blog posts are:
+$partial("templates/post-list.html")$
+
+<div class="page-header">
   <h3>What we are working on</h3>
 </div>
 
@@ -49,13 +56,4 @@ programmers who seek to take advantage of Functional Programming in their work.
 
 See our [projects](./projects) for more.
 
-<!--
-<div class="page-header">
-  <h3>Blog posts</h3>
-</div>
-
-The most recent blog posts are:
-$partial("templates/post-list.html")$
-
 The whole backlog is available from the [archives](./archive).
--->
