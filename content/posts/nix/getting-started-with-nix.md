@@ -251,7 +251,7 @@ It's also worth taking note of the current generation, although I'll explain wha
 The stage is now set: let us _install_ our first Nix package.
 ```
 > nix-env -i tree
-... output ellided ...
+... output elided ...
 ```
 
 Let's take it for a spin, in the home directory of a recent Ubuntu install:
