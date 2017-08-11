@@ -346,4 +346,4 @@ x <|> y
 
 ----
 
-Can you come up with any more patterns that translate in a helpful way?
+Can you come up with any more patterns that translate in a helpful way? [Let us know](https://www.reddit.com/r/haskell/comments/6sz3td/fp_cheat_sheet/) if you do.
