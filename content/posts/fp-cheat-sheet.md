@@ -48,7 +48,7 @@ Given a function `func`, and two lists `list1` and `list2`, loops first through
 `list1`, then `list2` and apply a function to the element at that position.
 
 ```csharp
-given(func) {
+given(func, list1, list2) {
   var r = list.empty
   for(int i = 0; i < list1.length; i++) {
     for(int j = 0; j < list2.length; j++) {
@@ -161,7 +161,7 @@ var r = list.empty
     if(list[i] == null) 
       return null
     else 
-      list.add(i)
+      r.add(list[i])
   }
   return r
 }
