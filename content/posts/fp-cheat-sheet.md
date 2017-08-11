@@ -126,8 +126,7 @@ This can be written using `>>=` but not `liftA2`.
 
 ```haskell
 x >>= \a ->
-let y = test x
-y >>= \b ->
+test x >>= \b ->
 pure (a + b)
 ```
 
@@ -143,7 +142,7 @@ given(x) {
 }
 ```
 
-Since `liftA2` is overloaded to work on different structures as long as they all satisfy a similar pattern. We have already seen that lists and `Maybe` satisfy this pattern. However, functions that accept a single argument also satisfy this pattern. A function that accepts a single argument can also be used to simulate a function that accepts two arguments, by first accepting that one argument, and returning a function that then accepts one argument and takes it to a value. Since in this case we are describing (the simulation of) a *`two-argument function`* (called `+`), then we specifically want the `2` in `liftA2`. In common nomenclature, this specific instance is often the *reader* instance.
+Since `liftA2` is overloaded to work on different structures as long as they all satisfy a similar pattern. We have already seen that lists and `Maybe` satisfy this pattern. However, functions that accept a single argument also satisfy this pattern. A function that accepts a single argument can also be used to simulate a function that accepts two arguments, by first accepting that one argument, and returning a function that then accepts one argument and takes it to a value. Since in this case we are describing (the simulation of) a *`two-argument function`* (called `+`), then we specifically want the `2` in `liftA2`. In common nomenclature, this specific instance is often called the *reader* instance.
 
 ```haskell
 liftA2 (+) p q
@@ -230,7 +229,7 @@ given(x) {
     if(func2result == null) {
       return null
     } else {
-      func3(kjx)
+      func3(func2result)
     }
   }
 }
