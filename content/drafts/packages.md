@@ -46,24 +46,69 @@ numbers of Haskell packages work and how bounds should be specified. In
 particular, the PVP says that both lower and upper bounds shall be
 specified for every dependency.
 It is our experience that packages which comply with this version bound policy
-tend to have a better rate of older versions working. Particularly the lack of
-upper bounds can lead to cabal selecting bad install plans in old versions of
-the package, or with new versions of GHC.
+tend to have a better track record for installing correctly. Particularly the
+lack of upper bounds can lead to cabal selecting bad install plans in old
+versions of the package, or with new versions of GHC.
 
 ### Determining appropriate lower bounds
-TODO
+To determine appropriate lower bounds for a particular package, we check the
+changelog of the package in question and assess this based on what features we
+need. Often we will not need the entire power of the library, so we can go
+a few major versions back.
+
+We also check the [Hackage matrix builder](https://matrix.hackage.haskell.org)
+and avoid versions which have red squares, or don't support GHC versions we're
+targeting.
 
 ### Determining appropriate upper bounds
-TODO
+Determining the correct upper bound is more difficult. Recall that the first
+two components of a version number as specified by the PVP together form the
+major version. So a major version looks like 4.12 rather than 4.
+
+To be on the safe side, we often select the major version number immediately
+after the major version you are using.
+
+A more flexible approach is
+to put the bound on the first segment of the version only. An example of an
+upper bound like this is `base >= 4.7 && < 5`. This kind of dependency seems
+common among more experienced Haskellers for certain libraries, such as base.
+It cannot be recommended in general because a change in the second segment of a
+version can still spell disaster for an unsuspecting project.
+
+If we are not sure what to do with your bounds, we often look at the libraries
+of well-regarded Haskellers, particularly if they depend on the package we're
+interested in. The [lens](https://github.com/ekmett/lens)
+library, for example, has a lot of dependencies so it has a lot of bounds from
+which to draw inspiration.
 
 ## Tools we find useful
 
 ### TravisCI
-TODO
+[Travis CI](https://travis-ci.org/) is a useful continuous integration tool
+that's free for open source projects. We use
+[this script](https://github.com/hvr/multi-ghc-travis) to generate a sensible
+default Travis file for all the GHC versions we care about. It seems to work
+very well.
 
-### Hackage Build Matrix
-TODO
+The advantage of a tool like Travis is that your branches and pull requests
+will be compiled against each version of GHC specified, which helps make sure
+we're supporting older GHCs even if nobody on the team is running them.
+
+### Hackage Matrix Builder
+It is very useful to check the
+[Hackage matrix builder](https://matrix.hackage.haskell.org) to check on older
+versions of our own libraries, to see whether they need any bounds
+adjustments. It is also useful to check the state of packages you intend to
+depend on, as discussed above.
 
 ### Hackage Metadata Revisions
-TODO
+When versions of our package start going red in the hackage matrix builder,
+there is a solution. Hackage accepts metadata revisions, meaning version bounds
+can be altered retroactively. This feature is very useful to fix
+red entries in the matrix, or fence off versions which are known to be bad,
+for instance if they include a bug.
+
+The existence of this feature is not a good reason to leave off upper bounds;
+upper bounds are preventative, whereas metadata revisions are merely
+curative.
 
