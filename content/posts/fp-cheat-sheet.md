@@ -238,7 +238,7 @@ given(x) {
 The kleisli composition operator, called `<=<` is overloaded to work on many values, of which `Maybe` is one instance.
 
 ```haskell
-(func1 <=< func2 <=< func3) x
+(func3 <=< func2 <=< func1) x
 ```
 
 ----
