@@ -5,7 +5,7 @@ project: news
 authors: tmorris
 ---
 
-The Commonwealth Bank of Australia claim that a software error is the cause of its failure to report transactions of $10000 or more. This has occurred on 53506 occasions, with penalty of $18 million per infraction.
+The Commonwealth Bank of Australia claim that a software error is the cause of its failure to report transactions of $10000 or more. This has occurred on 53506 occasions, with a penalty of $18 million per infraction.
 
 **That's nearly one trillion dollars.**
 
