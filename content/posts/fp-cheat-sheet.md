@@ -39,6 +39,8 @@ i2s n
 * [kleisli composition on State]
 * [sequence on reader with Maybe]
 * [choice on Maybe]
+* [Do effect on condition]
+* [Do effect on not-condition]
 
 ----
 
@@ -292,9 +294,9 @@ Given a function (or *instance of an interface*), called `func`, which may be `n
 ```csharp
 given(func, x) {
   if(func == null) {
-    return null;
+    return null
   } else {
-    return func.apply(x);
+    return func.apply(x)
   }
 }
 ```
@@ -325,7 +327,7 @@ In some programming languages, this expression might be written using a ternary 
 
 ```csharp
 given(x, y) {
-  return x == null ? y : x;
+  return x == null ? y : x
 }
 ```
 
@@ -333,7 +335,7 @@ The C# programming language has a built-in operator (`??`) for this, called the 
 
 ```csharp
 given(x, y) {
-  return x ?? y;
+  return x ?? y
 }
 ```
 
@@ -341,6 +343,42 @@ The choice operator in Haskell is called `<|>` and is overloaded to work on many
 
 ```haskell
 x <|> y
+```
+
+----
+
+### Do effect on condition
+
+Given some boolean condition, if it is true, do something. If it is false, do nothing.
+
+```csharp
+given(condition) {
+  if(condition)
+    doSomething()
+}
+```
+
+Since Haskell values are always pure, including effects, they can be treated as values. That is, they can be passed to functions as arguments.
+
+```haskell
+when condition doSomething
+```
+
+### Do effect on not-condition
+
+Given some boolean condition, if it is false, do something. If it is true, do nothing.
+
+```csharp
+given(condition) {
+  if(!condition)
+    doSomething()
+}
+```
+
+The `when` and `unless` functions can handled performing some effect based on a condition. Since the condition is negated, we want the `unless` function.
+
+```haskell
+unless condition doSomething
 ```
 
 ----
