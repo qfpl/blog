@@ -1,0 +1,3222 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Dave Laing">
+  <title>Higher order FRP for front-end development</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="reveal.js/css/reveal.css">
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #303030; color: #cccccc; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; }
+td.sourceCode { padding-left: 5px; }
+pre, code { color: #cccccc; background-color: #303030; }
+code > span.kw { color: #f0dfaf; } /* Keyword */
+code > span.dt { color: #dfdfbf; } /* DataType */
+code > span.dv { color: #dcdccc; } /* DecVal */
+code > span.bn { color: #dca3a3; } /* BaseN */
+code > span.fl { color: #c0bed1; } /* Float */
+code > span.ch { color: #dca3a3; } /* Char */
+code > span.st { color: #cc9393; } /* String */
+code > span.co { color: #7f9f7f; } /* Comment */
+code > span.ot { color: #efef8f; } /* Other */
+code > span.al { color: #ffcfaf; } /* Alert */
+code > span.fu { color: #efef8f; } /* Function */
+code > span.er { color: #c3bf9f; } /* Error */
+code > span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+code > span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+code > span.sc { color: #dca3a3; } /* SpecialChar */
+code > span.vs { color: #cc9393; } /* VerbatimString */
+code > span.ss { color: #cc9393; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { } /* Variable */
+code > span.cf { color: #f0dfaf; } /* ControlFlow */
+code > span.op { color: #f0efd0; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+code > span.at { } /* Attribute */
+code > span.do { color: #7f9f7f; } /* Documentation */
+code > span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+code > span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+code > span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+  </style>
+  <link rel="stylesheet" href="reveal.js/css/theme/black.css" id="theme">
+<link rel="stylesheet" href="css/tweak.css">
+<link rel="stylesheet" href="css/grid-dark.css">
+<link rel="stylesheet" href="css/fizzbuzz.css">
+<link rel="stylesheet" href="css/switch.css">
+<link rel="stylesheet" href="css/todo.css">
+  <script language="javascript" src="js/rx.all.min.js"></script>
+  <script language="javascript" src="js/examples.min.js"></script>
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src="reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div id="grid-setup"></div>
+  <div class="reveal">
+    <div class="slides">
+
+<section>
+  <h1 class="title">Higher order FRP for front-end development</h1>
+  <p class="author">Dave Laing</p>
+<img src="images/data61-csiro.jpg" alt="data61" height="100px">
+</section>
+
+<section><section id="virtual-dom" class="titleslide slide level1"><h1>Virtual DOM</h1></section><section id="section" class="slide level2">
+<h2></h2>
+<p>The DOM is a mutable tree with mutable state at the nodes and at the leaves</p>
+</section><section id="section-1" class="slide level2">
+<h2></h2>
+<p>Working with the DOM directly can be slow</p>
+</section><section id="section-2" class="slide level2">
+<h2></h2>
+<p>The virtual DOM is a data type that models the DOM, allow with efficient diff and patch operations</p>
+</section><section id="section-3" class="slide level2">
+<h2></h2>
+<p>That helps with the mutable state</p>
+</section><section id="section-4" class="slide level2">
+<h2></h2>
+<p>Several frameworks assume the DOM is stateless</p>
+</section><section id="section-5" class="slide level2">
+<h2></h2>
+<p>This is not true, and causes problems</p>
+</section><section id="section-6" class="slide level2">
+<h2></h2>
+<p>You have to capture the state and loop it back through your model</p>
+</section><section id="section-7" class="slide level2">
+<h2></h2>
+<p>React.js can avoid this, with local state captured in components</p>
+</section><section id="section-8" class="slide level2">
+<h2></h2>
+<p>Either way, you end up with a mutable tree of with mutable state at the nodes and at the leaves</p>
+</section><section id="section-9" class="slide level2">
+<h2></h2>
+<p>It's just a different tree</p>
+</section></section>
+<section><section id="functional-reactive-programming" class="titleslide slide level1"><h1>Functional Reactive Programming</h1></section><section id="section-10" class="slide level2">
+<h2></h2>
+<p>FRP is great for managing complex state that changes over time</p>
+</section><section id="section-11" class="slide level2">
+<h2></h2>
+<p>You have first class values that encapsulate state that changes over time</p>
+</section><section id="section-12" class="slide level2">
+<h2></h2>
+<p>Kind of like a souped-up, ultra-composable observer pattern in a library</p>
+</section><section id="section-13" class="slide level2">
+<h2></h2>
+<p>Many things have claimed to be FRP libraries over the years</p>
+</section><section id="section-14" class="slide level2">
+<h2></h2>
+<p>Few have matched the power of the original idea</p>
+</section><section id="section-15" class="slide level2">
+<h2></h2>
+<p>The original idea had two types of things:</p>
+<ul>
+<li class="fragment">Events</li>
+<li class="fragment">Behaviors</li>
+</ul>
+</section><section id="section-16" class="slide level2">
+<h2></h2>
+<p>The original idea had two criteria for implementations to meet:</p>
+<ul>
+<li class="fragment">Precise semantics</li>
+<li class="fragment">Support for continuous time</li>
+</ul>
+</section><section id="section-17" class="slide level2">
+<h2></h2>
+<p>The <code>reflex</code> library has:</p>
+<ul>
+<li class="fragment">Events</li>
+<li class="fragment">Behaviors</li>
+<li class="fragment">Dynamics</li>
+</ul>
+</section><section id="section-18" class="slide level2">
+<h2></h2>
+<p>The <code>reflex</code> library has:</p>
+<ul>
+<li class="fragment">Precise semantics</li>
+<li class="fragment">Support for discrete time</li>
+</ul>
+</section><section id="section-19" class="slide level2">
+<h2></h2>
+<p>The precise semantics are what makes the code and reasoning about the code composable</p>
+</section></section>
+<section><section id="why-haskell" class="titleslide slide level1"><h1>Why Haskell?</h1></section><section id="section-20" class="slide level2">
+<h2></h2>
+<p>The <code>reflex</code> library is written in Haskell, using GHCJS to compile to Javascript ...</p>
+</section><section id="section-21" class="slide level2">
+<h2></h2>
+<p>... and <code>reflex</code> is the best demonstration of why FRP is great for front-end development</p>
+</section><section id="section-22" class="slide level2">
+<h2></h2>
+<p>The <code>sodium-typescript</code> library is ready for use now ...</p>
+</section><section id="section-23" class="slide level2">
+<h2></h2>
+<p>... but it doesn't currently have the bells and whistles we need</p>
+</section><section id="section-24" class="slide level2">
+<h2></h2>
+<p>(I can also get more code on a slide with Haskell than with Typescript)</p>
+</section><section id="section-25" class="slide level2">
+<h2></h2>
+<p>We're programmers, and languages are our tools just like libraries are ...</p>
+</section><section id="section-26" class="slide level2">
+<h2></h2>
+<p>... but some of these tools can take a little getting used to</p>
+</section></section>
+<section><section id="just-enough-haskell-to-be-dangerous" class="titleslide slide level1"><h1>Just enough Haskell to be dangerous</h1></section><section id="an-aside-on-types" class="slide level2">
+<h2>An aside on types</h2>
+</section><section id="section-27" class="slide level2">
+<h2></h2>
+<p>The type systems feels nothing at all like the type systems from Java / C++</p>
+</section><section id="section-28" class="slide level2">
+<h2></h2>
+<p>Types are simple tests and documentation that never go out of date</p>
+</section><section id="section-29" class="slide level2">
+<h2></h2>
+<p>You mostly don't have to write them</p>
+</section><section id="section-30" class="slide level2">
+<h2></h2>
+<p>They can be inferred most of the time</p>
+</section><section id="show-me-the-code" class="slide level2">
+<h2>Show me the code</h2>
+</section><section id="section-31" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Person</span> <span class="fu">=</span>
+  <span class="dt">Person</span> {
+<span class="ot">    name ::</span> <span class="dt">String</span>
+  ,<span class="ot"> age ::</span> <span class="dt">Int</span>
+  }
+
+
+
+
+
+  </code></pre></div>
+</section><section id="section-32" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Person</span> <span class="fu">=</span>
+  <span class="dt">Person</span> {
+<span class="ot">    name ::</span> <span class="dt">String</span>
+  ,<span class="ot"> age ::</span> <span class="dt">Int</span>
+  }
+
+<span class="dt">Person</span><span class="ot"> ::</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Person</span>
+
+
+
+  </code></pre></div>
+</section><section id="section-33" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Person</span> <span class="fu">=</span>
+  <span class="dt">Person</span> {
+<span class="ot">    name ::</span> <span class="dt">String</span>
+  ,<span class="ot"> age ::</span> <span class="dt">Int</span>
+  }
+
+<span class="dt">Person</span><span class="ot"> ::</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Person</span>
+
+<span class="ot">name ::</span> <span class="dt">Person</span> <span class="ot">-&gt;</span> <span class="dt">String</span>
+
+  </code></pre></div>
+</section><section id="section-34" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Person</span> <span class="fu">=</span>
+  <span class="dt">Person</span> {
+<span class="ot">    name ::</span> <span class="dt">String</span>
+  ,<span class="ot"> age ::</span> <span class="dt">Int</span>
+  }
+
+<span class="dt">Person</span><span class="ot"> ::</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Person</span>
+
+<span class="ot">name ::</span> <span class="dt">Person</span> <span class="ot">-&gt;</span> <span class="dt">String</span>
+
+<span class="ot">age ::</span> <span class="dt">Person</span> <span class="ot">-&gt;</span> <span class="dt">Int</span></code></pre></div>
+</section><section id="section-35" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Person</span> <span class="fu">=</span>
+  <span class="dt">Person</span> {
+<span class="ot">    name ::</span> <span class="dt">String</span>
+  ,<span class="ot"> age ::</span> <span class="dt">Int</span>
+  }</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">happyBirthday ::</span> <span class="dt">Person</span> <span class="ot">-&gt;</span> <span class="dt">Person</span>
+happyBirthday (<span class="dt">Person</span> name age) <span class="fu">=</span> 
+  <span class="dt">Person</span> name (age <span class="fu">+</span> <span class="dv">1</span>)</code></pre></div>
+<pre><code>&gt; happyBirthday (Person &quot;alice&quot; 31)
+Person &quot;alice&quot; 32</code></pre>
+</section><section id="section-36" class="slide level2">
+<h2></h2>
+<pre><code>data Maybe a =
+    Just a 
+  | Nothing</code></pre>
+</section><section id="section-37" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">class</span> <span class="dt">Eq</span> a <span class="kw">where</span>
+<span class="ot">  (==) ::</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></code></pre></div>
+</section><section id="section-38" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">instance</span> <span class="dt">Eq</span> <span class="dt">Person</span> <span class="kw">where</span>
+  (<span class="fu">==</span>) (<span class="dt">Person</span> n1 a1) (<span class="dt">Person</span> n2 a2) <span class="fu">=</span>
+    n1 <span class="fu">==</span> n2 <span class="fu">&amp;&amp;</span> a1 <span class="fu">==</span> a2</code></pre></div>
+</section><section id="section-39" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">instance</span> <span class="dt">Eq</span> a <span class="ot">=&gt;</span> <span class="dt">Eq</span> (<span class="dt">Maybe</span> a) <span class="kw">where</span>
+  (<span class="fu">==</span>) (<span class="dt">Just</span> x1) (<span class="dt">Just</span> x2) <span class="fu">=</span>
+    x1 <span class="fu">==</span> x2
+  (<span class="fu">==</span>) <span class="dt">Nothing</span> <span class="dt">Nothing</span> <span class="fu">=</span>
+    <span class="dt">True</span>
+  (<span class="fu">==</span>) _ _ <span class="fu">=</span>
+    <span class="dt">False</span></code></pre></div>
+</section><section id="section-40" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">class</span> <span class="dt">Monoid</span> m <span class="kw">where</span>
+<span class="ot">  mempty ::</span> m
+<span class="ot">  (&lt;&gt;)   ::</span> m <span class="ot">-&gt;</span> m <span class="ot">-&gt;</span> m</code></pre></div>
+</section><section id="section-41" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">instance</span> <span class="dt">Monoid</span> (<span class="dt">Maybe</span> a) <span class="kw">where</span>
+  mempty <span class="fu">=</span> <span class="dt">Nothing</span>
+  (<span class="fu">&lt;&gt;</span>) (<span class="dt">Just</span> x) _ <span class="fu">=</span> <span class="dt">Just</span> x
+  (<span class="fu">&lt;&gt;</span>) <span class="dt">Nothing</span>  y <span class="fu">=</span> y</code></pre></div>
+</section><section id="section-42" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">class</span> <span class="dt">Functor</span> f <span class="kw">where</span>
+<span class="ot">  fmap ::</span> (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> f a <span class="ot">-&gt;</span> f b</code></pre></div>
+</section><section id="section-43" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">instance</span> <span class="dt">Functor</span> <span class="dt">Maybe</span> <span class="kw">where</span>
+  fmap f (<span class="dt">Just</span> x) <span class="fu">=</span> <span class="dt">Just</span> (f x)
+  fmap _ <span class="dt">Nothing</span>  <span class="fu">=</span> <span class="dt">Nothing</span></code></pre></div>
+</section><section id="section-44" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">class</span> <span class="dt">Applicative</span> f <span class="kw">where</span>
+<span class="ot">  pure  ::</span> a <span class="ot">-&gt;</span> f a
+<span class="ot">  (&lt;*&gt;) ::</span> f (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> f a <span class="ot">-&gt;</span> f b</code></pre></div>
+</section><section id="section-45" class="slide level2">
+<h2></h2>
+<p>What now?</p>
+</section><section id="section-46" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">loadName ::</span> <span class="dt">LoadDB</span> <span class="dt">String</span>
+
+<span class="ot">loadAge ::</span> <span class="dt">LoadDB</span> <span class="dt">Int</span>
+
+<span class="ot">loadPerson ::</span> <span class="dt">LoadDB</span> <span class="dt">Person</span>
+loadPerson <span class="fu">=</span> 
+  <span class="dt">Person</span> <span class="fu">&lt;$&gt;</span> loadName <span class="fu">&lt;*&gt;</span> loadAge
+
+  </code></pre></div>
+</section><section id="section-47" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">loadName ::</span> <span class="dt">LoadDB</span> <span class="dt">String</span>
+
+<span class="ot">loadAge ::</span> <span class="dt">LoadDB</span> <span class="dt">Int</span>
+
+<span class="ot">loadPerson ::</span> <span class="dt">LoadDB</span> <span class="dt">Person</span>
+loadPerson <span class="fu">=</span> <span class="kw">do</span>
+  name <span class="ot">&lt;-</span> loadName
+  age  <span class="ot">&lt;-</span> loadAge
+  return (<span class="dt">Person</span> name age)</code></pre></div>
+</section><section id="section-48" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">parseName ::</span> <span class="dt">Parser</span> <span class="dt">String</span>
+
+<span class="ot">parseAge ::</span> <span class="dt">Parser</span> <span class="dt">Int</span>
+
+<span class="ot">parsePerson ::</span> <span class="dt">Parser</span> <span class="dt">Person</span>
+parsePerson <span class="fu">=</span> 
+  <span class="dt">Person</span> <span class="fu">&lt;$&gt;</span> parseName <span class="fu">&lt;*&gt;</span> parseAge
+
+
+
+
+
+
+
+  </code></pre></div>
+</section><section id="section-49" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">parseName ::</span> <span class="dt">Parser</span> <span class="dt">String</span>
+
+<span class="ot">parseAge ::</span> <span class="dt">Parser</span> <span class="dt">Int</span>
+  
+<span class="ot">parsePerson ::</span> <span class="dt">Parser</span> <span class="dt">Person</span>
+parsePerson <span class="fu">=</span> <span class="kw">do</span>
+  parseHeader <span class="st">&quot;Person&quot;</span>
+
+  name <span class="ot">&lt;-</span> parseName
+  skipSpaces
+
+  age  <span class="ot">&lt;-</span> parseAge
+  skipSpaces
+
+  return (<span class="dt">Person</span> name age)</code></pre></div>
+</section><section id="section-50" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">renderName ::</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">RenderHtml</span> ()
+
+<span class="ot">renderAge ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">RenderHtml</span> ()
+
+div<span class="ot"> ::</span> <span class="dt">RenderHtml</span> a <span class="ot">-&gt;</span> <span class="dt">RenderHtml</span> a
+
+<span class="ot">renderPerson ::</span> <span class="dt">Person</span> <span class="ot">-&gt;</span> <span class="dt">RenderHtml</span> ()
+renderPerson (<span class="dt">Person</span> name age) <span class="fu">=</span>
+  div ( <span class="kw">do</span>
+    label <span class="st">&quot;Name&quot;</span> name 
+    label <span class="st">&quot;Age&quot;</span> (show age)
+  )</code></pre></div>
+</section><section id="section-51" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">renderName ::</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">RenderHtml</span> ()
+
+<span class="ot">renderAge ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">RenderHtml</span> ()
+
+div<span class="ot"> ::</span> <span class="dt">RenderHtml</span> a <span class="ot">-&gt;</span> <span class="dt">RenderHtml</span> a
+
+<span class="ot">renderPerson ::</span> <span class="dt">Person</span> <span class="ot">-&gt;</span> <span class="dt">RenderHtml</span> ()
+renderPerson (<span class="dt">Person</span> name age) <span class="fu">=</span>
+  div <span class="fu">$</span> <span class="kw">do</span>
+    label <span class="st">&quot;Name&quot;</span> name 
+    label <span class="st">&quot;Age&quot;</span> (show age)
+  </code></pre></div>
+</section></section>
+<section><section id="event" class="titleslide slide level1"><h1><code>Event</code></h1></section><section id="section-52" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Event</span> a
+
+
+
+ </code></pre></div>
+</section><section id="section-53" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Event</span> a
+
+  <span class="fu">~</span>
+
+[(time, a)] </code></pre></div>
+<!--
+##
+
+has values of type `a` at particular points in time
+
+
+##
+
+The observable points of time are also known as frames
+
+##
+
+Every external triggered event happens in its own frame
+
+##
+
+So we're dealing with something like event-sourcing ...
+
+##
+
+... if it was created by mathematicians instead of consultants
+-->
+</section><section id="section-54" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">eOutput <span class="fu">=</span> eInput</code></pre></div>
+<div id="examples-events-frame">
+
+</div>
+</section><section id="section-55" class="slide level2">
+<h2></h2>
+<div id="examples-events-tick">
+
+</div>
+<!-- 
+## 
+
+
+`Event`s derived from other `Event`s can occur in the same frame.
+
+## 
+
+There is an obvious way that this can happen
+-->
+</section><section id="section-56" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">instance</span> <span class="dt">Functor</span> <span class="dt">Event</span> <span class="kw">where</span> <span class="fu">...</span></code></pre></div>
+</section><section id="section-57" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">flipColour ::</span> <span class="dt">Colour</span> <span class="ot">-&gt;</span> <span class="dt">Colour</span>
+flipColour <span class="dt">Red</span>  <span class="fu">=</span> <span class="dt">Blue</span>
+flipColour <span class="dt">Blue</span> <span class="fu">=</span> <span class="dt">Red</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">eOutput <span class="fu">=</span> flipColour <span class="fu">&lt;$&gt;</span> eInput</code></pre></div>
+<div id="examples-events-flipper">
+
+</div>
+</section><section id="section-58" class="slide level2">
+<h2></h2>
+<!-- We tend to use `<$` often in FRP -->
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">(&lt;$) ::</span> <span class="dt">Functor</span> f <span class="ot">=&gt;</span> a <span class="ot">-&gt;</span> f b <span class="ot">-&gt;</span> f a</code></pre></div>
+</section><section id="section-59" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">eOutput <span class="fu">=</span> <span class="dt">Blue</span> <span class="fu">&lt;$</span> eInput</code></pre></div>
+<div id="examples-events-blue">
+
+</div>
+</section><section id="section-60" class="slide level2">
+<h2></h2>
+<!--
+We can create an `Event` which fires in _some_ of the frames that another `Event` is firing in.
+
+##
+
+The simplest way to do that is to filter an `Event` with a predicate:
+-->
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">ffilter ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) 
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> a 
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> a</code></pre></div>
+</section><section id="section-61" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">isRed ::</span> <span class="dt">Colour</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span>
+isRed <span class="dt">Red</span>  <span class="fu">=</span> <span class="dt">True</span>
+isRed <span class="dt">Blue</span> <span class="fu">=</span> <span class="dt">False</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">eOutput <span class="fu">=</span> ffilter isRed eInput</code></pre></div>
+<div id="examples-events-red">
+
+</div>
+<!--
+##
+
+We can create `Event`s that might be occurring in the same frame as other `Event`s
+
+##
+
+That means when we want to work with multiple `Event`s, we need to be able to handle the case where several `Event`s are active in the same frame.
+
+##
+
+Let's set up some `Event`s that occasionally happen simultaneously
+-->
+</section><section id="section-62" class="slide level2">
+<h2></h2>
+<!--Assume we have access to-->
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">eCount ::</span> <span class="dt">Event</span> <span class="dt">Int</span></code></pre></div>
+</section><section id="section-63" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">div3 ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span>
+div3 x <span class="fu">=</span> x <span class="ot">`mod`</span> <span class="dv">3</span> <span class="fu">==</span> <span class="dv">0</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">div5 ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span>
+div5 x <span class="fu">=</span> x <span class="ot">`mod`</span> <span class="dv">5</span> <span class="fu">==</span> <span class="dv">0</span></code></pre></div>
+</section><section id="section-64" class="slide level2">
+<h2></h2>
+<!--Then-->
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">eFizz ::</span> <span class="dt">Event</span> <span class="dt">Text</span>
+eFizz <span class="fu">=</span> <span class="st">&quot;Fizz&quot;</span> <span class="fu">&lt;$</span> ffilter div3 eCount</code></pre></div>
+<!--and-->
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">eBuzz ::</span> <span class="dt">Event</span> <span class="dt">Text</span>
+eBuzz <span class="fu">=</span> <span class="st">&quot;Buzz&quot;</span> <span class="fu">&lt;$</span> ffilter div5 eCount</code></pre></div>
+<!--will occasionally collide.-->
+</section><section id="section-65" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">eFizz ::</span> <span class="dt">Event</span> <span class="dt">Text</span>
+eFizz <span class="fu">=</span> <span class="st">&quot;Fizz&quot;</span> <span class="fu">&lt;$</span> ffilter div3 eCount</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">eBuzz ::</span> <span class="dt">Event</span> <span class="dt">Text</span>
+eBuzz <span class="fu">=</span> <span class="st">&quot;Buzz&quot;</span> <span class="fu">&lt;$</span> ffilter div5 eCount</code></pre></div>
+<div id="examples-events-fizz-and-buzz">
+
+</div>
+<!--
+##
+
+What can we do about the collisions?
+-->
+</section><section id="section-66" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">leftmost ::</span> [<span class="dt">Event</span> a] <span class="ot">-&gt;</span> <span class="dt">Event</span> a</code></pre></div>
+</section><section id="section-67" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">eLeft ::</span> <span class="dt">Event</span> <span class="dt">Text</span>
+eLeft <span class="fu">=</span> leftmost [eFizz, eBuzz]</code></pre></div>
+<div id="examples-events-leftmost">
+
+</div>
+</section><section id="section-68" class="slide level2">
+<h2></h2>
+<!-- Side note: We've been using this in the first set of examples: -->
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">eInput <span class="fu">=</span> leftmost [<span class="dt">Red</span> <span class="fu">&lt;$</span> eRed, <span class="dt">Blue</span> <span class="fu">&lt;$</span> eBlue]</code></pre></div>
+<!--
+##
+
+That's still not quite what we want for the collisions ...
+-->
+</section><section id="section-69" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">mergeWith ::</span> (a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> a) <span class="ot">-&gt;</span> [<span class="dt">Event</span> a] <span class="ot">-&gt;</span> <span class="dt">Event</span> a</code></pre></div>
+</section><section id="section-70" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">eMerge ::</span> <span class="dt">Event</span> <span class="dt">Text</span>
+eMerge <span class="fu">=</span> mergeWith (<span class="fu">&lt;&gt;</span>) [eFizz, eBuzz]</code></pre></div>
+<div id="examples-events-mergeWith">
+
+</div>
+</section><section id="section-71" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">instance</span> <span class="dt">Monoid</span> a <span class="ot">=&gt;</span> <span class="dt">Monoid</span> (<span class="dt">Event</span> a) <span class="kw">where</span> <span class="fu">...</span></code></pre></div>
+</section><section id="section-72" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">eMerge ::</span> <span class="dt">Event</span> <span class="dt">Text</span>
+eMerge <span class="fu">=</span> eFizz <span class="fu">&lt;&gt;</span> eBuzz</code></pre></div>
+<div id="examples-events-merge">
+
+</div>
+<!--
+##
+
+We still need to print the numbers if we don't have a Fizz or a Buzz...
+-->
+</section><section id="section-73" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">eFizzBuzz ::</span> <span class="dt">Event</span> <span class="dt">Text</span>
+eFizzBuzz <span class="fu">=</span> leftmost [eFizz <span class="fu">&lt;&gt;</span> eBuzz, eCount]</code></pre></div>
+<div id="examples-events-fizzbuzz">
+
+</div>
+</section><section id="section-74" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">var</span> button <span class="op">=</span> <span class="va">document</span>.<span class="at">getElementById</span>(<span class="st">&quot;rx-button&quot;</span>)<span class="op">;</span>
+<span class="kw">var</span> clicks <span class="op">=</span> <span class="va">Rx</span>.<span class="va">Observable</span>.<span class="at">fromEvent</span>(button<span class="op">,</span> <span class="st">&quot;click&quot;</span>)<span class="op">;</span>
+
+<span class="kw">var</span> ones <span class="op">=</span> <span class="va">clicks</span>.<span class="at">scan</span>(count <span class="op">=&gt;</span> count <span class="op">+</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">0</span>)<span class="op">;</span>
+
+<span class="kw">var</span> hundreds <span class="op">=</span> <span class="va">ones</span>.<span class="at">map</span>(<span class="kw">function</span>(x) <span class="op">{</span> <span class="cf">return</span> x <span class="op">*</span> <span class="dv">100</span><span class="op">;</span> <span class="op">}</span>)<span class="op">;</span>
+
+<span class="kw">var</span> sum <span class="op">=</span> <span class="va">ones</span>.<span class="at">combineLatest</span>(hundreds<span class="op">,</span> <span class="kw">function</span>(o<span class="op">,</span> h) <span class="op">{</span>
+    <span class="cf">return</span> o <span class="op">+</span> h<span class="op">;</span> 
+  <span class="op">}</span>)<span class="op">;</span>
+
+<span class="va">sum</span>.<span class="at">subscribe</span>(<span class="kw">function</span>(s) <span class="op">{</span> <span class="at">alert</span>(s)<span class="op">;</span> <span class="op">}</span>)<span class="op">;</span></code></pre></div>
+<button id="rx-button">
+Click Me
+</button>
+</section><section id="section-75" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">  button <span class="ot">&lt;-</span> getElementById <span class="st">&quot;reflex-button&quot;</span>
+  eClick <span class="ot">&lt;-</span> domEvent <span class="dt">Click</span> button
+
+  eOnes <span class="ot">&lt;-</span> accum (<span class="fu">+</span>) <span class="dv">0</span> (<span class="dv">1</span> <span class="fu">&lt;$</span> eClick)
+
+  <span class="kw">let</span> eHundreds <span class="fu">=</span> (<span class="fu">*</span> <span class="dv">100</span>) <span class="fu">&lt;$&gt;</span> eOnes
+
+  <span class="kw">let</span> eSum <span class="fu">=</span> mergeWith (<span class="fu">+</span>) [eOnes, eHundreds]
+
+  alertEvent show eSum</code></pre></div>
+<div id="examples-events-clickMe">
+
+</div>
+</section></section>
+<section><section id="behavior" class="titleslide slide level1"><h1><code>Behavior</code></h1></section><section id="section-76" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Behavior</span> a
+
+
+
+ </code></pre></div>
+</section><section id="section-77" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Behavior</span> a
+
+  <span class="fu">~</span>
+
+time <span class="ot">-&gt;</span> a</code></pre></div>
+</section><section id="section-78" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">hold ::</span> <span class="dt">ReflexM</span> m 
+     <span class="ot">=&gt;</span>             a
+     <span class="ot">-&gt;</span>       <span class="dt">Event</span> a
+     <span class="ot">-&gt;</span> m (<span class="dt">Behavior</span> a)</code></pre></div>
+</section><section id="section-79" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">sampleBlue                <span class="fu">=</span> <span class="kw">do</span>
+  bColour <span class="ot">&lt;-</span> hold
+  </code></pre></div>
+</section><section id="section-80" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">sampleBlue                <span class="fu">=</span> <span class="kw">do</span>
+  bColour <span class="ot">&lt;-</span> hold <span class="dt">Blue</span>
+  </code></pre></div>
+</section><section id="section-81" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">sampleBlue eInput         <span class="fu">=</span> <span class="kw">do</span>
+  bColour <span class="ot">&lt;-</span> hold <span class="dt">Blue</span>
+ </code></pre></div>
+</section><section id="section-82" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">sampleBlue eInput         <span class="fu">=</span> <span class="kw">do</span>
+  bColour <span class="ot">&lt;-</span> hold <span class="dt">Blue</span> eInput
+ </code></pre></div>
+</section><section id="section-83" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">tag ::</span> <span class="dt">Behavior</span> a
+    <span class="ot">-&gt;</span> <span class="dt">Event</span>    b
+    <span class="ot">-&gt;</span> <span class="dt">Event</span>    a</code></pre></div>
+</section><section id="section-84" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">sampleBlue eInput         <span class="fu">=</span> <span class="kw">do</span>
+  bColour <span class="ot">&lt;-</span> hold <span class="dt">Blue</span> eInput
+ </code></pre></div>
+</section><section id="section-85" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">sampleBlue eInput         <span class="fu">=</span> <span class="kw">do</span>
+  bColour <span class="ot">&lt;-</span> hold <span class="dt">Blue</span> eInput
+           tag </code></pre></div>
+</section><section id="section-86" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">sampleBlue eInput         <span class="fu">=</span> <span class="kw">do</span>
+  bColour <span class="ot">&lt;-</span> hold <span class="dt">Blue</span> eInput
+           tag bColour</code></pre></div>
+</section><section id="section-87" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">sampleBlue eInput eSample <span class="fu">=</span> <span class="kw">do</span>
+  bColour <span class="ot">&lt;-</span> hold <span class="dt">Blue</span> eInput
+           tag bColour</code></pre></div>
+</section><section id="section-88" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">sampleBlue eInput eSample <span class="fu">=</span> <span class="kw">do</span>
+  bColour <span class="ot">&lt;-</span> hold <span class="dt">Blue</span> eInput
+           tag bColour eSample</code></pre></div>
+</section><section id="section-89" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">sampleBlue eInput eSample <span class="fu">=</span> <span class="kw">do</span>
+  bColour <span class="ot">&lt;-</span> hold <span class="dt">Blue</span> eInput
+  return <span class="fu">$</span> tag bColour eSample</code></pre></div>
+</section><section id="section-90" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">sampleBlue eInput eSample <span class="fu">=</span> <span class="kw">do</span>
+  bColour <span class="ot">&lt;-</span> hold <span class="dt">Blue</span> eInput
+  return <span class="fu">$</span> tag bColour eSample</code></pre></div>
+<div id="examples-behaviors-sampleBlue1">
+
+</div>
+<!--
+##
+
+The state doesn't change until the frame _after_ the firing of the `Event`s in `hold`.
+
+##
+
+We can see that by sampling from the `Behavior` when any of the buttons are pressed
+-->
+</section><section id="section-91" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">sampleBlue eInput eSample <span class="fu">=</span> <span class="kw">do</span>
+  bColour <span class="ot">&lt;-</span> hold <span class="dt">Blue</span> eInput
+
+  return <span class="fu">$</span> tag bColour eSample</code></pre></div>
+</section><section id="section-92" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">sampleBlue eInput eSample <span class="fu">=</span> <span class="kw">do</span>
+  bColour <span class="ot">&lt;-</span> hold <span class="dt">Blue</span> eInput
+  <span class="kw">let</span> eAny <span class="fu">=</span> leftmost [                     ]
+  return <span class="fu">$</span> tag bColour eSample</code></pre></div>
+</section><section id="section-93" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">sampleBlue eInput eSample <span class="fu">=</span> <span class="kw">do</span>
+  bColour <span class="ot">&lt;-</span> hold <span class="dt">Blue</span> eInput
+  <span class="kw">let</span> eAny <span class="fu">=</span> leftmost [              eSample]
+  return <span class="fu">$</span> tag bColour eSample</code></pre></div>
+</section><section id="section-94" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">sampleBlue eInput eSample <span class="fu">=</span> <span class="kw">do</span>
+  bColour <span class="ot">&lt;-</span> hold <span class="dt">Blue</span> eInput
+  <span class="kw">let</span> eAny <span class="fu">=</span> leftmost [      eInput, eSample]
+  return <span class="fu">$</span> tag bColour eSample</code></pre></div>
+</section><section id="section-95" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">sampleBlue eInput eSample <span class="fu">=</span> <span class="kw">do</span>
+  bColour <span class="ot">&lt;-</span> hold <span class="dt">Blue</span> eInput
+  <span class="kw">let</span> eAny <span class="fu">=</span> leftmost [() <span class="fu">&lt;$</span> eInput, eSample]
+  return <span class="fu">$</span> tag bColour eSample</code></pre></div>
+</section><section id="section-96" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">sampleBlue eInput eSample <span class="fu">=</span> <span class="kw">do</span>
+  bColour <span class="ot">&lt;-</span> hold <span class="dt">Blue</span> eInput
+  <span class="kw">let</span> eAny <span class="fu">=</span> leftmost [() <span class="fu">&lt;$</span> eInput, eSample]
+  return <span class="fu">$</span> tag bColour eAny</code></pre></div>
+</section><section id="section-97" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">sampleBlue eInput eSample <span class="fu">=</span> <span class="kw">do</span>
+  bColour <span class="ot">&lt;-</span> hold <span class="dt">Blue</span> eInput
+  <span class="kw">let</span> eAny <span class="fu">=</span> leftmost [() <span class="fu">&lt;$</span> eInput, eSample]
+  return <span class="fu">$</span> tag bColour eAny</code></pre></div>
+<div id="examples-behaviors-sampleBlue2">
+
+</div>
+</section><section id="section-98" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">attach          ::</span> 
+                   <span class="dt">Behavior</span> a 
+                <span class="ot">-&gt;</span> <span class="dt">Event</span> b 
+                <span class="ot">-&gt;</span> <span class="dt">Event</span> (a, b)</code></pre></div>
+</section><section id="section-99" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">attachWith      ::</span> (a <span class="ot">-&gt;</span> b <span class="ot">-&gt;</span> c) 
+                <span class="ot">-&gt;</span> <span class="dt">Behavior</span> a
+                <span class="ot">-&gt;</span> <span class="dt">Event</span> b
+                <span class="ot">-&gt;</span> <span class="dt">Event</span> c</code></pre></div>
+</section><section id="section-100" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">attachWithMaybe ::</span> (a <span class="ot">-&gt;</span> b <span class="ot">-&gt;</span> <span class="dt">Maybe</span> c) 
+                <span class="ot">-&gt;</span> <span class="dt">Behavior</span> a
+                <span class="ot">-&gt;</span> <span class="dt">Event</span> b
+                <span class="ot">-&gt;</span> <span class="dt">Event</span> c</code></pre></div>
+</section><section id="section-101" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">gate            ::</span> 
+                   <span class="dt">Behavior</span> <span class="dt">Bool</span>
+                <span class="ot">-&gt;</span> <span class="dt">Event</span> a
+                <span class="ot">-&gt;</span> <span class="dt">Event</span> a</code></pre></div>
+</section></section>
+<section><section id="dynamic" class="titleslide slide level1"><h1><code>Dynamic</code></h1></section><section id="section-102" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Dynamic</span> a
+
+
+
+ </code></pre></div>
+</section><section id="section-103" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Dynamic</span> a
+
+  <span class="fu">~</span> 
+
+(<span class="dt">Event</span> a, <span class="dt">Behavior</span> a) </code></pre></div>
+</section><section id="section-104" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">updated ::</span> <span class="dt">Dynamic</span> a 
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> a</code></pre></div>
+</section><section id="section-105" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">current ::</span> <span class="dt">Dynamic</span> a 
+        <span class="ot">-&gt;</span> <span class="dt">Behavior</span> a</code></pre></div>
+</section><section id="section-106" class="slide level2">
+<h2></h2>
+<p>This is what lets <code>reflex</code> catch up to the virtual DOM</p>
+<!--
+##
+
+It manages state, and lets you know when the state has changed ...
+
+##
+
+... without having to poll the state for changes
+
+##
+
+We use `Dynamic` for the things that we want to change
+
+##
+
+Because `Dynamic`s are values we can pass them down through other components, right to where they need to be
+
+##
+
+We construct `Dynamic`s directly rather than combining `Event`s and `Behavior`s for reasons of correctness and efficiency
+-->
+</section><section id="section-107" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">hold        ::</span> <span class="dt">ReflexM</span> m
+            <span class="ot">=&gt;</span> 
+               a 
+            <span class="ot">-&gt;</span> <span class="dt">Event</span> a 
+            <span class="ot">-&gt;</span> m (<span class="dt">Behavior</span> a)</code></pre></div>
+</section><section id="section-108" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">holdDyn     ::</span> <span class="dt">ReflexM</span> m
+            <span class="ot">=&gt;</span> 
+               a 
+            <span class="ot">-&gt;</span> <span class="dt">Event</span> a 
+            <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span>  a)</code></pre></div>
+</section><section id="section-109" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">foldDyn     ::</span> <span class="dt">ReflexM</span> m
+            <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> b <span class="ot">-&gt;</span> b) 
+            <span class="ot">-&gt;</span> b 
+            <span class="ot">-&gt;</span> <span class="dt">Event</span> a 
+            <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span>  b)</code></pre></div>
+</section><section id="section-110" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">foldDyn<span class="ot"> ($) ::</span> <span class="dt">ReflexM</span> m
+            <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> b <span class="ot">-&gt;</span> b) 
+            <span class="ot">-&gt;</span> b 
+            <span class="ot">-&gt;</span> <span class="dt">Event</span> a 
+            <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span>  b)</code></pre></div>
+</section><section id="section-111" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">foldDyn<span class="ot"> ($) ::</span> <span class="dt">ReflexM</span> m
+            <span class="ot">=&gt;</span> 
+               c 
+            <span class="ot">-&gt;</span> <span class="dt">Event</span> (c <span class="ot">-&gt;</span> c)
+            <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span>  c)</code></pre></div>
+</section><section id="section-112" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> <span class="dt">ReflexM</span> m
+        <span class="ot">=&gt;</span>
+
+           m (<span class="dt">Dynamic</span> <span class="dt">Int</span>)
+counter             <span class="fu">=</span>
+
+
+
+ </code></pre></div>
+</section><section id="section-113" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> <span class="dt">ReflexM</span> m
+        <span class="ot">=&gt;</span> <span class="dt">Event</span> ()
+
+        <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> <span class="dt">Int</span>)
+counter             <span class="fu">=</span>
+
+
+
+ </code></pre></div>
+</section><section id="section-114" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> <span class="dt">ReflexM</span> m
+        <span class="ot">=&gt;</span> <span class="dt">Event</span> ()
+
+        <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> <span class="dt">Int</span>)
+counter eAdd        <span class="fu">=</span>
+
+
+
+ </code></pre></div>
+</section><section id="section-115" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> <span class="dt">ReflexM</span> m
+        <span class="ot">=&gt;</span> <span class="dt">Event</span> ()
+
+        <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> <span class="dt">Int</span>)
+counter eAdd        <span class="fu">=</span>
+  foldDyn (<span class="fu">$</span>) <span class="dv">0</span>
+  
+  
+   </code></pre></div>
+</section><section id="section-116" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> <span class="dt">ReflexM</span> m
+        <span class="ot">=&gt;</span> <span class="dt">Event</span> ()
+
+        <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> <span class="dt">Int</span>)
+counter eAdd        <span class="fu">=</span>
+  foldDyn (<span class="fu">$</span>) <span class="dv">0</span>                 <span class="fu">$</span>
+      (<span class="fu">+</span> <span class="dv">1</span>)   <span class="fu">&lt;$</span> eAdd
+  
+   </code></pre></div>
+</section><section id="section-117" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> <span class="dt">ReflexM</span> m
+        <span class="ot">=&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> <span class="dt">Int</span>)
+counter eAdd        <span class="fu">=</span>
+  foldDyn (<span class="fu">$</span>) <span class="dv">0</span>                 <span class="fu">$</span>
+      (<span class="fu">+</span> <span class="dv">1</span>)   <span class="fu">&lt;$</span> eAdd
+  
+   </code></pre></div>
+</section><section id="section-118" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> <span class="dt">ReflexM</span> m
+        <span class="ot">=&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> <span class="dt">Int</span>)
+counter eAdd eClear <span class="fu">=</span>
+  foldDyn (<span class="fu">$</span>) <span class="dv">0</span>                 <span class="fu">$</span>
+      (<span class="fu">+</span> <span class="dv">1</span>)   <span class="fu">&lt;$</span> eAdd
+  
+   </code></pre></div>
+</section><section id="section-119" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> <span class="dt">ReflexM</span> m
+        <span class="ot">=&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> <span class="dt">Int</span>)
+counter eAdd eClear <span class="fu">=</span>
+  foldDyn (<span class="fu">$</span>) <span class="dv">0</span> <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+      (<span class="fu">+</span> <span class="dv">1</span>)   <span class="fu">&lt;$</span> eAdd
+  
+    ] </code></pre></div>
+</section><section id="section-120" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> <span class="dt">ReflexM</span> m
+        <span class="ot">=&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> <span class="dt">Int</span>)
+counter eAdd eClear <span class="fu">=</span>
+  foldDyn (<span class="fu">$</span>) <span class="dv">0</span> <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+      (<span class="fu">+</span> <span class="dv">1</span>)   <span class="fu">&lt;$</span> eAdd
+    , const <span class="dv">0</span> <span class="fu">&lt;$</span> eClear
+    ]</code></pre></div>
+</section><section id="section-121" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> <span class="dt">ReflexM</span> m
+        <span class="ot">=&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> <span class="dt">Int</span>)
+counter eAdd eClear <span class="fu">=</span>
+  foldDyn (<span class="fu">$</span>) <span class="dv">0</span> <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+      (<span class="fu">+</span> <span class="dv">1</span>)   <span class="fu">&lt;$</span> eAdd
+    , const <span class="dv">0</span> <span class="fu">&lt;$</span> eClear
+    ]</code></pre></div>
+<div id="examples-dynamic-counter">
+
+</div>
+</section><section id="section-122" class="slide level2">
+<h2></h2>
+<!--
+
+`Behavior`s are specified at all points of time
+
+ This is also true of `Dynamic`s
+
+`Event`s are only specified at some unique points of time
+
+So all `Behavior`s have a value before any of the `Event`s fire
+
+It is perfectly valid to have `Event`s that build a `Behavior` and also depend on the `Behavior`
+
+This is where the one frame delay comes in - we are using the old value of the `Behavior` to build the new value of the `Behavior`
+
+This means some dependencies can be loops, which is fine
+
+We just need a way to specify them
+-->
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> <span class="dt">ReflexM</span> m
+        <span class="ot">=&gt;</span> 
+           <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> <span class="dt">Int</span>)
+counter        eAdd eClear <span class="fu">=</span> <span class="kw">do</span>
+
+
+
+  dCount <span class="ot">&lt;-</span> foldDyn (<span class="fu">$</span>) <span class="dv">0</span> <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+      (<span class="fu">+</span> <span class="dv">1</span>)   <span class="fu">&lt;$</span> eAdd
+    , const <span class="dv">0</span> <span class="fu">&lt;$</span> eClear
+    ]
+    
+  return dCount</code></pre></div>
+</section><section id="section-123" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> <span class="dt">ReflexM</span> m
+        <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> <span class="dt">Int</span>
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> <span class="dt">Int</span>)
+counter        eAdd eClear <span class="fu">=</span> <span class="kw">do</span>
+
+
+
+  dCount <span class="ot">&lt;-</span> foldDyn (<span class="fu">$</span>) <span class="dv">0</span> <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+      (<span class="fu">+</span> <span class="dv">1</span>)   <span class="fu">&lt;$</span> eAdd
+    , const <span class="dv">0</span> <span class="fu">&lt;$</span> eClear
+    ]
+    
+  return dCount</code></pre></div>
+</section><section id="section-124" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> <span class="dt">ReflexM</span> m
+        <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> <span class="dt">Int</span>
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> <span class="dt">Int</span>)
+counter dLimit eAdd eClear <span class="fu">=</span> <span class="kw">do</span>
+
+
+
+  dCount <span class="ot">&lt;-</span> foldDyn (<span class="fu">$</span>) <span class="dv">0</span> <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+      (<span class="fu">+</span> <span class="dv">1</span>)   <span class="fu">&lt;$</span> eAdd
+    , const <span class="dv">0</span> <span class="fu">&lt;$</span> eClear
+    ]
+    
+  return dCount</code></pre></div>
+</section><section id="section-125" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> <span class="dt">ReflexM</span> m
+        <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> <span class="dt">Int</span>
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> <span class="dt">Int</span>)
+counter dLimit eAdd eClear <span class="fu">=</span> <span class="kw">do</span>
+  <span class="kw">let</span> dLimitOK <span class="fu">=</span> (<span class="fu">&lt;</span>) <span class="fu">&lt;$&gt;</span> dCount <span class="fu">&lt;*&gt;</span> dLimit
+
+
+  dCount <span class="ot">&lt;-</span> foldDyn (<span class="fu">$</span>) <span class="dv">0</span> <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+      (<span class="fu">+</span> <span class="dv">1</span>)   <span class="fu">&lt;$</span> eAdd
+    , const <span class="dv">0</span> <span class="fu">&lt;$</span> eClear
+    ]
+    
+  return dCount</code></pre></div>
+</section><section id="section-126" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> <span class="dt">ReflexM</span> m
+        <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> <span class="dt">Int</span>
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> <span class="dt">Int</span>)
+counter dLimit eAdd eClear <span class="fu">=</span> <span class="kw">do</span>
+  <span class="kw">let</span> dLimitOK <span class="fu">=</span> (<span class="fu">&lt;</span>) <span class="fu">&lt;$&gt;</span> dCount <span class="fu">&lt;*&gt;</span> dLimit
+      eAddOK   <span class="fu">=</span> gate (current dLimitOK) eAdd
+
+  dCount <span class="ot">&lt;-</span> foldDyn (<span class="fu">$</span>) <span class="dv">0</span> <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+      (<span class="fu">+</span> <span class="dv">1</span>)   <span class="fu">&lt;$</span> eAdd
+    , const <span class="dv">0</span> <span class="fu">&lt;$</span> eClear
+    ]
+    
+  return dCount</code></pre></div>
+</section><section id="section-127" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> <span class="dt">ReflexM</span> m
+        <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> <span class="dt">Int</span>
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> <span class="dt">Int</span>)
+counter dLimit eAdd eClear <span class="fu">=</span> <span class="kw">do</span>
+  <span class="kw">let</span> dLimitOK <span class="fu">=</span> (<span class="fu">&lt;</span>) <span class="fu">&lt;$&gt;</span> dCount <span class="fu">&lt;*&gt;</span> dLimit
+      eAddOK   <span class="fu">=</span> gate (current dLimitOK) eAdd
+
+  dCount <span class="ot">&lt;-</span> foldDyn (<span class="fu">$</span>) <span class="dv">0</span> <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+      (<span class="fu">+</span> <span class="dv">1</span>)   <span class="fu">&lt;$</span> eAddOK
+    , const <span class="dv">0</span> <span class="fu">&lt;$</span> eClear
+    ]
+    
+  return dCount</code></pre></div>
+</section><section id="section-128" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> <span class="dt">ReflexM</span> m
+        <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> <span class="dt">Int</span>
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> <span class="dt">Int</span>)
+counter dLimit eAdd eClear <span class="fu">=</span> <span class="kw">do</span>
+  <span class="kw">let</span> dLimitOK <span class="fu">=</span> (<span class="fu">&lt;</span>) <span class="fu">&lt;$&gt;</span> dCount <span class="fu">&lt;*&gt;</span> dLimit
+      eAddOK   <span class="fu">=</span> gate (current dLimitOK) eAdd
+
+  dCount <span class="ot">&lt;-</span> foldDyn (<span class="fu">$</span>) <span class="dv">0</span> <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+      (<span class="fu">+</span> <span class="dv">1</span>)   <span class="fu">&lt;$</span> eAddOK
+    , const <span class="dv">0</span> <span class="fu">&lt;$</span> eClear
+    ]
+    
+  return dCount</code></pre></div>
+<div id="examples-recursiveDo-3">
+
+</div>
+</section><section id="section-129" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">limit ::</span> <span class="dt">ReflexM</span> m
+      <span class="ot">=&gt;</span> <span class="dt">Event</span> () 
+      <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+      <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+      <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> <span class="dt">Int</span>)
+limit eStart eAdd eClear <span class="fu">=</span> <span class="kw">do</span>
+  eLoadLimit <span class="ot">&lt;-</span> performEvent (loadLimitDb <span class="fu">&lt;$</span> eStart)
+
+  dLimit <span class="ot">&lt;-</span> foldDyn (<span class="fu">$</span>) <span class="dv">5</span> <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+      const   <span class="fu">&lt;$&gt;</span> eLoadLimit
+    , (<span class="fu">+</span> <span class="dv">1</span>)   <span class="fu">&lt;$</span>  eAdd
+    , const <span class="dv">0</span> <span class="fu">&lt;$</span>  eClear
+    ]
+    
+  performEvent_ (saveLimitDb <span class="fu">&lt;$&gt;</span> update dLimit) 
+    
+  return dLimit</code></pre></div>
+<div id="examples-recursiveDo-1">
+
+</div>
+</section><section id="section-130" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Settings</span> <span class="fu">=</span>
+  <span class="dt">Settings</span> {
+<span class="ot">    settingLimit ::</span> <span class="dt">Int</span>
+  ,<span class="ot"> settingStep  ::</span> <span class="dt">Int</span>
+  }</code></pre></div>
+</section><section id="section-131" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> <span class="dt">ReflexM</span> m
+        <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> <span class="dt">Int</span>
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> <span class="dt">Int</span>)
+counter dLimit    eAdd eClear <span class="fu">=</span> <span class="kw">do</span>
+  <span class="kw">let</span> 
+      
+      dLimitOK <span class="fu">=</span> (<span class="fu">&lt;</span>) <span class="fu">&lt;$&gt;</span> dCount <span class="fu">&lt;*&gt;</span> dLimit
+      eAddOK   <span class="fu">=</span> gate (current dLimitOK) eAdd
+
+  dCount <span class="ot">&lt;-</span> foldDyn (<span class="fu">$</span>) <span class="dv">0</span> <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+      (<span class="fu">+</span> <span class="dv">1</span>)   <span class="fu">&lt;$</span>                      eAddOK
+    , const <span class="dv">0</span> <span class="fu">&lt;$</span> eClear
+    ]
+    
+  return dCount</code></pre></div>
+</section><section id="section-132" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> <span class="dt">ReflexM</span> m
+        <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> <span class="dt">Settings</span>
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> <span class="dt">Int</span>)
+counter dLimit    eAdd eClear <span class="fu">=</span> <span class="kw">do</span>
+  <span class="kw">let</span> 
+      
+      dLimitOK <span class="fu">=</span> (<span class="fu">&lt;</span>) <span class="fu">&lt;$&gt;</span> dCount <span class="fu">&lt;*&gt;</span> dLimit
+      eAddOK   <span class="fu">=</span> gate (current dLimitOK) eAdd
+
+  dCount <span class="ot">&lt;-</span> foldDyn (<span class="fu">$</span>) <span class="dv">0</span> <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+      (<span class="fu">+</span> <span class="dv">1</span>)   <span class="fu">&lt;$</span>                      eAddOK
+    , const <span class="dv">0</span> <span class="fu">&lt;$</span> eClear
+    ]
+    
+  return dCount</code></pre></div>
+</section><section id="section-133" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> <span class="dt">ReflexM</span> m
+        <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> <span class="dt">Settings</span>
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> <span class="dt">Int</span>)
+counter dSettings eAdd eClear <span class="fu">=</span> <span class="kw">do</span>
+  <span class="kw">let</span> 
+      
+      dLimitOK <span class="fu">=</span> (<span class="fu">&lt;</span>) <span class="fu">&lt;$&gt;</span> dCount <span class="fu">&lt;*&gt;</span> dLimit
+      eAddOK   <span class="fu">=</span> gate (current dLimitOK) eAdd
+
+  dCount <span class="ot">&lt;-</span> foldDyn (<span class="fu">$</span>) <span class="dv">0</span> <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+      (<span class="fu">+</span> <span class="dv">1</span>)   <span class="fu">&lt;$</span>                      eAddOK
+    , const <span class="dv">0</span> <span class="fu">&lt;$</span> eClear
+    ]
+    
+  return dCount</code></pre></div>
+</section><section id="section-134" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> <span class="dt">ReflexM</span> m
+        <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> <span class="dt">Settings</span>
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> <span class="dt">Int</span>)
+counter dSettings eAdd eClear <span class="fu">=</span> <span class="kw">do</span>
+  <span class="kw">let</span> dLimit   <span class="fu">=</span> settingsLimit <span class="fu">&lt;$&gt;</span> dSettings
+      
+      dLimitOK <span class="fu">=</span> (<span class="fu">&lt;</span>) <span class="fu">&lt;$&gt;</span> dCount <span class="fu">&lt;*&gt;</span> dLimit
+      eAddOK   <span class="fu">=</span> gate (current dLimitOK) eAdd
+
+  dCount <span class="ot">&lt;-</span> foldDyn (<span class="fu">$</span>) <span class="dv">0</span> <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+      (<span class="fu">+</span> <span class="dv">1</span>)   <span class="fu">&lt;$</span>                      eAddOK
+    , const <span class="dv">0</span> <span class="fu">&lt;$</span> eClear
+    ]
+    
+  return dCount</code></pre></div>
+</section><section id="section-135" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> <span class="dt">ReflexM</span> m
+        <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> <span class="dt">Settings</span>
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> <span class="dt">Int</span>)
+counter dSettings eAdd eClear <span class="fu">=</span> <span class="kw">do</span>
+  <span class="kw">let</span> dLimit   <span class="fu">=</span> settingsLimit <span class="fu">&lt;$&gt;</span> dSettings
+      dStep    <span class="fu">=</span> settingsStep  <span class="fu">&lt;$&gt;</span> dSettings
+      dLimitOK <span class="fu">=</span> (<span class="fu">&lt;</span>) <span class="fu">&lt;$&gt;</span> dCount <span class="fu">&lt;*&gt;</span> dLimit
+      eAddOK   <span class="fu">=</span> gate (current dLimitOK) eAdd
+
+  dCount <span class="ot">&lt;-</span> foldDyn (<span class="fu">$</span>) <span class="dv">0</span> <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+      (<span class="fu">+</span> <span class="dv">1</span>)   <span class="fu">&lt;$</span>                      eAddOK
+    , const <span class="dv">0</span> <span class="fu">&lt;$</span> eClear
+    ]
+    
+  return dCount</code></pre></div>
+</section><section id="section-136" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> <span class="dt">ReflexM</span> m
+        <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> <span class="dt">Settings</span>
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+        <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> <span class="dt">Int</span>)
+counter dSettings eAdd eClear <span class="fu">=</span> <span class="kw">do</span>
+  <span class="kw">let</span> dLimit   <span class="fu">=</span> settingsLimit <span class="fu">&lt;$&gt;</span> dSettings
+      dStep    <span class="fu">=</span> settingsStep  <span class="fu">&lt;$&gt;</span> dSettings
+      dLimitOK <span class="fu">=</span> (<span class="fu">&lt;</span>) <span class="fu">&lt;$&gt;</span> dCount <span class="fu">&lt;*&gt;</span> dLimit
+      eAddOK   <span class="fu">=</span> gate (current dLimitOK) eAdd
+
+  dCount <span class="ot">&lt;-</span> foldDyn (<span class="fu">$</span>) <span class="dv">0</span> <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+      (<span class="fu">+</span>  )   <span class="fu">&lt;$&gt;</span> tag (current dStep) eAddOK
+    , const <span class="dv">0</span> <span class="fu">&lt;$</span> eClear
+    ]
+    
+  return dCount</code></pre></div>
+</section><section id="section-137" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">counter (<span class="dt">Settings</span> <span class="fu">&lt;$&gt;</span> dLimit <span class="fu">&lt;*&gt;</span> dStep) eAdd eClear</code></pre></div>
+<div id="examples-recursiveDo-4">
+
+</div>
+</section></section>
+<section><section id="higher-order-frp" class="titleslide slide level1"><h1>Higher order FRP</h1></section><section id="section-138" class="slide level2">
+<h2></h2>
+<p>Let's have a look at some higher order functions</p>
+</section><section id="section-139" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">map<span class="ot">   ::</span> (a <span class="ot">-&gt;</span> b) 
+      <span class="ot">-&gt;</span> [a] 
+      <span class="ot">-&gt;</span> [b]
+  </code></pre></div>
+</section><section id="section-140" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">foldr<span class="ot"> ::</span> (a <span class="ot">-&gt;</span> b <span class="ot">-&gt;</span> b) 
+      <span class="ot">-&gt;</span> b 
+      <span class="ot">-&gt;</span> [a] 
+      <span class="ot">-&gt;</span> b</code></pre></div>
+</section><section id="section-141" class="slide level2">
+<h2></h2>
+<p>Let's have a look at some higher order FRP</p>
+</section><section id="section-142" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switch        ::</span> 
+               
+                 <span class="dt">Behavior</span> (<span class="dt">Event</span> a)
+              <span class="ot">-&gt;</span>           <span class="dt">Event</span> a</code></pre></div>
+</section><section id="section-143" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchPrompty ::</span> <span class="dt">ReflexM</span> m 
+              <span class="ot">=&gt;</span>           <span class="dt">Event</span> a
+              <span class="ot">-&gt;</span> <span class="dt">Event</span>    (<span class="dt">Event</span> a)
+              <span class="ot">-&gt;</span> m        (<span class="dt">Event</span> a)</code></pre></div>
+</section><section id="section-144" class="slide level2">
+<h2></h2>
+<div id="examples-switch-colour-2" class="demo">
+
+</div>
+</section><section id="section-145" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> <span class="dt">ReflexM</span> m
+             <span class="ot">=&gt;</span>
+
+
+             <span class="ot">-&gt;</span> m (<span class="dt">Event</span> <span class="dt">Colour</span>, <span class="dt">Event</span> <span class="dt">Colour</span>)
+switchColour                          <span class="fu">=</span> <span class="kw">do</span>
+
+
+
+
+
+
+
+
+
+    
+
+
+
+  </code></pre></div>
+</section><section id="section-146" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> <span class="dt">ReflexM</span> m
+             <span class="ot">=&gt;</span> <span class="dt">Event</span> ()
+
+
+             <span class="ot">-&gt;</span> m (<span class="dt">Event</span> <span class="dt">Colour</span>, <span class="dt">Event</span> <span class="dt">Colour</span>)
+switchColour                          <span class="fu">=</span> <span class="kw">do</span>
+
+
+
+
+
+
+
+
+
+    
+
+
+
+  </code></pre></div>
+</section><section id="section-147" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> <span class="dt">ReflexM</span> m
+             <span class="ot">=&gt;</span> <span class="dt">Event</span> ()
+
+
+             <span class="ot">-&gt;</span> m (<span class="dt">Event</span> <span class="dt">Colour</span>, <span class="dt">Event</span> <span class="dt">Colour</span>)
+switchColour eSwitch1                 <span class="fu">=</span> <span class="kw">do</span>
+
+
+
+
+
+
+
+
+
+    
+
+
+
+  </code></pre></div>
+</section><section id="section-148" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> <span class="dt">ReflexM</span> m
+             <span class="ot">=&gt;</span> <span class="dt">Event</span> ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+
+             <span class="ot">-&gt;</span> m (<span class="dt">Event</span> <span class="dt">Colour</span>, <span class="dt">Event</span> <span class="dt">Colour</span>)
+switchColour eSwitch1                 <span class="fu">=</span> <span class="kw">do</span>
+
+
+
+
+
+
+
+
+
+    
+
+
+
+  </code></pre></div>
+</section><section id="section-149" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> <span class="dt">ReflexM</span> m
+             <span class="ot">=&gt;</span> <span class="dt">Event</span> ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+
+             <span class="ot">-&gt;</span> m (<span class="dt">Event</span> <span class="dt">Colour</span>, <span class="dt">Event</span> <span class="dt">Colour</span>)
+switchColour eSwitch1 eSwitch2        <span class="fu">=</span> <span class="kw">do</span>
+
+
+
+
+
+
+
+
+
+    
+
+
+
+  </code></pre></div>
+</section><section id="section-150" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> <span class="dt">ReflexM</span> m
+             <span class="ot">=&gt;</span> <span class="dt">Event</span> ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> <span class="dt">Colour</span>
+             <span class="ot">-&gt;</span> m (<span class="dt">Event</span> <span class="dt">Colour</span>, <span class="dt">Event</span> <span class="dt">Colour</span>)
+switchColour eSwitch1 eSwitch2        <span class="fu">=</span> <span class="kw">do</span>
+
+
+
+
+
+
+
+
+
+    
+
+
+
+  </code></pre></div>
+</section><section id="section-151" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> <span class="dt">ReflexM</span> m
+             <span class="ot">=&gt;</span> <span class="dt">Event</span> ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> <span class="dt">Colour</span>
+             <span class="ot">-&gt;</span> m (<span class="dt">Event</span> <span class="dt">Colour</span>, <span class="dt">Event</span> <span class="dt">Colour</span>)
+switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw">do</span>
+
+
+
+
+
+
+
+
+
+    
+
+
+
+  </code></pre></div>
+</section><section id="section-152" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> <span class="dt">ReflexM</span> m
+             <span class="ot">=&gt;</span> <span class="dt">Event</span> ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> <span class="dt">Colour</span>
+             <span class="ot">-&gt;</span> m (<span class="dt">Event</span> <span class="dt">Colour</span>, <span class="dt">Event</span> <span class="dt">Colour</span>)
+switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw">do</span>
+
+
+
+
+
+  <span class="kw">let</span> eOut1 <span class="fu">=</span> _
+
+
+
+
+
+  <span class="kw">let</span> eOut2 <span class="fu">=</span> _
+
+  return (eOut1, eOut2)</code></pre></div>
+</section><section id="section-153" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> <span class="dt">ReflexM</span> m
+             <span class="ot">=&gt;</span> <span class="dt">Event</span> ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> <span class="dt">Colour</span>
+             <span class="ot">-&gt;</span> m (<span class="dt">Event</span> <span class="dt">Colour</span>, <span class="dt">Event</span> <span class="dt">Colour</span>)
+switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw">do</span>
+
+  bOut1 <span class="ot">&lt;-</span> _
+
+
+
+  <span class="kw">let</span> eOut1 <span class="fu">=</span> _
+
+  bOut2 <span class="ot">&lt;-</span> _
+
+
+
+  <span class="kw">let</span> eOut2 <span class="fu">=</span> _
+
+  return (eOut1, eOut2)</code></pre></div>
+</section><section id="section-154" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> <span class="dt">ReflexM</span> m
+             <span class="ot">=&gt;</span> <span class="dt">Event</span> ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> <span class="dt">Colour</span>
+             <span class="ot">-&gt;</span> m (<span class="dt">Event</span> <span class="dt">Colour</span>, <span class="dt">Event</span> <span class="dt">Colour</span>)
+switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw">do</span>
+
+  bOut1 <span class="ot">&lt;-</span> _
+
+
+
+  <span class="kw">let</span> eOut1 <span class="fu">=</span> switch bOut1
+
+  bOut2 <span class="ot">&lt;-</span> _
+
+
+
+  <span class="kw">let</span> eOut2 <span class="fu">=</span> switch bOut2
+
+  return (eOut1, eOut2)</code></pre></div>
+</section><section id="section-155" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> <span class="dt">ReflexM</span> m
+             <span class="ot">=&gt;</span> <span class="dt">Event</span> ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> <span class="dt">Colour</span>
+             <span class="ot">-&gt;</span> m (<span class="dt">Event</span> <span class="dt">Colour</span>, <span class="dt">Event</span> <span class="dt">Colour</span>)
+switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw">do</span>
+
+  bOut1 <span class="ot">&lt;-</span> hold _      _
+
+
+
+  <span class="kw">let</span> eOut1 <span class="fu">=</span> switch bOut1
+
+  bOut2 <span class="ot">&lt;-</span> hold _     _
+
+
+
+  <span class="kw">let</span> eOut2 <span class="fu">=</span> switch bOut2
+
+  return (eOut1, eOut2)</code></pre></div>
+</section><section id="section-156" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> <span class="dt">ReflexM</span> m
+             <span class="ot">=&gt;</span> <span class="dt">Event</span> ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> <span class="dt">Colour</span>
+             <span class="ot">-&gt;</span> m (<span class="dt">Event</span> <span class="dt">Colour</span>, <span class="dt">Event</span> <span class="dt">Colour</span>)
+switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw">do</span>
+
+  bOut1 <span class="ot">&lt;-</span> hold eInput _
+
+
+
+  <span class="kw">let</span> eOut1 <span class="fu">=</span> switch bOut1
+
+  bOut2 <span class="ot">&lt;-</span> hold _     _
+
+
+
+  <span class="kw">let</span> eOut2 <span class="fu">=</span> switch bOut2
+
+  return (eOut1, eOut2)</code></pre></div>
+</section><section id="section-157" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> <span class="dt">ReflexM</span> m
+             <span class="ot">=&gt;</span> <span class="dt">Event</span> ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> <span class="dt">Colour</span>
+             <span class="ot">-&gt;</span> m (<span class="dt">Event</span> <span class="dt">Colour</span>, <span class="dt">Event</span> <span class="dt">Colour</span>)
+switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw">do</span>
+
+  bOut1 <span class="ot">&lt;-</span> hold eInput _
+
+
+
+  <span class="kw">let</span> eOut1 <span class="fu">=</span> switch bOut1
+
+  bOut2 <span class="ot">&lt;-</span> hold never _
+
+
+
+  <span class="kw">let</span> eOut2 <span class="fu">=</span> switch bOut2
+
+  return (eOut1, eOut2)</code></pre></div>
+</section><section id="section-158" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> <span class="dt">ReflexM</span> m
+             <span class="ot">=&gt;</span> <span class="dt">Event</span> ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> <span class="dt">Colour</span>
+             <span class="ot">-&gt;</span> m (<span class="dt">Event</span> <span class="dt">Colour</span>, <span class="dt">Event</span> <span class="dt">Colour</span>)
+switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw">do</span>
+
+  bOut1 <span class="ot">&lt;-</span> hold eInput <span class="fu">.</span> leftmost <span class="fu">$</span> [
+      _      <span class="fu">&lt;$</span> eSwitch1
+    , _      <span class="fu">&lt;$</span> eSwitch2
+    ]
+  <span class="kw">let</span> eOut1 <span class="fu">=</span> switch bOut1
+
+  bOut2 <span class="ot">&lt;-</span> hold never <span class="fu">.</span> leftmost <span class="fu">$</span> [
+      _      <span class="fu">&lt;$</span> eSwitch1
+    , _      <span class="fu">&lt;$</span> eSwitch2
+    ]
+  <span class="kw">let</span> eOut2 <span class="fu">=</span> switch bOut2
+
+  return (eOut1, eOut2)</code></pre></div>
+</section><section id="section-159" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> <span class="dt">ReflexM</span> m
+             <span class="ot">=&gt;</span> <span class="dt">Event</span> ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> <span class="dt">Colour</span>
+             <span class="ot">-&gt;</span> m (<span class="dt">Event</span> <span class="dt">Colour</span>, <span class="dt">Event</span> <span class="dt">Colour</span>)
+switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw">do</span>
+
+  bOut1 <span class="ot">&lt;-</span> hold eInput <span class="fu">.</span> leftmost <span class="fu">$</span> [
+      eInput <span class="fu">&lt;$</span> eSwitch1
+    , _      <span class="fu">&lt;$</span> eSwitch2
+    ]
+  <span class="kw">let</span> eOut1 <span class="fu">=</span> switch bOut1
+
+  bOut2 <span class="ot">&lt;-</span> hold never <span class="fu">.</span> leftmost <span class="fu">$</span> [
+      _      <span class="fu">&lt;$</span> eSwitch1
+    , _      <span class="fu">&lt;$</span> eSwitch2
+    ]
+  <span class="kw">let</span> eOut2 <span class="fu">=</span> switch bOut2
+
+  return (eOut1, eOut2)</code></pre></div>
+</section><section id="section-160" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> <span class="dt">ReflexM</span> m
+             <span class="ot">=&gt;</span> <span class="dt">Event</span> ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> <span class="dt">Colour</span>
+             <span class="ot">-&gt;</span> m (<span class="dt">Event</span> <span class="dt">Colour</span>, <span class="dt">Event</span> <span class="dt">Colour</span>)
+switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw">do</span>
+
+  bOut1 <span class="ot">&lt;-</span> hold eInput <span class="fu">.</span> leftmost <span class="fu">$</span> [
+      eInput <span class="fu">&lt;$</span> eSwitch1
+    , _      <span class="fu">&lt;$</span> eSwitch2
+    ]
+  <span class="kw">let</span> eOut1 <span class="fu">=</span> switch bOut1
+
+  bOut2 <span class="ot">&lt;-</span> hold never <span class="fu">.</span> leftmost <span class="fu">$</span> [
+      never  <span class="fu">&lt;$</span> eSwitch1
+    , _      <span class="fu">&lt;$</span> eSwitch2
+    ]
+  <span class="kw">let</span> eOut2 <span class="fu">=</span> switch bOut2
+
+  return (eOut1, eOut2)</code></pre></div>
+</section><section id="section-161" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> <span class="dt">ReflexM</span> m
+             <span class="ot">=&gt;</span> <span class="dt">Event</span> ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> <span class="dt">Colour</span>
+             <span class="ot">-&gt;</span> m (<span class="dt">Event</span> <span class="dt">Colour</span>, <span class="dt">Event</span> <span class="dt">Colour</span>)
+switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw">do</span>
+
+  bOut1 <span class="ot">&lt;-</span> hold eInput <span class="fu">.</span> leftmost <span class="fu">$</span> [
+      eInput <span class="fu">&lt;$</span> eSwitch1
+    , never  <span class="fu">&lt;$</span> eSwitch2
+    ]
+  <span class="kw">let</span> eOut1 <span class="fu">=</span> switch bOut1
+
+  bOut2 <span class="ot">&lt;-</span> hold never <span class="fu">.</span> leftmost <span class="fu">$</span> [
+      never  <span class="fu">&lt;$</span> eSwitch1
+    , _      <span class="fu">&lt;$</span> eSwitch2
+    ]
+  <span class="kw">let</span> eOut2 <span class="fu">=</span> switch bOut2
+
+  return (eOut1, eOut2)</code></pre></div>
+</section><section id="section-162" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> <span class="dt">ReflexM</span> m
+             <span class="ot">=&gt;</span> <span class="dt">Event</span> ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> <span class="dt">Colour</span>
+             <span class="ot">-&gt;</span> m (<span class="dt">Event</span> <span class="dt">Colour</span>, <span class="dt">Event</span> <span class="dt">Colour</span>)
+switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw">do</span>
+
+  bOut1 <span class="ot">&lt;-</span> hold eInput <span class="fu">.</span> leftmost <span class="fu">$</span> [
+      eInput <span class="fu">&lt;$</span> eSwitch1
+    , never  <span class="fu">&lt;$</span> eSwitch2
+    ]
+  <span class="kw">let</span> eOut1 <span class="fu">=</span> switch bOut1
+
+  bOut2 <span class="ot">&lt;-</span> hold never <span class="fu">.</span> leftmost <span class="fu">$</span> [
+      never  <span class="fu">&lt;$</span> eSwitch1
+    , eInput <span class="fu">&lt;$</span> eSwitch2
+    ]
+  <span class="kw">let</span> eOut2 <span class="fu">=</span> switch bOut2
+
+  return (eOut1, eOut2)</code></pre></div>
+</section><section id="section-163" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> <span class="dt">ReflexM</span> m
+             <span class="ot">=&gt;</span> <span class="dt">Event</span> () 
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> () 
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> <span class="dt">Colour</span> 
+             <span class="ot">-&gt;</span> m (<span class="dt">Event</span> <span class="dt">Colour</span>, <span class="dt">Event</span> <span class="dt">Colour</span>)
+switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw">do</span>
+
+  bOut1 <span class="ot">&lt;-</span> hold           eInput <span class="fu">.</span> leftmost <span class="fu">$</span> [
+      eInput <span class="fu">&lt;$</span> eSwitch1
+    , never  <span class="fu">&lt;$</span> eSwitch2
+    ]
+  <span class="kw">let</span> eOut1 <span class="fu">=</span> switch bOut1
+
+  bOut2 <span class="ot">&lt;-</span> hold           never <span class="fu">.</span> leftmost <span class="fu">$</span> [
+      never  <span class="fu">&lt;$</span> eSwitch1
+    , eInput <span class="fu">&lt;$</span> eSwitch2
+    ]
+  <span class="kw">let</span> eOut2 <span class="fu">=</span> switch bOut2
+
+  return (eOut1, eOut2)</code></pre></div>
+</section><section id="section-164" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> <span class="dt">ReflexM</span> m
+             <span class="ot">=&gt;</span> <span class="dt">Event</span> () 
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> () 
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> <span class="dt">Colour</span> 
+             <span class="ot">-&gt;</span> m (<span class="dt">Event</span> <span class="dt">Colour</span>, <span class="dt">Event</span> <span class="dt">Colour</span>)
+switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw">do</span>
+
+  bOut1 <span class="ot">&lt;-</span> switchPromptly eInput <span class="fu">.</span> leftmost <span class="fu">$</span> [
+      eInput <span class="fu">&lt;$</span> eSwitch1
+    , never  <span class="fu">&lt;$</span> eSwitch2
+    ]
+  <span class="kw">let</span> eOut1 <span class="fu">=</span> switch bOut1
+
+  bOut2 <span class="ot">&lt;-</span> hold           never <span class="fu">.</span> leftmost <span class="fu">$</span> [
+      never  <span class="fu">&lt;$</span> eSwitch1
+    , eInput <span class="fu">&lt;$</span> eSwitch2
+    ]
+  <span class="kw">let</span> eOut2 <span class="fu">=</span> switch bOut2
+
+  return (eOut1, eOut2)</code></pre></div>
+</section><section id="section-165" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> <span class="dt">ReflexM</span> m
+             <span class="ot">=&gt;</span> <span class="dt">Event</span> () 
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> () 
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> <span class="dt">Colour</span> 
+             <span class="ot">-&gt;</span> m (<span class="dt">Event</span> <span class="dt">Colour</span>, <span class="dt">Event</span> <span class="dt">Colour</span>)
+switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw">do</span>
+
+  eOut1 <span class="ot">&lt;-</span> switchPromptly eInput <span class="fu">.</span> leftmost <span class="fu">$</span> [
+      eInput <span class="fu">&lt;$</span> eSwitch1
+    , never  <span class="fu">&lt;$</span> eSwitch2
+    ]
+  <span class="kw">let</span> eOut1 <span class="fu">=</span> switch bOut1
+
+  bOut2 <span class="ot">&lt;-</span> hold           never <span class="fu">.</span> leftmost <span class="fu">$</span> [
+      never  <span class="fu">&lt;$</span> eSwitch1
+    , eInput <span class="fu">&lt;$</span> eSwitch2
+    ]
+  <span class="kw">let</span> eOut2 <span class="fu">=</span> switch bOut2
+
+  return (eOut1, eOut2)</code></pre></div>
+</section><section id="section-166" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> <span class="dt">ReflexM</span> m
+             <span class="ot">=&gt;</span> <span class="dt">Event</span> () 
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> () 
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> <span class="dt">Colour</span> 
+             <span class="ot">-&gt;</span> m (<span class="dt">Event</span> <span class="dt">Colour</span>, <span class="dt">Event</span> <span class="dt">Colour</span>)
+switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw">do</span>
+
+  eOut1 <span class="ot">&lt;-</span> switchPromptly eInput <span class="fu">.</span> leftmost <span class="fu">$</span> [
+      eInput <span class="fu">&lt;$</span> eSwitch1
+    , never  <span class="fu">&lt;$</span> eSwitch2
+    ]
+
+
+  bOut2 <span class="ot">&lt;-</span> hold           never <span class="fu">.</span> leftmost <span class="fu">$</span> [
+      never  <span class="fu">&lt;$</span> eSwitch1
+    , eInput <span class="fu">&lt;$</span> eSwitch2
+    ]
+  <span class="kw">let</span> eOut2 <span class="fu">=</span> switch bOut2
+
+  return (eOut1, eOut2)</code></pre></div>
+</section><section id="section-167" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> <span class="dt">ReflexM</span> m
+             <span class="ot">=&gt;</span> <span class="dt">Event</span> () 
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> () 
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> <span class="dt">Colour</span> 
+             <span class="ot">-&gt;</span> m (<span class="dt">Event</span> <span class="dt">Colour</span>, <span class="dt">Event</span> <span class="dt">Colour</span>)
+switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw">do</span>
+
+  eOut1 <span class="ot">&lt;-</span> switchPromptly eInput <span class="fu">.</span> leftmost <span class="fu">$</span> [
+      eInput <span class="fu">&lt;$</span> eSwitch1
+    , never  <span class="fu">&lt;$</span> eSwitch2
+    ]
+
+
+  bOut2 <span class="ot">&lt;-</span> switchPromptly never <span class="fu">.</span> leftmost <span class="fu">$</span> [
+      never  <span class="fu">&lt;$</span> eSwitch1
+    , eInput <span class="fu">&lt;$</span> eSwitch2
+    ]
+  <span class="kw">let</span> eOut2 <span class="fu">=</span> switch bOut2
+
+  return (eOut1, eOut2)</code></pre></div>
+</section><section id="section-168" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> <span class="dt">ReflexM</span> m
+             <span class="ot">=&gt;</span> <span class="dt">Event</span> () 
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> () 
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> <span class="dt">Colour</span> 
+             <span class="ot">-&gt;</span> m (<span class="dt">Event</span> <span class="dt">Colour</span>, <span class="dt">Event</span> <span class="dt">Colour</span>)
+switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw">do</span>
+
+  eOut1 <span class="ot">&lt;-</span> switchPromptly eInput <span class="fu">.</span> leftmost <span class="fu">$</span> [
+      eInput <span class="fu">&lt;$</span> eSwitch1
+    , never  <span class="fu">&lt;$</span> eSwitch2
+    ]
+
+
+  eOut2 <span class="ot">&lt;-</span> switchPromptly never <span class="fu">.</span> leftmost <span class="fu">$</span> [
+      never  <span class="fu">&lt;$</span> eSwitch1
+    , eInput <span class="fu">&lt;$</span> eSwitch2
+    ]
+  <span class="kw">let</span> eOut2 <span class="fu">=</span> switch bOut2
+
+  return (eOut1, eOut2)</code></pre></div>
+</section><section id="section-169" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> <span class="dt">ReflexM</span> m
+             <span class="ot">=&gt;</span> <span class="dt">Event</span> () 
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> () 
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> <span class="dt">Colour</span> 
+             <span class="ot">-&gt;</span> m (<span class="dt">Event</span> <span class="dt">Colour</span>, <span class="dt">Event</span> <span class="dt">Colour</span>)
+switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw">do</span>
+
+  eOut1 <span class="ot">&lt;-</span> switchPromptly eInput <span class="fu">.</span> leftmost <span class="fu">$</span> [
+      eInput <span class="fu">&lt;$</span> eSwitch1
+    , never  <span class="fu">&lt;$</span> eSwitch2
+    ]
+
+
+  eOut2 <span class="ot">&lt;-</span> switchPromptly never <span class="fu">.</span> leftmost <span class="fu">$</span> [
+      never  <span class="fu">&lt;$</span> eSwitch1
+    , eInput <span class="fu">&lt;$</span> eSwitch2
+    ]
+
+
+  return (eOut1, eOut2)</code></pre></div>
+</section></section>
+<section><section id="working-with-the-dom" class="titleslide slide level1"><h1>Working with the DOM</h1></section><section id="section-170" class="slide level2">
+<h2></h2>
+<!--
+We layout DOM elements using a monad that is supplied by `reflex-dom`
+
+## 
+
+We'll be introducing some pieces of TodoMVC as we go
+
+##
+-->
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">el ::</span> <span class="dt">ReflexM</span> m
+   <span class="ot">=&gt;</span> <span class="dt">Text</span> 
+   <span class="ot">-&gt;</span> m a 
+   <span class="ot">-&gt;</span> m a</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">text ::</span> <span class="dt">ReflexM</span> m
+     <span class="ot">=&gt;</span> <span class="dt">Text</span> 
+     <span class="ot">-&gt;</span> m ()</code></pre></div>
+</section><section id="section-171" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">el <span class="st">&quot;div&quot;</span> <span class="fu">$</span>
+  text <span class="st">&quot;TODO&quot;</span></code></pre></div>
+<div id="examples-dom-todo" class="demo">
+
+</div>
+<!--
+##
+
+We can use Dynamics to set up the JS to listen for changes and to make them happen, at the elements that need to change
+
+##
+
+Thanks to some internal magic, if you don't use an `Event` from a component then no listeners are set up for that `Event` 
+
+##
+
+The end result is doing the same thing a virtual DOM framework would do, but is eliding the diffs and patches
+
+##
+
+And we have finer grain control of what undergoes rendering changes
+-->
+</section><section id="section-172" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">button ::</span> <span class="dt">ReflexM</span> m
+       <span class="ot">=&gt;</span> <span class="dt">Text</span> 
+       <span class="ot">-&gt;</span> m (<span class="dt">Event</span> ())</code></pre></div>
+</section><section id="section-173" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">ReflexM</span> m
+         <span class="ot">=&gt;</span> <span class="dt">Text</span> 
+         <span class="ot">-&gt;</span> m (<span class="dt">Event</span> ())
+todoItem label <span class="fu">=</span>
+  el <span class="st">&quot;div&quot;</span> <span class="fu">$</span> <span class="kw">do</span>
+    el <span class="st">&quot;div&quot;</span> <span class="fu">$</span> 
+      text label
+    button <span class="st">&quot;Remove&quot;</span></code></pre></div>
+<div id="examples-dom-todoitem-1" class="demo">
+
+</div>
+</section><section id="section-174" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">dynText ::</span> <span class="dt">ReflexM</span> m
+        <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> <span class="dt">Text</span> 
+        <span class="ot">-&gt;</span> m ()</code></pre></div>
+</section><section id="section-175" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">el <span class="st">&quot;div&quot;</span> <span class="fu">$</span> <span class="kw">do</span>
+
+
+
+  eRemove <span class="ot">&lt;-</span> todoItem <span class="st">&quot;TODO&quot;</span>
+
+
+
+
+  return ()</code></pre></div>
+</section><section id="section-176" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">el <span class="st">&quot;div&quot;</span> <span class="fu">$</span> <span class="kw">do</span>
+
+
+
+  eRemove <span class="ot">&lt;-</span> todoItem <span class="st">&quot;TODO&quot;</span>
+
+  dLabel <span class="ot">&lt;-</span> holdDyn <span class="st">&quot;&quot;</span> <span class="fu">$</span> 
+    <span class="st">&quot;Removed:&quot;</span> <span class="fu">&lt;$</span> eRemove
+
+  return ()</code></pre></div>
+</section><section id="section-177" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">el <span class="st">&quot;div&quot;</span> <span class="fu">$</span> <span class="kw">do</span>
+  el <span class="st">&quot;div&quot;</span> <span class="fu">$</span> 
+    dynText dLabel
+
+  eRemove <span class="ot">&lt;-</span> todoItem <span class="st">&quot;TODO&quot;</span>
+
+  dLabel <span class="ot">&lt;-</span> holdDyn <span class="st">&quot;&quot;</span> <span class="fu">$</span> 
+    <span class="st">&quot;Removed:&quot;</span> <span class="fu">&lt;$</span> eRemove
+
+  return ()</code></pre></div>
+</section><section id="section-178" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">el <span class="st">&quot;div&quot;</span> <span class="fu">$</span> <span class="kw">do</span>
+  el <span class="st">&quot;div&quot;</span> <span class="fu">$</span> 
+    dynText dLabel
+
+  eRemove <span class="ot">&lt;-</span> todoItem <span class="st">&quot;TODO&quot;</span>
+
+  dLabel <span class="ot">&lt;-</span> holdDyn <span class="st">&quot;&quot;</span> <span class="fu">$</span> 
+    <span class="st">&quot;Removed:&quot;</span> <span class="fu">&lt;$</span> eRemove
+
+  return ()</code></pre></div>
+<div id="examples-dom-todoitem-2" class="demo">
+
+</div>
+</section><section id="section-179" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">elAttr    ::</span> <span class="dt">ReflexM</span> m
+          <span class="ot">=&gt;</span> <span class="dt">Text</span> 
+          <span class="ot">-&gt;</span>          <span class="dt">Map</span> <span class="dt">Text</span> <span class="dt">Text</span> 
+          <span class="ot">-&gt;</span> m a 
+          <span class="ot">-&gt;</span> m a</code></pre></div>
+</section><section id="section-180" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">elDynAttr ::</span> <span class="dt">ReflexM</span> m
+          <span class="ot">=&gt;</span> <span class="dt">Text</span> 
+          <span class="ot">-&gt;</span> <span class="dt">Dynamic</span> (<span class="dt">Map</span> <span class="dt">Text</span> <span class="dt">Text</span>) 
+          <span class="ot">-&gt;</span> m a 
+          <span class="ot">-&gt;</span> m a</code></pre></div>
+</section><section id="section-181" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">elClass    ::</span> <span class="dt">ReflexM</span> m
+           <span class="ot">=&gt;</span> <span class="dt">Text</span> 
+           <span class="ot">-&gt;</span>         <span class="dt">Text</span> 
+           <span class="ot">-&gt;</span> m a 
+           <span class="ot">-&gt;</span> m a</code></pre></div>
+</section><section id="section-182" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">elDynClass ::</span> <span class="dt">ReflexM</span> m
+           <span class="ot">=&gt;</span> <span class="dt">Text</span> 
+           <span class="ot">-&gt;</span> <span class="dt">Dynamic</span> <span class="dt">Text</span> 
+           <span class="ot">-&gt;</span> m a 
+           <span class="ot">-&gt;</span> m a</code></pre></div>
+</section><section id="section-183" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">ReflexM</span> m
+         <span class="ot">=&gt;</span> <span class="dt">Text</span> 
+         <span class="ot">-&gt;</span> m (<span class="dt">Event</span> ())
+todoItem placeholder <span class="fu">=</span>
+  el      <span class="st">&quot;div&quot;</span>             <span class="fu">$</span> <span class="kw">do</span>
+
+    el         <span class="st">&quot;div&quot;</span>              <span class="fu">$</span>
+      text placeholder
+
+    eRemove <span class="ot">&lt;-</span> button <span class="st">&quot;Remove&quot;</span>
+
+
+
+
+    return eRemove</code></pre></div>
+</section><section id="section-184" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">ReflexM</span> m
+         <span class="ot">=&gt;</span> <span class="dt">Text</span> 
+         <span class="ot">-&gt;</span> m (<span class="dt">Event</span> ())
+todoItem placeholder <span class="fu">=</span>
+  elClass <span class="st">&quot;div&quot;</span>             <span class="fu">$</span> <span class="kw">do</span>
+
+    el         <span class="st">&quot;div&quot;</span>              <span class="fu">$</span>
+      text placeholder
+
+    eRemove <span class="ot">&lt;-</span> button <span class="st">&quot;Remove&quot;</span>
+
+
+
+
+    return eRemove</code></pre></div>
+</section><section id="section-185" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">ReflexM</span> m
+         <span class="ot">=&gt;</span> <span class="dt">Text</span> 
+         <span class="ot">-&gt;</span> m (<span class="dt">Event</span> ())
+todoItem placeholder <span class="fu">=</span>
+  elClass <span class="st">&quot;div&quot;</span> <span class="st">&quot;todo-item&quot;</span> <span class="fu">$</span> <span class="kw">do</span>
+
+    el         <span class="st">&quot;div&quot;</span>              <span class="fu">$</span>
+      text placeholder
+
+    eRemove <span class="ot">&lt;-</span> button <span class="st">&quot;Remove&quot;</span>
+
+
+
+
+    return eRemove</code></pre></div>
+</section><section id="section-186" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">ReflexM</span> m
+         <span class="ot">=&gt;</span> <span class="dt">Text</span> 
+         <span class="ot">-&gt;</span> m (<span class="dt">Event</span> ())
+todoItem placeholder <span class="fu">=</span>
+  elClass <span class="st">&quot;div&quot;</span> <span class="st">&quot;todo-item&quot;</span> <span class="fu">$</span> <span class="kw">do</span>
+
+    el         <span class="st">&quot;div&quot;</span>              <span class="fu">$</span>
+      text placeholder
+
+    eRemove <span class="ot">&lt;-</span> button <span class="st">&quot;Remove&quot;</span>
+
+    dRemoveClass <span class="ot">&lt;-</span> holdDyn <span class="st">&quot;&quot;</span> <span class="fu">$</span>
+      <span class="st">&quot;removed&quot;</span> <span class="fu">&lt;$</span> eRemove
+
+    return eRemove</code></pre></div>
+</section><section id="section-187" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">ReflexM</span> m
+         <span class="ot">=&gt;</span> <span class="dt">Text</span> 
+         <span class="ot">-&gt;</span> m (<span class="dt">Event</span> ())
+todoItem placeholder <span class="fu">=</span>
+  elClass <span class="st">&quot;div&quot;</span> <span class="st">&quot;todo-item&quot;</span> <span class="fu">$</span> <span class="kw">do</span>
+
+    elDynClass <span class="st">&quot;div&quot;</span> dRemoveClass <span class="fu">$</span>
+      text placeholder
+
+    eRemove <span class="ot">&lt;-</span> button <span class="st">&quot;Remove&quot;</span>
+
+    dRemoveClass <span class="ot">&lt;-</span> holdDyn <span class="st">&quot;&quot;</span> <span class="fu">$</span>
+      <span class="st">&quot;removed&quot;</span> <span class="fu">&lt;$</span> eRemove
+
+    return eRemove</code></pre></div>
+</section><section id="section-188" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">ReflexM</span> m
+         <span class="ot">=&gt;</span> <span class="dt">Text</span> 
+         <span class="ot">-&gt;</span> m (<span class="dt">Event</span> ())
+todoItem placeholder <span class="fu">=</span>
+  elClass <span class="st">&quot;div&quot;</span> <span class="st">&quot;todo-item&quot;</span> <span class="fu">$</span> <span class="kw">do</span>
+
+    elDynClass <span class="st">&quot;div&quot;</span> dRemoveClass <span class="fu">$</span>
+      text placeholder
+
+    eRemove <span class="ot">&lt;-</span> button <span class="st">&quot;Remove&quot;</span>
+
+    dRemoveClass <span class="ot">&lt;-</span> holdDyn <span class="st">&quot;&quot;</span> <span class="fu">$</span>
+      <span class="st">&quot;removed&quot;</span> <span class="fu">&lt;$</span> eRemove
+
+    return eRemove</code></pre></div>
+<div id="examples-dom-todoitem-3" class="demo">
+
+</div>
+</section><section id="section-189" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">CheckboxConfig</span> <span class="fu">=</span> 
+  <span class="dt">CheckboxConfig</span> { 
+<span class="ot">      checkboxConfig_setValue   ::</span> <span class="dt">Event</span>   <span class="dt">Bool</span>
+    ,<span class="ot"> checkboxConfig_attributes ::</span> <span class="dt">Dynamic</span> (<span class="dt">Map</span> <span class="dt">Text</span> <span class="dt">Text</span>)
+    }</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">instance</span> <span class="dt">Default</span> <span class="dt">CheckboxConfig</span> <span class="kw">where</span> <span class="fu">...</span></code></pre></div>
+</section><section id="section-190" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">checkbox ::</span> (<span class="fu">...</span>) 
+         <span class="ot">=&gt;</span> <span class="dt">Bool</span> 
+         <span class="ot">-&gt;</span> <span class="dt">CheckboxConfig</span>
+         <span class="ot">-&gt;</span> m <span class="dt">Checkbox</span></code></pre></div>
+</section><section id="section-191" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Checkbox</span> <span class="fu">=</span> 
+  <span class="dt">Checkbox</span> { 
+<span class="ot">     checkbox_value  ::</span> <span class="dt">Dynamic</span> <span class="dt">Bool</span>
+   ,<span class="ot"> checkbox_change ::</span> <span class="dt">Event</span>   <span class="dt">Bool</span>
+   }</code></pre></div>
+</section><section id="section-192" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">TodoItemConfig</span> <span class="fu">=</span>
+  <span class="dt">TodoItemConfig</span> {
+<span class="ot">    todoItemConfig_dText ::</span> <span class="dt">Dynamic</span> <span class="dt">Text</span>
+  }
+
+<span class="kw">data</span> <span class="dt">TodoItem</span> <span class="fu">=</span>
+  <span class="dt">TodoItem</span> {
+<span class="ot">    todoItem_dComplete ::</span> <span class="dt">Dynamic</span> <span class="dt">Bool</span>
+  ,<span class="ot"> todoItem_eRemove   ::</span> <span class="dt">Event</span>   ()
+  }</code></pre></div>
+</section><section id="section-193" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">ReflexM</span> m
+         <span class="ot">=&gt;</span> <span class="dt">TodoItemConfig</span> 
+         <span class="ot">-&gt;</span> m <span class="dt">TodoItem</span>
+todoItem (<span class="dt">TodoItemConfig</span> dText) <span class="fu">=</span>
+  elClass <span class="st">&quot;div&quot;</span> <span class="st">&quot;todo-item&quot;</span> <span class="fu">$</span> <span class="kw">do</span>
+  
+  
+  
+
+    elDynClass <span class="st">&quot;div&quot;</span> dRemoveClass <span class="fu">$</span>
+      dynText dText
+
+    eRemove <span class="ot">&lt;-</span> button <span class="st">&quot;Remove&quot;</span>
+    dRemoveClass <span class="ot">&lt;-</span> holdDyn <span class="st">&quot;&quot;</span> <span class="fu">$</span> 
+      <span class="st">&quot;removed&quot;</span> <span class="fu">&lt;$</span> eRemove
+
+    return <span class="fu">$</span> 
+      <span class="dt">TodoItem</span>           eRemove</code></pre></div>
+</section><section id="section-194" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">ReflexM</span> m
+         <span class="ot">=&gt;</span> <span class="dt">TodoItemConfig</span> 
+         <span class="ot">-&gt;</span> m <span class="dt">TodoItem</span>
+todoItem (<span class="dt">TodoItemConfig</span> dText) <span class="fu">=</span>
+  elClass <span class="st">&quot;div&quot;</span> <span class="st">&quot;todo-item&quot;</span> <span class="fu">$</span> <span class="kw">do</span>
+    cb <span class="ot">&lt;-</span> checkbox <span class="dt">False</span> def
+  
+  
+
+    elDynClass <span class="st">&quot;div&quot;</span> dRemoveClass <span class="fu">$</span>
+      dynText dText
+
+    eRemove <span class="ot">&lt;-</span> button <span class="st">&quot;Remove&quot;</span>
+    dRemoveClass <span class="ot">&lt;-</span> holdDyn <span class="st">&quot;&quot;</span> <span class="fu">$</span> 
+      <span class="st">&quot;removed&quot;</span> <span class="fu">&lt;$</span> eRemove
+
+    return <span class="fu">$</span> 
+      <span class="dt">TodoItem</span>           eRemove</code></pre></div>
+</section><section id="section-195" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">ReflexM</span> m
+         <span class="ot">=&gt;</span> <span class="dt">TodoItemConfig</span> 
+         <span class="ot">-&gt;</span> m <span class="dt">TodoItem</span>
+todoItem (<span class="dt">TodoItemConfig</span> dText) <span class="fu">=</span>
+  elClass <span class="st">&quot;div&quot;</span> <span class="st">&quot;todo-item&quot;</span> <span class="fu">$</span> <span class="kw">do</span>
+    cb <span class="ot">&lt;-</span> checkbox <span class="dt">False</span> def
+    <span class="kw">let</span>
+      dComplete <span class="fu">=</span> cb <span class="fu">^.</span> checkbox_value
+
+    elDynClass <span class="st">&quot;div&quot;</span> dRemoveClass <span class="fu">$</span>
+      dynText dText
+
+    eRemove <span class="ot">&lt;-</span> button <span class="st">&quot;Remove&quot;</span>
+    dRemoveClass <span class="ot">&lt;-</span> holdDyn <span class="st">&quot;&quot;</span> <span class="fu">$</span> 
+      <span class="st">&quot;removed&quot;</span> <span class="fu">&lt;$</span> eRemove
+
+    return <span class="fu">$</span> 
+      <span class="dt">TodoItem</span>           eRemove</code></pre></div>
+</section><section id="section-196" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">ReflexM</span> m
+         <span class="ot">=&gt;</span> <span class="dt">TodoItemConfig</span> 
+         <span class="ot">-&gt;</span> m <span class="dt">TodoItem</span>
+todoItem (<span class="dt">TodoItemConfig</span> dText) <span class="fu">=</span>
+  elClass <span class="st">&quot;div&quot;</span> <span class="st">&quot;todo-item&quot;</span> <span class="fu">$</span> <span class="kw">do</span>
+    cb <span class="ot">&lt;-</span> checkbox <span class="dt">False</span> def
+    <span class="kw">let</span>
+      dComplete <span class="fu">=</span> cb <span class="fu">^.</span> checkbox_value
+
+    elDynClass <span class="st">&quot;div&quot;</span> dRemoveClass <span class="fu">$</span>
+      dynText dText
+
+    eRemove <span class="ot">&lt;-</span> button <span class="st">&quot;Remove&quot;</span>
+    dRemoveClass <span class="ot">&lt;-</span> holdDyn <span class="st">&quot;&quot;</span> <span class="fu">$</span> 
+      <span class="st">&quot;removed&quot;</span> <span class="fu">&lt;$</span> eRemove
+
+    return <span class="fu">$</span> 
+      <span class="dt">TodoItem</span> dComplete eRemove</code></pre></div>
+</section><section id="section-197" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">ReflexM</span> m
+         <span class="ot">=&gt;</span> <span class="dt">TodoItemConfig</span> 
+         <span class="ot">-&gt;</span> m <span class="dt">TodoItem</span>
+todoItem (<span class="dt">TodoItemConfig</span> dText) <span class="fu">=</span>
+  elClass <span class="st">&quot;div&quot;</span> <span class="st">&quot;todo-item&quot;</span> <span class="fu">$</span> <span class="kw">do</span>
+    cb <span class="ot">&lt;-</span> checkbox <span class="dt">False</span> def
+    <span class="kw">let</span>
+      dComplete <span class="fu">=</span> cb <span class="fu">^.</span> checkbox_value
+
+    elDynClass <span class="st">&quot;div&quot;</span> dRemoveClass <span class="fu">$</span>
+      dynText dText
+
+    eRemove <span class="ot">&lt;-</span> button <span class="st">&quot;Remove&quot;</span>
+    dRemoveClass <span class="ot">&lt;-</span> holdDyn <span class="st">&quot;&quot;</span> <span class="fu">$</span> 
+      <span class="st">&quot;removed&quot;</span> <span class="fu">&lt;$</span> eRemove
+
+    return <span class="fu">$</span> 
+      <span class="dt">TodoItem</span> dComplete eRemove</code></pre></div>
+<div id="examples-dom-todoitem-4" class="demo">
+
+</div>
+</section><section id="section-198" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">  <span class="fu">...</span>
+    <span class="kw">let</span>
+      dComplete <span class="fu">=</span> cb <span class="fu">^.</span> checkbox_value
+
+
+
+
+
+
+    elDynClass <span class="st">&quot;div&quot;</span>                    dRemoveClass  <span class="fu">$</span> 
+      dynText dText
+  <span class="fu">...</span></code></pre></div>
+</section><section id="section-199" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">  <span class="fu">...</span>
+    <span class="kw">let</span>
+      dComplete <span class="fu">=</span> cb <span class="fu">^.</span> checkbox_value
+
+      mkCompleteClass <span class="dt">False</span> <span class="fu">=</span> <span class="st">&quot;&quot;</span>
+      mkCompleteClass <span class="dt">True</span>  <span class="fu">=</span> <span class="st">&quot;completed &quot;</span>
+
+
+
+    elDynClass <span class="st">&quot;div&quot;</span>                    dRemoveClass  <span class="fu">$</span> 
+      dynText dText
+  <span class="fu">...</span></code></pre></div>
+</section><section id="section-200" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">  <span class="fu">...</span>
+    <span class="kw">let</span>
+      dComplete <span class="fu">=</span> cb <span class="fu">^.</span> checkbox_value
+
+      mkCompleteClass <span class="dt">False</span> <span class="fu">=</span> <span class="st">&quot;&quot;</span>
+      mkCompleteClass <span class="dt">True</span>  <span class="fu">=</span> <span class="st">&quot;completed &quot;</span>
+
+      dCompleteClass <span class="fu">=</span> mkCompleteClass <span class="fu">&lt;$&gt;</span> dComplete
+
+    elDynClass <span class="st">&quot;div&quot;</span>                    dRemoveClass  <span class="fu">$</span> 
+      dynText dText
+  <span class="fu">...</span></code></pre></div>
+</section><section id="section-201" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">  <span class="fu">...</span>
+    <span class="kw">let</span>
+      dComplete <span class="fu">=</span> cb <span class="fu">^.</span> checkbox_value
+
+      mkCompleteClass <span class="dt">False</span> <span class="fu">=</span> <span class="st">&quot;&quot;</span>
+      mkCompleteClass <span class="dt">True</span>  <span class="fu">=</span> <span class="st">&quot;completed &quot;</span>
+
+      dCompleteClass <span class="fu">=</span> mkCompleteClass <span class="fu">&lt;$&gt;</span> dComplete
+
+    elDynClass <span class="st">&quot;div&quot;</span> (dCompleteClass <span class="fu">&lt;&gt;</span> dRemoveClass) <span class="fu">$</span> 
+      dynText dText
+  <span class="fu">...</span></code></pre></div>
+</section><section id="section-202" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">  <span class="fu">...</span>
+    <span class="kw">let</span>
+      dComplete <span class="fu">=</span> cb <span class="fu">^.</span> checkbox_value
+
+      mkCompleteClass <span class="dt">False</span> <span class="fu">=</span> <span class="st">&quot;&quot;</span>
+      mkCompleteClass <span class="dt">True</span>  <span class="fu">=</span> <span class="st">&quot;completed &quot;</span>
+
+      dCompleteClass <span class="fu">=</span> mkCompleteClass <span class="fu">&lt;$&gt;</span> dComplete
+
+    elDynClass <span class="st">&quot;div&quot;</span> (dCompleteClass <span class="fu">&lt;&gt;</span> dRemoveClass) <span class="fu">$</span> 
+      dynText dText
+  <span class="fu">...</span></code></pre></div>
+<div id="examples-dom-todoitem-5" class="demo">
+
+</div>
+</section><section id="section-203" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">TextInputConfig</span> <span class="fu">=</span> 
+  <span class="dt">TextInputConfig</span> { 
+<span class="ot">      textInputConfig_inputType    ::</span> <span class="dt">Text</span>
+    ,<span class="ot"> textInputConfig_initialValue ::</span> <span class="dt">Text</span>
+    ,<span class="ot"> textInputConfig_setValue     ::</span> <span class="dt">Event</span>  <span class="dt">Text</span>
+    ,<span class="ot"> textInputConfig_attributes   ::</span> 
+        <span class="dt">Dynamic</span> (<span class="dt">Map</span> <span class="dt">Text</span> <span class="dt">Text</span>)
+    }</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">instance</span> <span class="dt">Default</span> <span class="dt">TextInputConfig</span> <span class="kw">where</span> <span class="fu">...</span></code></pre></div>
+</section><section id="section-204" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">textInput ::</span> <span class="dt">ReflexM</span> m
+          <span class="ot">=&gt;</span> <span class="dt">TextInputConfig</span>
+          <span class="ot">-&gt;</span> m <span class="dt">TextInput</span></code></pre></div>
+</section><section id="section-205" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">TextInput</span> <span class="fu">=</span> 
+  <span class="dt">TextInput</span> { 
+<span class="ot">      textInput_value          ::</span> <span class="dt">Dynamic</span> <span class="dt">Text</span>
+    ,<span class="ot"> textInput_input          ::</span> <span class="dt">Event</span> <span class="dt">Text</span>
+    ,<span class="ot"> textInput_keypress       ::</span> <span class="dt">Event</span> <span class="dt">Word</span>
+    ,<span class="ot"> textInput_keydown        ::</span> <span class="dt">Event</span> <span class="dt">Word</span>
+    ,<span class="ot"> textInput_keyup          ::</span> <span class="dt">Event</span> <span class="dt">Word</span>
+    ,<span class="ot"> textInput_hasFocus       ::</span> <span class="dt">Dynamic</span> <span class="dt">Bool</span>
+    ,<span class="ot"> textInput_builderElement ::</span> 
+        <span class="dt">InputElement</span> <span class="dt">EventResult</span> <span class="dt">GhcjsDomSpace</span>
+    }</code></pre></div>
+</section><section id="section-206" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">addItem ::</span> <span class="dt">ReflexM</span> m 
+        <span class="ot">=&gt;</span> m (<span class="dt">Event</span> <span class="dt">Text</span>)
+addItem <span class="fu">=</span> <span class="kw">do</span>
+  ti <span class="ot">&lt;-</span> textInput <span class="fu">$</span>
+    def                                                      
+
+
+
+
+
+
+
+
+
+  </code></pre></div>
+</section><section id="section-207" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">addItem ::</span> <span class="dt">ReflexM</span> m 
+        <span class="ot">=&gt;</span> m (<span class="dt">Event</span> <span class="dt">Text</span>)
+addItem <span class="fu">=</span> <span class="kw">do</span>
+  ti <span class="ot">&lt;-</span> textInput <span class="fu">$</span>
+    def <span class="fu">&amp;</span> textInputConfig_attributes <span class="fu">.~</span>
+            pure (<span class="st">&quot;placeholder&quot;</span> <span class="fu">=:</span> <span class="st">&quot;What shall we do today?&quot;</span>)
+
+
+
+
+
+
+
+
+  </code></pre></div>
+</section><section id="section-208" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">addItem ::</span> <span class="dt">ReflexM</span> m 
+        <span class="ot">=&gt;</span> m (<span class="dt">Event</span> <span class="dt">Text</span>)
+addItem <span class="fu">=</span> <span class="kw">do</span>
+  ti <span class="ot">&lt;-</span> textInput <span class="fu">$</span>
+    def <span class="fu">&amp;</span> textInputConfig_attributes <span class="fu">.~</span>
+            pure (<span class="st">&quot;placeholder&quot;</span> <span class="fu">=:</span> <span class="st">&quot;What shall we do today?&quot;</span>)
+
+
+
+  <span class="kw">let</span>
+    bValue   <span class="fu">=</span> current <span class="fu">$</span> ti <span class="fu">^.</span> textInput_value
+
+
+
+  </code></pre></div>
+</section><section id="section-209" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">addItem ::</span> <span class="dt">ReflexM</span> m 
+        <span class="ot">=&gt;</span> m (<span class="dt">Event</span> <span class="dt">Text</span>)
+addItem <span class="fu">=</span> <span class="kw">do</span>
+  ti <span class="ot">&lt;-</span> textInput <span class="fu">$</span>
+    def <span class="fu">&amp;</span> textInputConfig_attributes <span class="fu">.~</span>
+            pure (<span class="st">&quot;placeholder&quot;</span> <span class="fu">=:</span> <span class="st">&quot;What shall we do today?&quot;</span>)
+
+
+
+  <span class="kw">let</span>
+    bValue   <span class="fu">=</span> current <span class="fu">$</span> ti <span class="fu">^.</span> textInput_value
+    eAtEnter <span class="fu">=</span> tag bValue (getKey ti <span class="dt">Enter</span>)
+
+
+  </code></pre></div>
+</section><section id="section-210" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">addItem ::</span> <span class="dt">ReflexM</span> m 
+        <span class="ot">=&gt;</span> m (<span class="dt">Event</span> <span class="dt">Text</span>)
+addItem <span class="fu">=</span> <span class="kw">do</span>
+  ti <span class="ot">&lt;-</span> textInput <span class="fu">$</span>
+    def <span class="fu">&amp;</span> textInputConfig_attributes <span class="fu">.~</span>
+            pure (<span class="st">&quot;placeholder&quot;</span> <span class="fu">=:</span> <span class="st">&quot;What shall we do today?&quot;</span>)
+
+
+
+  <span class="kw">let</span>
+    bValue   <span class="fu">=</span> current <span class="fu">$</span> ti <span class="fu">^.</span> textInput_value
+    eAtEnter <span class="fu">=</span> tag bValue (getKey ti <span class="dt">Enter</span>)
+    eDone    <span class="fu">=</span> ffilter (not <span class="fu">.</span> Text.null) eAtEnter
+
+  </code></pre></div>
+</section><section id="section-211" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">addItem ::</span> <span class="dt">ReflexM</span> m 
+        <span class="ot">=&gt;</span> m (<span class="dt">Event</span> <span class="dt">Text</span>)
+addItem <span class="fu">=</span> <span class="kw">do</span>
+  ti <span class="ot">&lt;-</span> textInput <span class="fu">$</span>
+    def <span class="fu">&amp;</span> textInputConfig_attributes <span class="fu">.~</span>
+            pure (<span class="st">&quot;placeholder&quot;</span> <span class="fu">=:</span> <span class="st">&quot;What shall we do today?&quot;</span>)
+
+
+
+  <span class="kw">let</span>
+    bValue   <span class="fu">=</span> current <span class="fu">$</span> ti <span class="fu">^.</span> textInput_value
+    eAtEnter <span class="fu">=</span> tag bValue (getKey ti <span class="dt">Enter</span>)
+    eDone    <span class="fu">=</span> ffilter (not <span class="fu">.</span> Text.null) eAtEnter
+
+  return eDone</code></pre></div>
+</section><section id="section-212" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">addItem ::</span> <span class="dt">ReflexM</span> m 
+        <span class="ot">=&gt;</span> m (<span class="dt">Event</span> <span class="dt">Text</span>)
+addItem <span class="fu">=</span> <span class="kw">do</span>
+  ti <span class="ot">&lt;-</span> textInput <span class="fu">$</span>
+    def <span class="fu">&amp;</span> textInputConfig_attributes <span class="fu">.~</span>
+            pure (<span class="st">&quot;placeholder&quot;</span> <span class="fu">=:</span> <span class="st">&quot;What shall we do today?&quot;</span>)
+        <span class="fu">&amp;</span> textInputConfig_setValue <span class="fu">.~</span>
+            (<span class="st">&quot;&quot;</span> <span class="fu">&lt;$</span> eDone)
+
+  <span class="kw">let</span>
+    bValue   <span class="fu">=</span> current <span class="fu">$</span> ti <span class="fu">^.</span> textInput_value
+    eAtEnter <span class="fu">=</span> tag bValue (getKey ti <span class="dt">Enter</span>)
+    eDone    <span class="fu">=</span> ffilter (not <span class="fu">.</span> Text.null) eAtEnter
+
+  return eDone</code></pre></div>
+</section><section id="section-213" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">addItem ::</span> <span class="dt">ReflexM</span> m 
+        <span class="ot">=&gt;</span> m (<span class="dt">Event</span> <span class="dt">Text</span>)
+addItem <span class="fu">=</span> <span class="kw">do</span>
+  ti <span class="ot">&lt;-</span> textInput <span class="fu">$</span>
+    def <span class="fu">&amp;</span> textInputConfig_attributes <span class="fu">.~</span>
+            pure (<span class="st">&quot;placeholder&quot;</span> <span class="fu">=:</span> <span class="st">&quot;What shall we do today?&quot;</span>)
+        <span class="fu">&amp;</span> textInputConfig_setValue <span class="fu">.~</span>
+            (<span class="st">&quot;&quot;</span> <span class="fu">&lt;$</span> eDone)
+
+  <span class="kw">let</span>
+    bValue   <span class="fu">=</span> current <span class="fu">$</span> ti <span class="fu">^.</span> textInput_value
+    eAtEnter <span class="fu">=</span> tag bValue (getKey ti <span class="dt">Enter</span>)
+    eDone    <span class="fu">=</span> ffilter (not <span class="fu">.</span> Text.null) eAtEnter
+
+  return eDone</code></pre></div>
+<div id="examples-dom-todoitem-6" class="demo">
+
+</div>
+</section></section>
+<section><section id="switching-widgets" class="titleslide slide level1"><h1>Switching widgets</h1></section><section id="section-214" class="slide level2">
+<h2></h2>
+<p>You often have a choice between hiding widgets or switching them</p>
+</section><section id="section-215" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">textWidget   ::</span> <span class="dt">ReflexM</span> m 
+             <span class="ot">=&gt;</span> m (<span class="dt">Event</span> <span class="dt">Text</span>)</code></pre></div>
+<div id="examples-switch-demo-text" class="demo">
+
+</div>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">buttonWidget ::</span> <span class="dt">ReflexM</span> m 
+             <span class="ot">=&gt;</span> m (<span class="dt">Event</span> <span class="dt">Text</span>)</code></pre></div>
+<div id="examples-switch-demo-button" class="demo">
+
+</div>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">tickWidget   ::</span> <span class="dt">ReflexM</span> m 
+             <span class="ot">=&gt;</span> m (<span class="dt">Event</span> <span class="dt">Text</span>)</code></pre></div>
+<div id="examples-switch-demo-tick" class="demo">
+
+</div>
+</section><section id="section-216" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">  eSwitch <span class="ot">&lt;-</span> el <span class="st">&quot;div&quot;</span> <span class="fu">$</span>
+    button <span class="st">&quot;Switch&quot;</span>
+
+  dToggle <span class="ot">&lt;-</span> toggle <span class="dt">True</span> eSwitch
+
+  <span class="kw">let</span> 
+    dNotToggle <span class="fu">=</span> not <span class="fu">&lt;$&gt;</span> dToggle</code></pre></div>
+</section><section id="section-217" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">  <span class="kw">let</span>
+    mkHidden <span class="dt">False</span> <span class="fu">=</span> <span class="st">&quot;hide&quot;</span>
+    mkHidden <span class="dt">True</span>  <span class="fu">=</span> <span class="st">&quot;&quot;</span>
+
+    dHide1 <span class="fu">=</span> mkHidden <span class="fu">&lt;$&gt;</span> dToggle
+    dHide2 <span class="fu">=</span> mkHidden <span class="fu">&lt;$&gt;</span> dNotToggle
+
+
+
+
+
+
+
+
+
+
+
+
+  </code></pre></div>
+</section><section id="section-218" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">  <span class="kw">let</span>
+    mkHidden <span class="dt">False</span> <span class="fu">=</span> <span class="st">&quot;hide&quot;</span>
+    mkHidden <span class="dt">True</span>  <span class="fu">=</span> <span class="st">&quot;&quot;</span>
+
+    dHide1 <span class="fu">=</span> mkHidden <span class="fu">&lt;$&gt;</span> dToggle
+    dHide2 <span class="fu">=</span> mkHidden <span class="fu">&lt;$&gt;</span> dNotToggle
+
+  eText1 <span class="ot">&lt;-</span> elDynClass <span class="st">&quot;div&quot;</span> dHide1 <span class="fu">$</span>
+    textWidget
+
+  eText2 <span class="ot">&lt;-</span> elDynClass <span class="st">&quot;div&quot;</span> dHide2 <span class="fu">$</span>
+    buttonWidget
+
+
+
+
+
+
+  </code></pre></div>
+</section><section id="section-219" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">  <span class="kw">let</span>
+    mkHidden <span class="dt">False</span> <span class="fu">=</span> <span class="st">&quot;hide&quot;</span>
+    mkHidden <span class="dt">True</span>  <span class="fu">=</span> <span class="st">&quot;&quot;</span>
+
+    dHide1 <span class="fu">=</span> mkHidden <span class="fu">&lt;$&gt;</span> dToggle
+    dHide2 <span class="fu">=</span> mkHidden <span class="fu">&lt;$&gt;</span> dNotToggle
+
+  eText1 <span class="ot">&lt;-</span> elDynClass <span class="st">&quot;div&quot;</span> dHide1 <span class="fu">$</span>
+    textWidget
+
+  eText2 <span class="ot">&lt;-</span> elDynClass <span class="st">&quot;div&quot;</span> dHide2 <span class="fu">$</span>
+    buttonWidget
+
+  <span class="kw">let</span> 
+    eText <span class="fu">=</span> leftmost [
+        gate (current dToggle   ) eText1
+      , gate (current dNotToggle) eText2
+
+      ]</code></pre></div>
+</section><section id="section-220" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">  <span class="kw">let</span>
+    mkHidden <span class="dt">False</span> <span class="fu">=</span> <span class="st">&quot;hide&quot;</span>
+    mkHidden <span class="dt">True</span>  <span class="fu">=</span> <span class="st">&quot;&quot;</span>
+
+    dHide1 <span class="fu">=</span> mkHidden <span class="fu">&lt;$&gt;</span> dToggle
+    dHide2 <span class="fu">=</span> mkHidden <span class="fu">&lt;$&gt;</span> dNotToggle
+
+  eText1 <span class="ot">&lt;-</span> elDynClass <span class="st">&quot;div&quot;</span> dHide1 <span class="fu">$</span>
+    textWidget
+
+  eText2 <span class="ot">&lt;-</span> elDynClass <span class="st">&quot;div&quot;</span> dHide2 <span class="fu">$</span>
+    buttonWidget
+
+  <span class="kw">let</span> 
+    eText <span class="fu">=</span> leftmost [
+        gate (current dToggle   ) eText1
+      , gate (current dNotToggle) eText2
+      , <span class="st">&quot;&quot;</span> <span class="fu">&lt;$</span> eSwitch
+      ]</code></pre></div>
+</section><section id="section-221" class="slide level2">
+<h2></h2>
+<div id="examples-switch-hide-button" class="demo">
+
+</div>
+</section><section id="section-222" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">widgetHold ::</span> <span class="dt">ReflexM</span> m
+           <span class="ot">=&gt;</span>         m          a 
+           <span class="ot">-&gt;</span> <span class="dt">Event</span>  (m          a) 
+           <span class="ot">-&gt;</span>         m (<span class="dt">Dynamic</span> a)</code></pre></div>
+</section><section id="section-223" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">  <span class="kw">let</span>
+    eToggle <span class="fu">=</span> updated     dToggle
+    eShow1  <span class="fu">=</span> ffilter id  eToggle
+    eShow2  <span class="fu">=</span> ffilter not eToggle
+
+
+
+
+
+
+
+
+
+
+  </code></pre></div>
+</section><section id="section-224" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">  <span class="kw">let</span>
+    eToggle <span class="fu">=</span> updated     dToggle
+    eShow1  <span class="fu">=</span> ffilter id  eToggle
+    eShow2  <span class="fu">=</span> ffilter not eToggle
+
+  deText <span class="ot">&lt;-</span> widgetHold textWidget <span class="fu">.</span> leftmost <span class="fu">$</span> [
+      textWidget   <span class="fu">&lt;$</span> eShow1
+    , buttonWidget <span class="fu">&lt;$</span> eShow2
+    ]
+
+
+
+
+
+  </code></pre></div>
+</section><section id="section-225" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">  <span class="kw">let</span>
+    eToggle <span class="fu">=</span> updated     dToggle
+    eShow1  <span class="fu">=</span> ffilter id  eToggle
+    eShow2  <span class="fu">=</span> ffilter not eToggle
+
+  deText <span class="ot">&lt;-</span> widgetHold textWidget <span class="fu">.</span> leftmost <span class="fu">$</span> [
+      textWidget   <span class="fu">&lt;$</span> eShow1
+    , buttonWidget <span class="fu">&lt;$</span> eShow2
+    ]
+
+  <span class="kw">let</span>
+    eText <span class="fu">=</span> 
+        switch (current deText)
+        
+  </code></pre></div>
+</section><section id="section-226" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">  <span class="kw">let</span>
+    eToggle <span class="fu">=</span> updated     dToggle
+    eShow1  <span class="fu">=</span> ffilter id  eToggle
+    eShow2  <span class="fu">=</span> ffilter not eToggle
+
+  deText <span class="ot">&lt;-</span> widgetHold textWidget <span class="fu">.</span> leftmost <span class="fu">$</span> [
+      textWidget   <span class="fu">&lt;$</span> eShow1
+    , buttonWidget <span class="fu">&lt;$</span> eShow2
+    ]
+
+  <span class="kw">let</span>
+    eText <span class="fu">=</span> leftmost [
+        switch (current deText)
+      , <span class="st">&quot;&quot;</span> <span class="fu">&lt;$</span> eSwitch
+      ]</code></pre></div>
+</section><section id="section-227" class="slide level2">
+<h2></h2>
+<div id="examples-switch-hold-button" class="demo">
+
+</div>
+</section><section id="section-228" class="slide level2">
+<h2></h2>
+<p>It becomes clearer why you would want this when we replace <code>buttonWidget</code> with <code>tickWidget</code></p>
+</section><section id="with-hiding" class="slide level2">
+<h2>With hiding</h2>
+<div id="examples-switch-hide-tick" class="demo">
+
+</div>
+</section><section id="with-widgethold" class="slide level2">
+<h2>With <code>widgetHold</code></h2>
+<div id="examples-switch-hold-tick" class="demo">
+
+</div>
+</section></section>
+<section><section id="collections" class="titleslide slide level1"><h1>Collections</h1></section><section id="section-229" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">list 
+<span class="ot">  ::</span>    <span class="dt">Dynamic</span> (<span class="dt">Map</span> k v       )
+  <span class="ot">-&gt;</span>   (<span class="dt">Dynamic</span>        v <span class="ot">-&gt;</span> m a) 
+  <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> (<span class="dt">Map</span> k        a))</code></pre></div>
+</section><section id="section-230" class="slide level2">
+<h2></h2>
+<div id="examples-list" class="demo">
+
+</div>
+</section><section id="section-231" class="slide level2">
+<h2></h2>
+<p>There are going to be some common elements in how we approach this</p>
+</section><section id="section-232" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">  elClass <span class="st">&quot;div&quot;</span> <span class="st">&quot;todo-list&quot;</span> <span class="fu">$</span> <span class="kw">do</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </code></pre></div>
+</section><section id="section-233" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">  elClass <span class="st">&quot;div&quot;</span> <span class="st">&quot;todo-list&quot;</span> <span class="fu">$</span> <span class="kw">do</span>
+    eAdd   <span class="ot">&lt;-</span> addItem
+    dCount <span class="ot">&lt;-</span> count eAdd
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </code></pre></div>
+</section><section id="section-234" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">  elClass <span class="st">&quot;div&quot;</span> <span class="st">&quot;todo-list&quot;</span> <span class="fu">$</span> <span class="kw">do</span>
+    eAdd   <span class="ot">&lt;-</span> addItem
+    dCount <span class="ot">&lt;-</span> count eAdd
+
+    <span class="co">-- dModel :: Dynamic (Map Int ?)</span>
+    dModel <span class="ot">&lt;-</span> foldDyn (<span class="fu">$</span>) Map.empty <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+        attachWith Map.insert (current dCount) eAdd
+      , removeKeys <span class="fu">&lt;$&gt;</span> eRemoves <span class="co">-- ?</span>
+      ]
+
+
+
+
+
+
+
+
+
+
+
+  </code></pre></div>
+</section><section id="section-235" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">  elClass <span class="st">&quot;div&quot;</span> <span class="st">&quot;todo-list&quot;</span> <span class="fu">$</span> <span class="kw">do</span>
+    eAdd   <span class="ot">&lt;-</span> addItem
+    dCount <span class="ot">&lt;-</span> count eAdd
+
+    <span class="co">-- dModel :: Dynamic (Map Int ?)</span>
+    dModel <span class="ot">&lt;-</span> foldDyn (<span class="fu">$</span>) Map.empty <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+        attachWith Map.insert (current dCount) eAdd
+      , removeKeys <span class="fu">&lt;$&gt;</span> eRemoves <span class="co">-- ?</span>
+      ]
+
+    dmList <span class="ot">&lt;-</span> el <span class="st">&quot;ul&quot;</span> <span class="fu">.</span> list dModel <span class="fu">$</span> \dv <span class="ot">-&gt;</span>
+      todoItem eMarkAllComplete eClearComplete dv <span class="co">-- ?</span>
+
+
+
+
+
+
+
+
+  </code></pre></div>
+</section><section id="section-236" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">  elClass <span class="st">&quot;div&quot;</span> <span class="st">&quot;todo-list&quot;</span> <span class="fu">$</span> <span class="kw">do</span>
+    eAdd   <span class="ot">&lt;-</span> addItem
+    dCount <span class="ot">&lt;-</span> count eAdd
+
+    <span class="co">-- dModel :: Dynamic (Map Int ?)</span>
+    dModel <span class="ot">&lt;-</span> foldDyn (<span class="fu">$</span>) Map.empty <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+        attachWith Map.insert (current dCount) eAdd
+      , removeKeys <span class="fu">&lt;$&gt;</span> eRemoves <span class="co">-- ?</span>
+      ]
+
+    dmList <span class="ot">&lt;-</span> el <span class="st">&quot;ul&quot;</span> <span class="fu">.</span> list dModel <span class="fu">$</span> \dv <span class="ot">-&gt;</span>
+      todoItem eMarkAllComplete eClearComplete dv <span class="co">-- ?</span>
+
+    <span class="kw">let</span>
+      dAllComplete <span class="fu">=</span> fmap and dmCompletes <span class="co">-- ?</span>
+      dAnyComplete <span class="fu">=</span> fmap or  dmCompletes <span class="co">-- ?</span>
+
+
+
+
+  </code></pre></div>
+</section><section id="section-237" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">  elClass <span class="st">&quot;div&quot;</span> <span class="st">&quot;todo-list&quot;</span> <span class="fu">$</span> <span class="kw">do</span>
+    eAdd   <span class="ot">&lt;-</span> addItem
+    dCount <span class="ot">&lt;-</span> count eAdd
+
+    <span class="co">-- dModel :: Dynamic (Map Int ?)</span>
+    dModel <span class="ot">&lt;-</span> foldDyn (<span class="fu">$</span>) Map.empty <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+        attachWith Map.insert (current dCount) eAdd
+      , removeKeys <span class="fu">&lt;$&gt;</span> eRemoves <span class="co">-- ?</span>
+      ]
+
+    dmList <span class="ot">&lt;-</span> el <span class="st">&quot;ul&quot;</span> <span class="fu">.</span> list dModel <span class="fu">$</span> \dv <span class="ot">-&gt;</span>
+      todoItem eMarkAllComplete eClearComplete dv <span class="co">-- ?</span>
+
+    <span class="kw">let</span>
+      dAllComplete <span class="fu">=</span> fmap and dmCompletes <span class="co">-- ?</span>
+      dAnyComplete <span class="fu">=</span> fmap or  dmCompletes <span class="co">-- ?</span>
+
+    eMarkAllComplete <span class="ot">&lt;-</span> markAllComplete dAllComplete
+    eClearComplete   <span class="ot">&lt;-</span> clearComplete   dAnyComplete
+
+  </code></pre></div>
+</section><section id="section-238" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">  elClass <span class="st">&quot;div&quot;</span> <span class="st">&quot;todo-list&quot;</span> <span class="fu">$</span> <span class="kw">do</span>
+    eAdd   <span class="ot">&lt;-</span> addItem
+    dCount <span class="ot">&lt;-</span> count eAdd
+
+    <span class="co">-- dModel :: Dynamic (Map Int ?)</span>
+    dModel <span class="ot">&lt;-</span> foldDyn (<span class="fu">$</span>) Map.empty <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+        attachWith Map.insert (current dCount) eAdd
+      , removeKeys <span class="fu">&lt;$&gt;</span> eRemoves <span class="co">-- ?</span>
+      ]
+
+    dmList <span class="ot">&lt;-</span> el <span class="st">&quot;ul&quot;</span> <span class="fu">.</span> list dModel <span class="fu">$</span> \dv <span class="ot">-&gt;</span>
+      todoItem eMarkAllComplete eClearComplete dv <span class="co">-- ?</span>
+
+    <span class="kw">let</span>
+      dAllComplete <span class="fu">=</span> fmap and dmCompletes <span class="co">-- ?</span>
+      dAnyComplete <span class="fu">=</span> fmap or  dmCompletes <span class="co">-- ?</span>
+
+    eMarkAllComplete <span class="ot">&lt;-</span> markAllComplete dAllComplete
+    eClearComplete   <span class="ot">&lt;-</span> clearComplete   dAnyComplete
+
+    return ()</code></pre></div>
+</section><section id="section-239" class="slide level2">
+<h2></h2>
+<p>There are two ways we can fill in the details</p>
+</section><section id="section-240" class="slide level2">
+<h2></h2>
+<p>Option 1: Model all the things</p>
+</section><section id="section-241" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">TodoItem</span> <span class="fu">=</span>
+  <span class="dt">TodoItem</span> {
+<span class="ot">    itemComplete ::</span> <span class="dt">Bool</span>
+  ,<span class="ot"> itemText     ::</span> <span class="dt">Text</span>
+  }</code></pre></div>
+</section><section id="section-242" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">ReflexM</span> m 
+         <span class="ot">=&gt;</span> <span class="dt">Event</span> <span class="dt">Bool</span> 
+         <span class="ot">-&gt;</span> <span class="dt">Event</span> () 
+         <span class="ot">-&gt;</span> <span class="dt">Dynamic</span> <span class="dt">TodoItem</span> 
+         <span class="ot">-&gt;</span> m (<span class="dt">Event</span> (<span class="dt">TodoItem</span> <span class="ot">-&gt;</span> <span class="dt">TodoItem</span>), <span class="dt">Event</span> ())</code></pre></div>
+</section><section id="section-243" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoList ::</span> <span class="dt">ReflexM</span> m 
+         <span class="ot">=&gt;</span> m ()
+todoList <span class="fu">=</span> 
+    <span class="fu">...</span> <span class="co">-- dModel :: Dynamic (Map Int TodoItem)</span>
+
+
+
+
+
+
+
+
+
+     
+     
+     
+     
+      
+      
+      
+    <span class="fu">...</span></code></pre></div>
+</section><section id="section-244" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoList ::</span> <span class="dt">ReflexM</span> m 
+         <span class="ot">=&gt;</span> m ()
+todoList <span class="fu">=</span> 
+    <span class="fu">...</span> <span class="co">-- dModel :: Dynamic (Map Int TodoItem)</span>
+    dModel <span class="ot">&lt;-</span> foldDyn (<span class="fu">$</span>) Map.empty <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+        attachWith Map.insert (current dCount) eAdd&#39;
+        
+        
+      ]
+
+
+
+
+     
+     
+     
+     
+      
+      
+      
+    <span class="fu">...</span></code></pre></div>
+</section><section id="section-245" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoList ::</span> <span class="dt">ReflexM</span> m 
+         <span class="ot">=&gt;</span> m ()
+todoList <span class="fu">=</span> 
+    <span class="fu">...</span> <span class="co">-- dModel :: Dynamic (Map Int TodoItem)</span>
+    dModel <span class="ot">&lt;-</span> foldDyn (<span class="fu">$</span>) Map.empty <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+        attachWith Map.insert (current dCount) eAdd&#39;
+        
+        
+      ]
+
+    dmList <span class="ot">&lt;-</span> el <span class="st">&quot;ul&quot;</span> <span class="fu">.</span> list dModel <span class="fu">$</span> \dv <span class="ot">-&gt;</span>
+      todoItem eMarkAllComplete eClearComplete dv
+
+     
+     
+     
+     
+      
+      
+      
+    <span class="fu">...</span></code></pre></div>
+</section><section id="section-246" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoList ::</span> <span class="dt">ReflexM</span> m 
+         <span class="ot">=&gt;</span> m ()
+todoList <span class="fu">=</span> 
+    <span class="fu">...</span> <span class="co">-- dModel :: Dynamic (Map Int TodoItem)</span>
+    dModel <span class="ot">&lt;-</span> foldDyn (<span class="fu">$</span>) Map.empty <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+        attachWith Map.insert (current dCount) eAdd&#39;
+        
+        
+      ]
+
+    dmList <span class="ot">&lt;-</span> el <span class="st">&quot;ul&quot;</span> <span class="fu">.</span> list dModel <span class="fu">$</span> \dv <span class="ot">-&gt;</span>
+      todoItem eMarkAllComplete eClearComplete dv
+
+    <span class="kw">let</span>
+      eChanges <span class="fu">=</span> combineEvents fst dmList
+      eRemoves <span class="fu">=</span> combineEvents snd dmList
+      
+      
+      
+      
+    <span class="fu">...</span></code></pre></div>
+</section><section id="section-247" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoList ::</span> <span class="dt">ReflexM</span> m 
+         <span class="ot">=&gt;</span> m ()
+todoList <span class="fu">=</span> 
+    <span class="fu">...</span> <span class="co">-- dModel :: Dynamic (Map Int TodoItem)</span>
+    dModel <span class="ot">&lt;-</span> foldDyn (<span class="fu">$</span>) Map.empty <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+        attachWith Map.insert (current dCount) eAdd&#39;
+      , updateKeys <span class="fu">&lt;$&gt;</span> eChanges
+      , removeKeys <span class="fu">&lt;$&gt;</span> eRemoves
+      ]
+
+    dmList <span class="ot">&lt;-</span> el <span class="st">&quot;ul&quot;</span> <span class="fu">.</span> list dModel <span class="fu">$</span> \dv <span class="ot">-&gt;</span>
+      todoItem eMarkAllComplete eClearComplete dv
+
+    <span class="kw">let</span>
+      eChanges <span class="fu">=</span> combineEvents fst dmList
+      eRemoves <span class="fu">=</span> combineEvents snd dmList
+      
+      
+      
+      
+    <span class="fu">...</span></code></pre></div>
+</section><section id="section-248" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoList ::</span> <span class="dt">ReflexM</span> m 
+         <span class="ot">=&gt;</span> m ()
+todoList <span class="fu">=</span> 
+    <span class="fu">...</span> <span class="co">-- dModel :: Dynamic (Map Int TodoItem)</span>
+    dModel <span class="ot">&lt;-</span> foldDyn (<span class="fu">$</span>) Map.empty <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+        attachWith Map.insert (current dCount) eAdd&#39;
+      , updateKeys <span class="fu">&lt;$&gt;</span> eChanges
+      , removeKeys <span class="fu">&lt;$&gt;</span> eRemoves
+      ]
+
+    dmList <span class="ot">&lt;-</span> el <span class="st">&quot;ul&quot;</span> <span class="fu">.</span> list dModel <span class="fu">$</span> \dv <span class="ot">-&gt;</span>
+      todoItem eMarkAllComplete eClearComplete dv
+
+    <span class="kw">let</span>
+      eChanges <span class="fu">=</span> combineEvents fst dmList
+      eRemoves <span class="fu">=</span> combineEvents snd dmList
+
+      dmCompletes  <span class="fu">=</span> fmap itemComplete dModel
+      dAllComplete <span class="fu">=</span> fmap and          dmCompletes
+      dAnyComplete <span class="fu">=</span> fmap or           dmCompletes
+    <span class="fu">...</span></code></pre></div>
+</section><section id="section-249" class="slide level2">
+<h2></h2>
+<p>That's fine if something else in our program needs access to the model</p>
+</section><section id="section-250" class="slide level2">
+<h2></h2>
+<p>If that's not the case, we're exposing and tracking a lot of state that we're not going to use</p>
+</section><section id="section-251" class="slide level2">
+<h2></h2>
+<p>Option 2: internalize as much state as we can</p>
+</section><section id="section-252" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">ReflexM</span> m 
+         <span class="ot">=&gt;</span> <span class="dt">Event</span> <span class="dt">Bool</span> 
+         <span class="ot">-&gt;</span> <span class="dt">Event</span> () 
+         <span class="ot">-&gt;</span> <span class="dt">Dynamic</span> <span class="dt">Text</span> 
+         <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> <span class="dt">Bool</span>, <span class="dt">Event</span> ())</code></pre></div>
+</section><section id="section-253" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoList ::</span> <span class="dt">ReflexM</span> m 
+         <span class="ot">=&gt;</span> m ()
+todoList <span class="fu">=</span> 
+    <span class="fu">...</span> <span class="co">-- dModel :: Dynamic (Map Int Text)</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="fu">...</span></code></pre></div>
+</section><section id="section-254" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoList ::</span> <span class="dt">ReflexM</span> m 
+         <span class="ot">=&gt;</span> m ()
+todoList <span class="fu">=</span> 
+    <span class="fu">...</span> <span class="co">-- dModel :: Dynamic (Map Int Text)</span>
+    dModel <span class="ot">&lt;-</span> foldDyn (<span class="fu">$</span>) Map.empty <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+        attachWith Map.insert (current dCount) eAdd
+
+      ]
+
+
+
+
+
+
+
+
+
+
+    <span class="fu">...</span></code></pre></div>
+</section><section id="section-255" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoList ::</span> <span class="dt">ReflexM</span> m 
+         <span class="ot">=&gt;</span> m ()
+todoList <span class="fu">=</span> 
+    <span class="fu">...</span> <span class="co">-- dModel :: Dynamic (Map Int Text)</span>
+    dModel <span class="ot">&lt;-</span> foldDyn (<span class="fu">$</span>) Map.empty <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+        attachWith Map.insert (current dCount) eAdd
+
+      ]
+
+    dmList <span class="ot">&lt;-</span> el <span class="st">&quot;ul&quot;</span> <span class="fu">.</span> list dModel <span class="fu">$</span> \dv <span class="ot">-&gt;</span>
+      todoItem eMarkAllComplete eClearComplete dv
+
+
+
+
+
+
+
+    <span class="fu">...</span></code></pre></div>
+</section><section id="section-256" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoList ::</span> <span class="dt">ReflexM</span> m 
+         <span class="ot">=&gt;</span> m ()
+todoList <span class="fu">=</span> 
+    <span class="fu">...</span> <span class="co">-- dModel :: Dynamic (Map Int Text)</span>
+    dModel <span class="ot">&lt;-</span> foldDyn (<span class="fu">$</span>) Map.empty <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+        attachWith Map.insert (current dCount) eAdd
+
+      ]
+
+    dmList <span class="ot">&lt;-</span> el <span class="st">&quot;ul&quot;</span> <span class="fu">.</span> list dModel <span class="fu">$</span> \dv <span class="ot">-&gt;</span>
+      todoItem eMarkAllComplete eClearComplete dv
+
+    <span class="kw">let</span>
+      dmCompletes <span class="fu">=</span> combineDynamic fst dmList
+      eRemoves    <span class="fu">=</span> combineEvent   snd dmList
+
+
+
+    <span class="fu">...</span></code></pre></div>
+</section><section id="section-257" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoList ::</span> <span class="dt">ReflexM</span> m 
+         <span class="ot">=&gt;</span> m ()
+todoList <span class="fu">=</span> 
+    <span class="fu">...</span> <span class="co">-- dModel :: Dynamic (Map Int Text)</span>
+    dModel <span class="ot">&lt;-</span> foldDyn (<span class="fu">$</span>) Map.empty <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+        attachWith Map.insert (current dCount) eAdd
+      , removeKeys <span class="fu">&lt;$&gt;</span> eRemoves
+      ]
+
+    dmList <span class="ot">&lt;-</span> el <span class="st">&quot;ul&quot;</span> <span class="fu">.</span> list dModel <span class="fu">$</span> \dv <span class="ot">-&gt;</span>
+      todoItem eMarkAllComplete eClearComplete dv
+
+    <span class="kw">let</span>
+      dmCompletes <span class="fu">=</span> combineDynamic fst dmList
+      eRemoves    <span class="fu">=</span> combineEvent   snd dmList
+
+
+
+    <span class="fu">...</span></code></pre></div>
+</section><section id="section-258" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoList ::</span> <span class="dt">ReflexM</span> m 
+         <span class="ot">=&gt;</span> m ()
+todoList <span class="fu">=</span> 
+    <span class="fu">...</span> <span class="co">-- dModel :: Dynamic (Map Int Text)</span>
+    dModel <span class="ot">&lt;-</span> foldDyn (<span class="fu">$</span>) Map.empty <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
+        attachWith Map.insert (current dCount) eAdd
+      , removeKeys <span class="fu">&lt;$&gt;</span> eRemoves
+      ]
+
+    dmList <span class="ot">&lt;-</span> el <span class="st">&quot;ul&quot;</span> <span class="fu">.</span> list dModel <span class="fu">$</span> \dv <span class="ot">-&gt;</span>
+      todoItem eMarkAllComplete eClearComplete dv
+
+    <span class="kw">let</span>
+      dmCompletes <span class="fu">=</span> combineDynamic fst dmList
+      eRemoves    <span class="fu">=</span> combineEvent   snd dmList
+
+      dAllComplete <span class="fu">=</span> fmap and dmCompletes
+      dAnyComplete <span class="fu">=</span> fmap or  dmCompletes
+    <span class="fu">...</span></code></pre></div>
+</section><section id="section-259" class="slide level2">
+<h2></h2>
+<div id="examples-list-2" class="demo">
+
+</div>
+</section></section>
+<section><section id="conclusion" class="titleslide slide level1"><h1>Conclusion</h1></section><section id="section-260" class="slide level2">
+<h2></h2>
+<p>Hopefully that gave you a bit of a taste of a flavour of FRP that is a bit closer to the original idea than you might have come across before</p>
+</section><section id="section-261" class="slide level2">
+<h2></h2>
+<p>The <code>sodium</code> library is worth looking at as well</p>
+<ul>
+<li class="fragment">has support for a lot of languages, including typescript</li>
+<li class="fragment">Manning has a book on it: &quot;Functional Reactive Programming&quot;</li>
+<li class="fragment">doesn't currently have <code>Dynamic</code>s or the nice collection management tools etc</li>
+</ul>
+</section><section id="section-262" class="slide level2">
+<h2></h2>
+<p>Data61 do free 3 day courses on Haskell if you're keen to learn more about that</p>
+</section><section id="section-263" class="slide level2">
+<h2></h2>
+<p>I'm happy to answer questions or help out with <code>reflex</code> or with <code>sodium</code>, so track me down if you're interested in this stuff</p>
+</section></section>
+    </div>
+  </div>
+
+  <script src="reveal.js/lib/js/head.min.js"></script>
+  <script src="reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Transition style
+        transition: 'none', // none/fade/slide/convex/concave/zoom
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+              { src: 'reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    <script language="javascript" src="js/rx-example.js"></script>
+    </body>
+</html>

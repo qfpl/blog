@@ -15,10 +15,13 @@ executable site
                   , Projects
                   , Projects.Common
                   , Projects.Context
+                  , Talks
+                  , Talks.Common
                   , Util.Order
                   , Util.Nick
                   , Util.Pandoc
                   , Util.Index
+                  , Util.Items
   build-depends:    base == 4.*
                   , hakyll == 4.9.*
                   , pandoc

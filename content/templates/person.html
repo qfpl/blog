@@ -1,6 +1,11 @@
 <h1>$title$</h1>
 $body$
 
+$if(talks)$
+<h3>Talks</h3>
+$partial("templates/talk-list.html")$
+$endif$
+
 $if(posts)$
 <h3>Blog posts</h3>
 $partial("templates/post-list.html")$

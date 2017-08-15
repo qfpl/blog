@@ -6,6 +6,7 @@ import           Hakyll
 import Posts
 import People
 import Projects
+import Talks
 import Util.Pandoc
 import Util.Index
 
@@ -53,6 +54,8 @@ main = do
             >>= loadAndApplyTemplate "templates/default.html" contactCtx
             >>= relativizeUrls
             >>= removeIndexHtml
+
+    talkRules pandocMathCompilerFns
 
     projectRules pandocMathCompilerFns
 

@@ -1,0 +1,35 @@
+<div>
+  $if(talks-page)$
+  <h2><a href="$slides-url$">$title$</a></h2>
+  $else$
+  <a href="$slides-url$">$title$</a>
+  $endif$
+</div>
+<div>
+  Presented by <a href="/people/$author$">$author-name$</a> on $date$
+$if(venue)$
+at
+$if(venue-link)$
+<a href="$venue-link$">$venue$</a>
+$else$
+$venue$
+$endif$
+$endif$
+$if(project-name)$
+as part of the
+  $if(project)$
+    <a href="/projects/$project$">$project-name$</a>
+  $else$
+    $project-name$
+  $endif$
+project
+$endif$
+.
+$if(video-url)$
+ Watch it <a href="$video-url$">here</a>.
+$endif$
+$if(code-url)$
+ Take a look at the code <a href="$code-url$">here</a>.
+$endif$
+</div>
+
