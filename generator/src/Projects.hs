@@ -80,8 +80,9 @@ projectRules pmcf = do
           projectPostCtx =
             if null projectPosts then mempty else listField "posts" postCtx (pure projectPosts)
           projectCtx =
-            projectTalkCtx `mappend`
-            projectPostCtx `mappend`
+            constField "projects-active" "" `mappend`
+            projectTalkCtx                  `mappend`
+            projectPostCtx                  `mappend`
             defaultContext
 
         pandocMathCompiler

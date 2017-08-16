@@ -78,8 +78,9 @@ peopleRules pmcf = do
           peoplePostCtx =
             if null peoplePosts then mempty else listField "posts" postCtx (pure peoplePosts)
           peopleCtx =
-            peopleTalkCtx `mappend`
-            peoplePostCtx `mappend`
+            constField "people-active" "" `mappend`
+            peopleTalkCtx                 `mappend`
+            peoplePostCtx                 `mappend`
             defaultContext
 
         pandocMathCompiler
