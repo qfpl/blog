@@ -35,6 +35,10 @@ main = do
         route   idRoute
         compile compressCssCompiler
 
+    match "share/**" $ do
+        route   idRoute
+        compile copyFileCompiler
+
     match "location.md" $ do
         route niceRoute
         compile $ do

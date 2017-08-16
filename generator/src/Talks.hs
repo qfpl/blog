@@ -25,7 +25,7 @@ mkSlidesCtx identifier = do
   mSlidesBase <- getMetadataField identifier "slides-base"
   let
     mkSlidesUrl i b =
-      mconcat ["/talk-contents/", i, "/", b]
+      mconcat ["/share/talks/", i, "/", b]
     slidesCtx =
       maybe mempty (constField "slides-url") (mkSlidesUrl <$> mIdent <*> mSlidesBase)
   pure slidesCtx
@@ -34,10 +34,6 @@ talkRules :: PandocMathCompilerFunctions -> Rules ()
 talkRules pmcf = do
   let
     pandocMathCompiler = pmcfCompiler pmcf
-
-  match "talk-contents/**" $ do
-    route   idRoute
-    compile copyFileCompiler
 
   match "talks/*" $ version "snippets" $ do
       route niceRoute
