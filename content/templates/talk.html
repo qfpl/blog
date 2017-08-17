@@ -1,8 +1,16 @@
 <div>
   $if(talks-page)$
-  <h2><a href="$slides-url$">$title$</a></h2>
+    $if(slides-url)$
+      <h2><a href="$slides-url$">$title$</a></h2>
+    $else$
+      <h2>$title$</h2>
+    $endif$
   $else$
-  <a href="$slides-url$">$title$</a>
+    $if(slides-url)$
+      <a href="$slides-url$">$title$</a>
+    $else$
+      $title$
+    $endif$
   $endif$
 </div>
 <div>
