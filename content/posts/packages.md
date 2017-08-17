@@ -1,6 +1,7 @@
 ---
 title: Our Approach to Haskell Dependencies
-date: 2017-08-11
+project: infra
+date: 2017-08-17
 authors: gwilson
 ---
 
