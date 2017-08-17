@@ -177,6 +177,62 @@ title: <Project name here>
 ---
 ```
 
+### Adding a talk
+
+Copy the contents of the talk to `./share/talks/<talk-nickname>`, and then write a file in `./talks/<talk-nickname>.md` that looks like this:
+```
+---
+title: "Reflex: front-end development done awesome"
+date: 2017-07-18
+venue: BFPG
+venue-link: http://bfpg.org
+author: dlaing
+author-name: Dave Laing
+project: reflex
+project-name: Reflex
+code-url: https://github.com/qfpl/intro-to-reflex-bfpg
+slides-base: slides.html
+---
+```
+
+The only mandatory fields are:
+
+- `title`
+- `date`
+- `author` and `author-name`
+
+Everything else will get displayed or linked to if it is mentioned.
+
+The talk will only be linked to if `slides-base` is specified, in which case the link will be to `./share/talks/<talk-nickname>/${slides-base}`.
+
+#### Adding Piwik tracking to a talk
+
+If you want to track how many people have viewed a talk and for how long, you should add a snippet of JS to talk to Piwik.
+
+For a HTML talk, add this snippet somewhere in the head of the HTML:
+```
+  <script language="javascript" src="js/examples.min.js"></script>
+        <!-- Piwik -->
+        <script type="text/javascript">
+          var _paq = _paq || [];
+          /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+          _paq.push(['trackPageView']);
+          _paq.push(['enableLinkTracking']);
+          _paq.push(['enableHeartBeatTimer', 30]);
+          (function() {
+            var u="//analytics.qfpl.io/";
+            _paq.push(['setTrackerUrl', u+'piwik.php']);
+            _paq.push(['setSiteId', '1']);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+            g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+          })();
+        </script>
+        <!-- End Piwik Code -->
+```
+
+If you have a PDF of your slides, you'd have to write a landing page that includes the snippet.
+In the future we might develop a standard page that contains the above snipped and redirects to the PDF when the page loads to help out with that.
+
 ### Adding a new `LaTeX` package
 
 At the moment this is a bit manual.
@@ -186,6 +242,12 @@ The blog currently makes the `prftree` package available.
 If you want to add a new LaTeX package, you can add it to the lists of packages in `default.nix` and `src/Site.hs` that already contain `prftree`.
 
 This will be made a bit easier later on.
+
+### Adding other content
+
+Anything in the `./share` directory will be served up as static content.
+
+For example, the talk contents are available from `https://blog.qfpl.io/share/talks/<name of talk>`.
 
 ## Conclusion
 
