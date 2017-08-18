@@ -5,11 +5,20 @@ authors: dlaing
 project: infra
 ---
 
+In the [previous post](../getting-started-with-nix/), we got comfortable with using Nix as a package manager.
+Now we're going to get a feel for what it's like to build a package.
+
+Most of this information is available in the ['Writing Nix expressions' chapter](https://nixos.org/nix/manual/#chap-writing-nix-expressions) of the [Nix manual](https://nixos.org/nix/manual/), with more detail coming from the ['Standard Environment' chapter](https://nixos.org/nixpkgs/manual/#chap-stdenv) of the [Nixpkgs manual](https://nixos.org/nixpkgs/manual/).
+This is another of the Nix manuals that you'll get to know and love.
+In particular, the Nixpkgs manual has chapters on specific languages and frameworks that can be extremely helpful.
+
+Just like last time, you should be able to play along with the examples as you are reading this post.
+
 ## An overview of building things with Nix
 
 Let's create a package for the GNU hello utility.
-We're going to travel quickly and gloss over some things, but we'll dig into the details immediately afterwards.
-For now I just want you to set up an example package and give you a sense of what happens when Nix builds something successfully.
+We're going to travel quickly and gloss over some things but we'll dig into the details immediately afterwards.
+For now we're going to set up an example package and try to get a sense of what happens when Nix builds something successfully.
 
 To that end, we'll write `hello.nix`:
 ```
@@ -29,13 +38,14 @@ to package up the GNU hello utility.
 This is a function that takes two arguments and produces a derivation - and the derivation is what we are after.
 
 There is a function in the Nix package set named `callPackage` that is helpful here.
-The `callPackage` function will fill in missing arguments if the argument names match the names of packages from the Nix package set.
+The `callPackage` function will fill in missing arguments to functions, provided that the argument names match the names of packages from the Nix package set.
 
 We can write `default.nix` to demonstrate this:
 ```
-{ nixpkgs ? import <nixpgkgs> {} }:
-
-nixpkgs.callPackage ./hello.nix {}
+let
+  nixpkgs = import <nixpkgs> {};
+in
+  nixpkgs.callPackage ./hello.nix {}
 ```
 
 The missing arguments to `hello.nix` have been filled in by `callPackage`, and so `default.nix` gives us a derivation.
@@ -257,7 +267,7 @@ The script actually ran
 /nix/store/p945zy2qhfbk6rb5gvyqclymyvwx5z7q-hello-2.10
 ```
 
-This gives us a different hash to what we had before, which is expected.
+This gives us a different hash to what we had before, which is expected since the inputs have changed.
 If we changed the builder script:
 ```
 source $stdenv/setup
@@ -304,7 +314,7 @@ stdenv.mkDerivation rec {
 
 ### Debugging a nix build
 
-We're now going to sabotage our builder, to see what we can do to correct things.
+We're now going to sabotage our builder, to see what we can see what we do to correct things that have gone awry.
 
 We'll deliberately change into the wrong directory:
 ```
@@ -329,7 +339,7 @@ error: build of ‘/nix/store/p9lvjiik8pwv4rlpxsl29as151vrwp2z-hello-2.10.drv’
 
 What can we do?
 
-We can indicate that we want to keep the temporary build directory in the event of failures:
+We can indicate that we want to _keep_ the temporary build directory in the event of failures:
 ```
 > nix-build -K
 /nix/store/s143n1fws6lb0ngnk6bm6ggrdxkxg8c8-builder.sh: line 4: cd: hello: No such file or directory
@@ -424,6 +434,7 @@ stdenv.mkDerivation rec {
   '';
 }
 ```
+which will give us the same result as what we had before.
 
 We can chip away at that, verifying that the output is the same every time we remove one of our phases.
 Eventually we'll end up where we started at the beginning of this post:
@@ -439,10 +450,11 @@ stdenv.mkDerivation rec {
   };
 }
 ```
-and if you look through the Nixpkgs package set you'll see that there are a lot of packages that aren't much more complicated than this.
 
-If you have a look at the [Nixpkgs manual](https://nixos.org/nixpkgs/manual), you'll see that there all kinds of settings that allow you tweak the various phases.
-So instead of adding your own `configurePhase` to slightly amend what the generic build functionality was doing for you, you can do:
+If you look through the Nixpkgs package set you'll see that there are a lot of packages that aren't much more complicated than this.
+
+The details of the phases and their related settings are in the [Nixpkgs manual](https://nixos.org/nixpkgs/manual).
+These settings allow you to avoid adding your own `configurePhase` just to slightly amend what the generic build functionality was doing for you:
 ```
 { stdenv, fetchurl }:
 
@@ -454,28 +466,192 @@ stdenv.mkDerivation rec {
     sha256 = "0ssi1wpaf7plaswqqjwigppsg5fyh99vdlb9kzl7c9lng89ndq1i";
   };
   
-  configureFlags = '--enable-extra-awesomeness';
+  configureFlags = ["--enable-extra-awesomeness"];
 }
 ```
 
+(This is not a real configuration flag - don't do this)
+
 ## Dealing with dependencies
 
-TODO section on the different kinds of dependencies
+Nix makes a distinction between build-time and run-time dependencies.
 
-## Where to go for more information
+Anything added to the `buildInputs` list of a package will be available at both build-time and at run-time.
+This will mean that there will be a link between the derivation of the package and the derivation of the dependency, which prevents the garbage collector from cleaning up dependencies that are required at run-time.
 
-The Nix manual has a [chapter](https://nixos.org/nix/manual/#ch-simple-expression) covering the basics of writing packages, and the Nixpkgs manaual has a [chapter](https://nixos.org/nixpkgs/manual/#chap-stdenv) that goes into much more detail.
-The Nixpkgs manual also has chapters on the Nix support for various languages and frameworks, which can be very handy.
+Anything added to the `nativeBuildInputs` list is available only at build-time.
 
-You can also browse around in [the `nixpkgs` pacakge set](https://github.com/NixOS/nixpkgs) and have a look at how other packages are built.
+If we're build C or C++ projects, Nix will be using the `NIX_CFLAGS_COMPILE` environment variable to track include directories of dependencies and the `NIX_LDFLAGS` environment variable to track library directories of dependencies.
+In the common cases this is taken care of for us.
 
-<!--
-## Pinning `nixpkgs`
+We're not going to get to play with this using GNU hello, so we're going to step things up and package GNU bc.
 
-TODO subsection on using this to pin nixpkgs
-TODO   comment on all of the places where you can reach out to get, or a tarball, or whatever
+We can do some prefetching:
+```
+> nix-prefetch-url mirror://gnu/bc/bc-1.07.1.tar.gz
 
-## Built-in functions and helpers
+```
+and then write `bc.nix`:
+```
+{stdenv, fetchurl}:
 
-TODO commands, writeScriptBin, that sort of thing
--->
+stdenv.mkDerivation rec {
+  name = "bc-1.07.1";
+  src = fetchurl {
+    url = "mirror://gnu/bc/${name}.tar.gz";
+    sha256 = "0amh9ik44jfg66csyvf4zz1l878c4755kjndq9j0270akflgrbb2";
+  };
+}
+```
+and `default.nix`:
+```
+let
+  nixpkgs = import <nixpkgs> {};
+in
+  nixpkgs.callPackage ./bc.nix {}
+```
+
+Let's see how that goes:
+```
+> nix-build
+...
+./fix-libmath_h: line 1: ed: command not found
+make[2]: *** [Makefile:632: libmath.h] Error 127
+make[2]: Leaving directory '/tmp/nix-build-bc-1.07.1.drv-0/bc-1.07.1/bc'
+make[1]: *** [Makefile:357: all-recursive] Error 1
+make[1]: Leaving directory '/tmp/nix-build-bc-1.07.1.drv-0/bc-1.07.1'
+make: *** [Makefile:297: all] Error 2
+builder for ‘/nix/store/6v0ikgpdmmkr6cy2gp523lanjd5chwzb-bc-1.07.1.drv’ failed with exit code 2
+error: build of ‘/nix/store/6v0ikgpdmmkr6cy2gp523lanjd5chwzb-bc-1.07.1.drv’ failed
+```
+
+Ouch.  We're missing the standard text editor, which appears to be being used during build time.
+
+Let's add that in:
+```
+{stdenv, fetchurl, ed}:
+
+stdenv.mkDerivation rec {
+  name = "bc-1.07.1";
+  src = fetchurl {
+    url = "mirror://gnu/bc/${name}.tar.gz";
+    sha256 = "0amh9ik44jfg66csyvf4zz1l878c4755kjndq9j0270akflgrbb2";
+  };
+  
+  nativeBuildInputs = [ ed ];
+}
+```
+and see how much further we get:
+```
+> nix-build
+...
+/nix/store/1vcp949ka9qnyp6dfv4s9pgjda57vk4x-bash-4.4-p12/bin/bash: line 9: makeinfo: command not found
+make[2]: *** [Makefile:320: bc.info] Error 127
+make[2]: Leaving directory '/tmp/nix-build-bc-1.07.1.drv-0/bc-1.07.1/doc'
+make[1]: *** [Makefile:357: all-recursive] Error 1
+make[1]: Leaving directory '/tmp/nix-build-bc-1.07.1.drv-0/bc-1.07.1'
+make: *** [Makefile:297: all] Error 2
+builder for ‘/nix/store/8rz3nbf74ghpg3xvzs61mdh0xr131q7w-bc-1.07.1.drv’ failed with exit code 2
+error: build of ‘/nix/store/8rz3nbf74ghpg3xvzs61mdh0xr131q7w-bc-1.07.1.drv’ failed
+```
+
+Still no dice.
+
+We can fix that up by adding `texinfo` to our build dependencies:
+```
+{stdenv, fetchurl, ed, texinfo}:
+
+stdenv.mkDerivation rec {
+  name = "bc-1.07.1";
+  src = fetchurl {
+    url = "mirror://gnu/bc/${name}.tar.gz";
+    sha256 = "0amh9ik44jfg66csyvf4zz1l878c4755kjndq9j0270akflgrbb2";
+  };
+  
+  nativeBuildInputs = [ ed texinfo ];
+}
+```
+and the result is a great success:
+```
+> nix-build
+/nix/store/6axbha3n5ny261x7wms6ggsnv7p3qzc9-bc-1.07.1
+```
+
+If we were curious while we were packing this up, we might have ducked into the nix-shell to have a look for any configuration options:
+```
+> nix-shell
+nix-shell > tar zxcf $src
+nix-shell > cd bc-*
+nix-shell > configure --help
+...
+Optional Packages:
+  --with-readline         support fancy command input editing
+...
+```
+
+We can add that into the mix with the appropriate configure flag and a run-time dependency:
+```
+{stdenv, fetchurl, ed, texinfo, readline}:
+
+stdenv.mkDerivation rec {
+  name = "bc-1.07.1";
+  src = fetchurl {
+    url = "mirror://gnu/bc/${name}.tar.gz";
+    sha256 = "0amh9ik44jfg66csyvf4zz1l878c4755kjndq9j0270akflgrbb2";
+  };
+
+  configureFlags = [ "--with-readline" ];
+
+  nativeBuildInputs = [ ed texinfo ];
+  buildInputs = [ readline ];
+}
+```
+
+This will give us an error during the configure step:
+```
+> nix-build
+...
+Using the readline library.
+configure: error: readline works only with flex.
+builder for ‘/nix/store/pmbdl260i2fbj0q31p36ksk8fs299pg8-bc-1.07.1.drv’ failed with exit code 1
+error: build of ‘/nix/store/pmbdl260i2fbj0q31p36ksk8fs299pg8-bc-1.07.1.drv’ failed
+```
+which we can fix by adding `flex` alongside `readline` in our run-time dependencies:
+```
+{stdenv, fetchurl, ed, texinfo, readline, flex}:
+
+stdenv.mkDerivation rec {
+  name = "bc-1.07.1";
+  src = fetchurl {
+    url = "mirror://gnu/bc/${name}.tar.gz";
+    sha256 = "0amh9ik44jfg66csyvf4zz1l878c4755kjndq9j0270akflgrbb2";
+  };
+
+  configureFlags = [ "--with-readline" ];
+
+  buildInputs = [ed texinfo readline flex];
+}
+```
+
+Now we have a successful build with our shiny new build of `bc`:
+```
+> nix-build
+...
+/nix/store/46cnc5j02pvzpcwnbdfzrzv63p91fk6w-bc-1.07.1
+```
+
+## Tidying up
+
+As an aside, we can turn `default.nix` into a function with a default argument:
+```
+{ nixpkgs ? import <nixpgkgs> {} }:
+
+nixpkgs.callPackage ./hello.nix {}
+```
+and it will behave the same way, but we now have the option to use it with different package sets if we need to.
+
+## What about things other than C and C++ ?
+
+There are all kinds of other languages and frameworks mentioned in the Nixpgs manual other than C and C++.
+
+Because this is coming from the QFPL blog, it should be no surprise that that the next language we're going to look at is Haskell.

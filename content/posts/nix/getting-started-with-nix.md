@@ -5,7 +5,15 @@ authors: dlaing
 project: infra
 ---
 
-If you're running Linux or Mac OS X, you should be able to play along with the things in the code blocks
+There are a few things that you'll end up getting comfortable with if you end up working with Nix.
+The first thing that we're going to look at is using Nix as a package manager.
+We'll cover writing our own packages and building things with Nix shortly.
+
+Most of this information is available in the ['Package management' chapter](https://nixos.org/nix/manual/#chap-package-management) of the [Nix manual](https://nixos.org/nix/manual/).
+You'll probably end up referring to the various Nix manuals a few times, so it's worth getting familiar with them.
+
+This is an attempt to introduce some of the ideas in way that you can try out yourself as you read, in order to build up some muscle memory with Nix - or at least get to the point where you're convinced I'm not making all of this up as I go.
+If you're running Linux or Mac OS X, you should be able to play along with the things in the code blocks:
 ```
 > echo "Like this one"
 Like this one
