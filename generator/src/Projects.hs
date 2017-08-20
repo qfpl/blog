@@ -4,7 +4,7 @@ module Projects (
   , module Projects.Context
   ) where
 
-import Data.Maybe (catMaybes)
+import Data.Functor.Identity (Identity(..))
 
 import Hakyll
 
@@ -15,18 +15,16 @@ import Util.Order
 import Util.Nick
 import Util.Pandoc
 import Util.Index
+import Util.Items
+
+getProjectItems :: Compiler [Item String] -> String -> Compiler [Item String]
+getProjectItems = getItems (fmap (fmap Identity). lookupProject)
 
 getProjectPosts :: String -> Compiler [Item String]
-getProjectPosts project = do
-  posts <- recentFirst =<< loadAll "posts/**"
-  let postMatches i = do
-        p <- lookupProject i
-        return $
-          if p == Just project
-          then Just i
-          else Nothing
-  matchingPosts <- traverse postMatches posts
-  pure . catMaybes $ matchingPosts
+getProjectPosts = getProjectItems (loadAll "posts/**")
+
+getProjectTalks :: String -> Compiler [Item String]
+getProjectTalks = getProjectItems (loadAll $ "talks/*" .&&. hasVersion "snippets")
 
 projectRules :: PandocMathCompilerFunctions -> Rules ()
 projectRules pmcf = do
@@ -73,13 +71,18 @@ projectRules pmcf = do
             case capture "projects/*.*" identifier of
               Just [ident, _] -> Just ident
               _ -> Nothing
+        projectTalks <- maybe (pure []) getProjectTalks mIdent
         projectPosts <- maybe (pure []) getProjectPosts mIdent
 
         let
+          projectTalkCtx =
+            if null projectTalks then mempty else listField "talks" postCtx (pure projectTalks)
           projectPostCtx =
             if null projectPosts then mempty else listField "posts" postCtx (pure projectPosts)
           projectCtx =
-            projectPostCtx `mappend`
+            constField "projects-active" "" `mappend`
+            projectTalkCtx                  `mappend`
+            projectPostCtx                  `mappend`
             defaultContext
 
         pandocMathCompiler

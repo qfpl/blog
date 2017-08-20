@@ -6,6 +6,7 @@ import           Hakyll
 import Posts
 import People
 import Projects
+import Talks
 import Util.Pandoc
 import Util.Index
 
@@ -34,6 +35,10 @@ main = do
         route   idRoute
         compile compressCssCompiler
 
+    match "share/**" $ do
+        route   idRoute
+        compile copyFileCompiler
+
     match "location.md" $ do
         route niceRoute
         compile $ do
@@ -53,6 +58,8 @@ main = do
             >>= loadAndApplyTemplate "templates/default.html" contactCtx
             >>= relativizeUrls
             >>= removeIndexHtml
+
+    talkRules pandocMathCompilerFns
 
     projectRules pandocMathCompilerFns
 

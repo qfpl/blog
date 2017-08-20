@@ -4,7 +4,7 @@ module People (
   , module People.Context
   ) where
 
-import Data.Maybe (catMaybes)
+import Data.Functor.Identity (Identity(..))
 
 import Hakyll
 
@@ -15,19 +15,13 @@ import Util.Order
 import Util.Nick
 import Util.Pandoc
 import Util.Index
+import Util.Items
 
 getPeoplePosts :: String -> Compiler [Item String]
-getPeoplePosts person = do
-  posts <- recentFirst =<< loadAll "posts/**"
-  let postMatches i = do
-        mAuthors <- lookupAuthors i
-        return $
-          mAuthors >>= \authors ->
-            if person `elem` authors
-            then Just i
-            else Nothing
-  matchingPosts <- traverse postMatches posts
-  pure . catMaybes $ matchingPosts
+getPeoplePosts = getItems lookupAuthors (loadAll "posts/**")
+
+getPeopleTalks :: String -> Compiler [Item String]
+getPeopleTalks = getItems (fmap (fmap Identity) . lookupAuthor) (loadAll $ "talks/*" .&&. hasVersion "snippets")
 
 peopleRules :: PandocMathCompilerFunctions -> Rules ()
 peopleRules pmcf = do
@@ -75,13 +69,18 @@ peopleRules pmcf = do
             case capture "people/*.*" identifier of
               Just [ident, _] -> Just ident
               _ -> Nothing
+        peopleTalks <- maybe (pure []) getPeopleTalks mIdent
         peoplePosts <- maybe (pure []) getPeoplePosts mIdent
 
         let
+          peopleTalkCtx =
+            if null peopleTalks then mempty else listField "talks" postCtx (pure peopleTalks)
           peoplePostCtx =
             if null peoplePosts then mempty else listField "posts" postCtx (pure peoplePosts)
           peopleCtx =
-            peoplePostCtx `mappend`
+            constField "people-active" "" `mappend`
+            peopleTalkCtx                 `mappend`
+            peoplePostCtx                 `mappend`
             defaultContext
 
         pandocMathCompiler

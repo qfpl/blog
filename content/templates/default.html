@@ -23,6 +23,7 @@
             var u="//analytics.qfpl.io/";
             _paq.push(['setTrackerUrl', u+'piwik.php']);
             _paq.push(['setSiteId', '1']);
+            _paq.push(['enableHeartBeatTimer', 30]);
             var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
             g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
           })();
@@ -49,6 +50,7 @@
                     <li role="presentation" $if(location-active)$ class="active" $endif$ ><a href="/location">Location</a></li>
                     <li role="presentation" $if(people-active)$ class="active" $endif$ ><a href="/people">People</a></li>
                     <li role="presentation" $if(projects-active)$ class="active" $endif$ ><a href="/projects">Projects</a></li>
+                    <li role="presentation" $if(talks-active)$ class="active" $endif$ ><a href="/talks">Talks</a></li>
                     <li role="presentation" $if(contact-active)$ class="active" $endif$ ><a href="/contact">Contact</a></li>
                     <li role="presentation" $if(archive-active)$ class="active" $endif$ ><a href="/archive">Archive</a></li>
                 </ul>
