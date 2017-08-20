@@ -2,7 +2,7 @@
 
 Many programming languages have not been designed with the intent of preventing
 developers from making common mistakes, or lack many important features to develop
-robust software. Even so, this class of languages recieve widespread use by career
+robust software. Even so, this class of languages receive widespread use by career
 developers. The use of such languages in any commercial setting means greater costs,
 more bugs, and increased time to market.
 
@@ -18,7 +18,7 @@ The  first language a we're targeting is Python, due to its widespread use both
 within Data61 and in greater programming community. Our immediate goal is to develop a
 correct by construction intermediate representation, along with a parser and printer
 that preserves source formatting. After this, we will explore embedded DSLs for writing
-Python programs in Haskell, and then the integration of static analysis tecniques for
+Python programs in Haskell, and then the integration of static analysis techniques for
 typechecking, optimization and source code linting.
 
-You can view our progress here: [`qfpl/hpython - GitHub`](https://github.com/qfpl/hpython).
+You can view our progress here: [`qfpl/hpython` on GitHub](https://github.com/qfpl/hpython).
