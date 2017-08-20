@@ -15,8 +15,10 @@ discarding their existing software?
 The `language-*` project aims to address this with the development of principled
 Haskell libraries to read, manipulate, and write other programming languages.
 The  first language a we're targeting is Python, due to its widespread use both
-within Data61 and in greater programming community.
+within Data61 and in greater programming community. Our immediate goal is to develop a
+correct by construction intermediate representation, along with a parser and printer
+that preserves source formatting. After this, we will explore embedded DSLs for writing
+Python programs in Haskell, and then the integration of static analysis tecniques for
+typechecking, optimization and source code linting.
 
-## Roadmap
-### Python
-* 
+You can view our progress here: [`qfpl/hpython - GitHub`](https://github.com/qfpl/hpython).
