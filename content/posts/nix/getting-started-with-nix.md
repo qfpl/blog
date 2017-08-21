@@ -573,5 +573,5 @@ nix-shell > exit
 (We could also tidy up after ourselves with `nix-collect-garbage -d`, but we'd normally just leave that until the next time that it occurred to us to run the garbage collector)
 
 What is `nix-shell` for?
-We normally use `nix-shell` when we're developing new Nix packages - which is the topic of the next post.
+We normally use `nix-shell` when we're developing new Nix packages - which is the topic of the [next post](../building-things-with-nix/).
 

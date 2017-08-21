@@ -15,7 +15,7 @@ where the output will be the executable  `result/site`
 You can use that to bring up a local preview server with:
 ```
 cd content
-../result/site watch
+../result/bin/site watch
 ```
 and the content will be served from http://localhost:8000/
 
