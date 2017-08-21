@@ -2,4 +2,4 @@
 title: Sean Chalmers
 ---
 
-Sean likes riding motorcycles in foreign countries.
+Likes riding motorcycles, lenses, text editors, software that works, and writing documentation. Hates not having errors as values, not being able to use lenses, and writing bios.
