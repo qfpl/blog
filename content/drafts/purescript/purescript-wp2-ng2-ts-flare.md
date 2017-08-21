@@ -4,9 +4,9 @@ date: 2017-08-21
 authors: schalmers
 ---
 
-Picking up from where we left off, we should have a [angular-starter](https://github.com/AngularClass/angular-starter) project with some integrated Purescript code. To improve on this, we're going to now create a small UI component using Purescript and display it in the Javascript application. This UI will take some input, mess with it a bit, and display the result. 
+Picking up from [where we left off](./purescript-wp2-ng2-ts), we should have a [angular-starter](https://github.com/AngularClass/angular-starter) project with some integrated Purescript code. To improve on this, we're going to create a small UI component using Purescript and display it in the Javascript application. This UI will take some input, mess with it a bit, and display the result. 
 
-After that we'll take some state from the Javascript application and pass it to our Purescript UI component. Letting the Purescript component do the work, updating the ``localState`` as it goes. Removing the need for any Angular code in managing the UI or the state. 
+Next, we'll take some state from the Javascript application and pass it to our Purescript UI component. Letting the Purescript component do the work, updating the ``localState`` as it goes. Removing the need for any Angular code in managing the UI or updating the ``localState``. 
 
 ### Things I have assumed...
 
@@ -15,7 +15,7 @@ After that we'll take some state from the Javascript application and pass it to 
 - A basic, or working knowledge of Purescript, and a desire for more
 - A functioning install of Purescript 0.11.5, ``purs`` available on the $PATH
 - A functioning install of NodeJS with ``bower`` and ``npm`` on the $PATH
-- Have worked through the tutorial for [Integrating Purescript to a Webpack Project](purescript-wp2-ng2-ts)
+- Have worked through the tutorial for [Integrating Purescript to a Webpack Project](./purescript-wp2-ng2-ts)
 
 ### Adding a bit of Flare
 
@@ -48,12 +48,12 @@ combineTextUI = string_ "" <> pure " " <> string_ ""
 ```
 This function describes the individual UI component, however it doesn't actually run it, we need to pass it to the [**runFlare**](https://pursuit.purescript.org/packages/purescript-flare/3.1.0/docs/Flare#v:runFlare) function for that. That function requires a HTML Element ID value so it knows where the UI input component is to be placed, as well as a Element ID for where the output will be placed.
 
-Lets add these IDs as input to our function from the Javascript side so we don't have to hard code anything:
+Add these IDs as input to our function from the Javascript side so we don't have to hard code anything:
 ```haskell
 combineTextEle :: forall e. String -> String -> Eff ( dom :: DOM, channel :: CHANNEL | e ) Unit
 combineTextEle inputEleId outputEleId = runFlare inputEleId outputEleId combineTextUI
 ```
-Now to add this to the ``home.component``... First add the required elements to the HTML. Open ``home.component.html`` and just above the heading for 'Local State', add the following:
+Now to add this to the ``home.component``. First add the required elements to the HTML. Open ``home.component.html`` and just above the heading for 'Local State', add the following:
 ```html
 <h4>Purescript Flare</h4>
 <div>
@@ -130,7 +130,7 @@ Unit & *spooky sounds*
 // Javascript
 Flarey.combineTextEle("home-flare-in")("home-flare-out")()
 ```
-For this standalone component that is all you need to do. If you don't have it running already, kick off the development server and you should see another two text fields on the home page the display your input in the container you specified. Weeeeeeee!
+For this standalone component that is all you need to do. Save your changes, and if you don't have it running already, kick off the development server and you should see another two text fields on the home page the display your input in the container you specified. Weeeeeeee!
 
 ### Communicating With JavaScript
 
@@ -138,13 +138,13 @@ So far our interactions have been either a pure function (``String -> String``),
 
 The steps we need to take are:
 - Update our Flare UI component so that it accepts a function to run over the input
-- Update the JavaScript code to pass in a function that will update our ``AppState``
+- Update the JavaScript code to pass in a function that will update our ``localState``
 
 Helpfully, Flare comes with a couple of functions that let us run effectful functions over the output of a Flare UI Component instead of applying the output to the DOM.
 
 To start with, we need [**runFlareWith**](https://pursuit.purescript.org/packages/purescript-flare/3.1.0/docs/Flare#v:runFlareWith).
 
-This requires a function that will be passed the result of the Flare UI component, allowing for effectful actions to take place. This function will be passed in from the Javascript code, so although we will give it a Purescript type, that type will be a lie. As the Javascript is under no obligation to obey this type, nor can we actually enforce it. However by giving it a type on the Purescript side, at no point are we under any illusions and the typechecker will prevent us from misusing it.
+This requires a function that will be passed the result of the Flare UI component, allowing for effectful actions to take place. The input function will be passed in from the Javascript code, so although we will give it a Purescript type, that type will be a lie. As the Javascript is under no obligation to obey this type, nor can we actually enforce it. However by giving it a type on the Purescript side, at no point are we under any illusions and the typechecker will prevent us from misusing it.
 
 The Purescript type of this function is:
 ```haskell
@@ -159,7 +159,7 @@ Because you want to indicate in the type of the function that it may cause DOM c
 
 However any function from Javascript will have no such constraints and we cannot guarantee anything about what it may or may not do. So we assume the worst and declare that this function may perform any possible effect: ``forall eff.``. 
 
-We cannot force Javascript to comply with our types, but we can at least provide some level of confidence within our Purescript code that we're handling this callback correctly, by giving it a type signature that describes the very lack of control we must be cautious of.
+We cannot force Javascript to comply with our types, but we can at least provide some level of confidence within our Purescript code that we're handling this callback correctly. Giving it a type signature that describes the very lack of control we must be cautious of is our best option.
 
 Another change is that we are no longer relying on Flare to display this result in the DOM. So we do not need the "output" element ID. We will replace it with our ``InputFn`` and our new ``combineTextEle`` function should look something like:
 ```haskell
@@ -168,7 +168,7 @@ combineTextEle elemId fn = runFlareWith elemId fn combineTextUI
 ```
 Update the import for Flare to import ``runFlareWith`` instead of ``runFlare``.
 
-In ``home.component.ts`` update our ``combineTextEle`` function call to match the new arguments. As we are dealing with a foreign function interface between Javascript and Purescript, we must accept that Purescript cannot help beyond the boundaries. Nothing can. Such is the nature of an FFI.
+In ``home.component.ts`` update our ``combineTextEle`` function call to match the new arguments. As we are dealing with a foreign function interface between Javascript and Purescript, we must accept that Purescript cannot help beyond the boundaries. Nothing can, such is the nature of an FFI.
 
 Our goal here is to create a Flare UI component that will operate on some state that we give to it. Update the ``localState`` property to have a new key:
 ```javascript
@@ -177,7 +177,7 @@ public localState = {
   flareValue: ''
 };
 ```
-Now define our 'effectful function' that we will pass to Purescript. Recall from earlier that every Purescript function only takes one argument, and that ``Eff`` functions are 'thunks' that are evaluated to run their respective effects. Knowing that, we have to to create this:
+Now we define our 'effectful function' that will be passed to Purescript. Recall from earlier that every Purescript function only takes one argument, and that ``Eff`` functions are 'thunks' that are evaluated to run their respective effects. Knowing that, we have to to create this:
 ```haskell
 :: forall eff. String -> Eff eff Unit
 ```
@@ -212,7 +212,7 @@ this.localState = {
   "flareValue": " "
 }
 ```
-If you type something into the fields, you should then see their combined output displayed as you type:
+If you type something into the input fields for the Flare component, you should then see their combined output displayed as you type:
 ```javascript
 this.localState = {
   "value": "",
@@ -221,4 +221,3 @@ this.localState = {
 ```
 
 If things are going according to plan then you have successfully integrated a well typed Purescript UI component into an existing Javascript Angular2 application. It may not seem like much, but now you can start to replace entire pieces of your DOM altering code with statically typed UI components. More importantly you can start to do this right now, without having to rebuild your entire application!
-

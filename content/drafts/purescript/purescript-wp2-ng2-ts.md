@@ -115,15 +115,15 @@ The operator, that ``<>`` thing in the middle, is an ["infix function"](https://
 "fuzz" <> "fuzz" = "fuzzfuzz"
 "foo" <> "bar" = "foobar"
 ```
-Now we have some bookkeeping to do. to ensure that both the ``String`` type and the ``<>`` function are in scope. So lets add a ``Prelude`` import towards the top of our file to take care of this.
+Now we have some bookkeeping to do to ensure that both the ``String`` type and the ``<>`` function are in scope. So lets add a ``Prelude`` import towards the top of our file to take care of this.
 ```haskell
 import Prelude
 ```
-We also need to make sure that the Purescript Prelude module is actually installed:
+We also need to make sure that the Purescript ``Prelude`` module is actually installed:
 ```bash
 $ bower install --save purescript-prelude
 ```
-Now change the module declaration at the top of the file so that we're only exporting this one function. To do that we add a list of function names before the ``where`` keyword. Surrounded by parentheses and separated by commas: So our ``module`` line changes from:
+Now change the module declaration at the top of the file so that we're only exporting this one function. To do that we add a list of functions or types before the ``where`` keyword. Surrounded by parentheses and separated by commas: So our ``module`` line changes from:
 ```haskell
 module Basic where
 ```
@@ -136,9 +136,9 @@ module Basic (doubler) where
 
 Including this module in our Javascript code is the same as using any other module, with a few gotchas that we'll touch on later. For now, open up the ``home.component.ts`` file and look for the ``submitState`` function.
 
-This function takes the input from the text field on the 'Home' page, pushes it to the ``appState`` and then clears the value. We're going to intrude on this process and pass the input through our function, before setting the value on the ``appState``.
+This function takes the input from the text field on the 'Home' page, pushes it to the ``appState`` and then clears the value. We're going to intrude on this process and pass the input through our Purescript function, before setting the value on the ``appState``.
 
-First, import the function from our Purescript module. Purescript compiles to CommonJS modules, so importing into Javascript land is quite easy. This project provides ES6 features, so we're able to use the new import syntax:
+We need to import the function from our Purescript module. Purescript compiles to CommonJS modules, so importing into Javascript land is quite easy. This project provides ES6 features, so we're able to use the new import syntax:
 ```javascript
 import * Basic from '../purescript/Basic';
 ```
