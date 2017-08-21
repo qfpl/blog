@@ -1,3 +1,7 @@
+---
+title: language-*
+---
+
 # `language-*`
 
 Many programming languages have not been designed with the intent of preventing
