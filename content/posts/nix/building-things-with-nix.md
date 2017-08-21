@@ -1,6 +1,6 @@
 ---
 title: Building things with Nix
-date: 2017-07-27
+date: 2017-08-21
 authors: dlaing
 project: infra
 ---
