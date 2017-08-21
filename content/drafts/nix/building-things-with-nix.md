@@ -629,7 +629,8 @@ stdenv.mkDerivation rec {
 
   configureFlags = [ "--with-readline" ];
 
-  buildInputs = [ed texinfo readline flex];
+  nativeBuildInputs = [ ed texinfo ];
+  buildInputs = [ readline flex ];
 }
 ```
 
