@@ -11,10 +11,10 @@ Next, we'll take some state from the Javascript application and pass it to our P
 ### Things I have assumed...
 
 - A *nix-like terminal environment
-- A working knowledge of Javascript
-- A basic, or working knowledge of Purescript, and a desire for more
-- A functioning install of Purescript 0.11.5, ``purs`` available on the $PATH
+- A working knowledge of Javascript, NPM, and Bower
 - A functioning install of NodeJS with ``bower`` and ``npm`` on the $PATH
+- A basic, or working knowledge of Purescript, and a desire for more
+- A functioning install of Purescript 0.11.5 or greater, ``purs`` available on the $PATH
 - Have worked through the tutorial for [Integrating Purescript to a Webpack Project](../purescript-wp2-ng2-ts/)
 
 ### Adding a bit of Flare

@@ -6,18 +6,19 @@ authors: schalmers
 
 New tools and languages can be wonderful things. But all too often the excitement around these new things is focused around building an entirely new X, or 'I had some spare time so I rewrote Y'. Where we often need them most is in an existing project, sometimes one that is starting to struggle under its own weight or showing its age.
 
-This post hopes to demonstrate that Purescript is one new tool that you can integrate with an existing project without blowing out your complexity budget. This enables you to start subsuming your legacy code without the horrendous cost of a total rebuild. Additionally this process enables the team to be brought up to speed on Purescript on demand, without requiring an all or nothing approach.
+This post hopes to demonstrate that Purescript is one new tool that you can integrate with an existing project without blowing out your complexity budget. This enables you to start subsuming your legacy code without the horrendous cost of a total rebuild. Additionally this process enables the team to be brought up to speed on Purescript on demand, without requiring an all-or-nothing approach.
 
 So, with some assumptions, lets begin...
 
 ### Some things I have assumed
 
 - A *nix-like terminal environment
-- A working knowledge of Javascript
-- A basic, or working knowledge of Purescript, and a desire for more
-- A functioning install of Purescript 0.11.5, ``purs`` available on the $PATH
+- A working knowledge of Javascript, NPM, and Bower
 - A functioning install of NodeJS with ``bower`` and ``npm`` on the $PATH
-- A fresh clone of [angular-starter](https://github.com/AngularClass/angular-starter)
+- A basic, or working knowledge of Purescript, and a desire for more
+- A functioning install of Purescript 0.11.5 or greater, ``purs`` available on the $PATH
+- A clone of [angular-starter](https://github.com/AngularClass/angular-starter)
+  - I used commit: 5996474023922906c05351ff43e2334efe38eccf
 
 ### Preparing the build pipeline
 Prepare the angular-starter dependencies by running:
