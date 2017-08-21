@@ -58,7 +58,6 @@ nix-build default.nix
 ...
 /nix/store/g0fw64zf7n0hr1dx7yl9n8qgqbhdngrm-hello-2.10
 ```
-and 
 
 If no file is given to `nix-build` it will look for `default.nix` in the current directory, so we can do:
 ```
@@ -66,7 +65,7 @@ nix-build
 ```
 and get the same result.
 
-The output will appear in the symbolic link named `result`:
+The output of the build is installed into the Nix store, but will also appear in the symbolic link named `result`:
 ```
 > ls result
 bin 
