@@ -40,15 +40,15 @@ First off, we have to tell Webpack what to do with the ``.purs`` files that it e
   test: /\.purs$/,
   use: [
     {
-      loader: 'purs-loader',
+      loader: "purs-loader",
       options: {
-        psc: 'psa',
-        output: 'dist', // *** This must match your JS output directory
+        psc: "psa",
+        output: "dist", // *** This must match your JS output directory
         src: [
           // This ensures that our library code is included
-          'bower_components/purescript-*/src/**/*.purs',
+          "bower_components/purescript-*/src/**/*.purs",
           // This is our source folder where we will keep our Purescript code
-          'src/app/purescript/**/*.purs'
+          "src/app/purescript/**/*.purs"
         ]
       }
     }
@@ -59,13 +59,13 @@ The above provides a rule to Webpack that when the test for a Purescript file ex
 
 We need to make some other adjustments to our Webpack configuration to ensure that the Purescript code is included in the final application. First add the Purescript file extension to the 'extensions' property:
 ```javascript
-extensions: ['.purs', ...]
+extensions: [".purs", ...]
 ```
 Finally, we have to ensure that our Purescript modules that are installed via Bower are included in the list of modules that Webpack includes in the build process. If we don't do this then none of the library code we download to use will be included and our code won't be very useful.
 ```javascript
 modules: [
   ...,
-  'bower_components'
+  "bower_components"
 ]
 ```
 Without changing anything else, run ``$ npm start`` to ensure we haven't broken anything. If everything comes up as it did before then we should be ready to start including some Purescript code!
@@ -149,15 +149,15 @@ const Basic = require('../purescript/Basic');
 ```
 You can do selective imports as well, if the functions are exported from your Purescript module:
 ```javascript
-import { doubler } from '../purescript/Basic';
+import { doubler } from "../purescript/Basic";
 ```
 Using the first import example, we have our Purescript module imported as 'Basic', so we're able to use it to modify our input. Go to the ``submitState`` function and change the following line:
 ```javascript
-this.appState.set('value', value);
+this.appState.set("value", value);
 ```
 To be:
 ```javascript
-this.appState.set('value', Basic.doubler(value));
+this.appState.set("value", Basic.doubler(value));
 ```
 
 ### Kicking the tyres

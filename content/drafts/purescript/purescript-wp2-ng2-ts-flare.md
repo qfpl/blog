@@ -65,7 +65,7 @@ Then in our ``home.component.ts`` import our ``Flarey`` module and wire everythi
 
 Import The Module, ES6 Style:
 ```javascript
-import * as Flarey from '../purescript/Flarey';
+import * as Flarey from "../purescript/Flarey";
 ```
 Then add the instantiation function to ``ngOnInit``:
 ```javascript
@@ -140,6 +140,7 @@ The steps we need to take are:
 - Update our Flare UI component so that it accepts a function to run over the input
 - Update the JavaScript code to pass in a function that will update our ``localState``
 
+
 Helpfully, Flare comes with a couple of functions that let us run effectful functions over the output of a Flare UI Component instead of applying the output to the DOM.
 
 To start with, we need [**runFlareWith**](https://pursuit.purescript.org/packages/purescript-flare/3.1.0/docs/Flare#v:runFlareWith).
@@ -174,7 +175,7 @@ Our goal here is to create a Flare UI component that will operate on some state 
 ```javascript
 public localState = {
   ...,
-  flareValue: ''
+  "flareValue": ''
 };
 ```
 Now we define our 'effectful function' that will be passed to Purescript. Recall from earlier that every Purescript function only takes one argument, and that ``Eff`` functions are 'thunks' that are evaluated to run their respective effects. Knowing that, we have to to create this:
