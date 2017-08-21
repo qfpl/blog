@@ -4,7 +4,7 @@ date: 2017-08-21
 authors: schalmers
 ---
 
-Picking up from [where we left off](purescript-wp2-ng2-ts), we should have a [angular-starter](https://github.com/AngularClass/angular-starter) project with some integrated Purescript code. To improve on this, we're going to create a small UI component using Purescript and display it in the Javascript application. This UI will take some input, mess with it a bit, and display the result. 
+Picking up from [where we left off](../purescript-wp2-ng2-ts/), we should have a [angular-starter](https://github.com/AngularClass/angular-starter) project with some integrated Purescript code. To improve on this, we're going to create a small UI component using Purescript and display it in the Javascript application. This UI will take some input, mess with it a bit, and display the result. 
 
 Next, we'll take some state from the Javascript application and pass it to our Purescript UI component. Letting the Purescript component do the work, updating the ``localState`` as it goes. Removing the need for any Angular code in managing the UI or updating the ``localState``. 
 
@@ -15,7 +15,7 @@ Next, we'll take some state from the Javascript application and pass it to our P
 - A basic, or working knowledge of Purescript, and a desire for more
 - A functioning install of Purescript 0.11.5, ``purs`` available on the $PATH
 - A functioning install of NodeJS with ``bower`` and ``npm`` on the $PATH
-- Have worked through the tutorial for [Integrating Purescript to a Webpack Project](purescript-wp2-ng2-ts)
+- Have worked through the tutorial for [Integrating Purescript to a Webpack Project](../purescript-wp2-ng2-ts/)
 
 ### Adding a bit of Flare
 
