@@ -2,8 +2,6 @@
 title: language-*
 ---
 
-# `language-*`
-
 Many programming languages have not been designed with the intent of preventing
 developers from making common mistakes, or lack many important features to develop
 robust software. Even so, this class of languages receive widespread use by career
