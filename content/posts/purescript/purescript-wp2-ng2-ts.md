@@ -17,8 +17,7 @@ So, with some assumptions, lets begin...
 - A functioning install of NodeJS with ``bower`` and ``npm`` on the $PATH
 - A basic, or working knowledge of Purescript, and a desire for more
 - A functioning install of Purescript 0.11.5 or greater, ``purs`` available on the $PATH
-- A clone of [angular-starter](https://github.com/AngularClass/angular-starter)
-  - I used commit: 5996474023922906c05351ff43e2334efe38eccf
+- A clone of [angular-starter](https://github.com/AngularClass/angular-starter) ( I used commit: 5996474023922906c05351ff43e2334efe38eccf )
 
 ### Preparing the build pipeline
 Prepare the angular-starter dependencies by running:
