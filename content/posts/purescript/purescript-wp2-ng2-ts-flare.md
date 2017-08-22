@@ -41,19 +41,19 @@ import Signal.Channel (CHANNEL)
 import DOM (DOM)
 import Prelude (Unit, pure, (<>))
 ```
-Create a small UI component, comprising of two text input fields that combine their inputs:
+Then we'll create a small Flare UI component, taken from their set of examples, it will be composed of two text input fields that displays their combined inputs. The UI elements in Flare have a ``Semigroup`` instance that allows us to use the ``<>`` operator to combine their input values using the instance for the input type.
 ```haskell
 combineTextUI :: forall e. UI e String
 combineTextUI = string_ "" <> pure " " <> string_ ""
 ```
-This function describes the individual UI component, however it doesn't actually run it, we need to pass it to the [**runFlare**](https://pursuit.purescript.org/packages/purescript-flare/3.1.0/docs/Flare#v:runFlare) function for that. That function requires a HTML Element ID value so it knows where the UI input component is to be placed, as well as a Element ID for where the output will be placed.
+This function describes the individual UI component, however it doesn't actually run it, we need to pass it to the [**runFlare**](https://pursuit.purescript.org/packages/purescript-flare/3.1.0/docs/Flare#v:runFlare) function for that. That function requires a HTML Element ID value so it knows where the UI input component is to be placed, as well as an Element ID for where the output will be placed.
 
 Add these IDs as input to our function from the Javascript side so we don't have to hard code anything:
 ```haskell
 combineTextEle :: forall e. String -> String -> Eff ( dom :: DOM, channel :: CHANNEL | e ) Unit
 combineTextEle inputEleId outputEleId = runFlare inputEleId outputEleId combineTextUI
 ```
-Now to add this to the ``home.component``. First add the required elements to the HTML. Open ``home.component.html`` and just above the heading for 'Local State', add the following:
+Now to add this to the ``home.component``, first add the required elements to the HTML. Open ``home.component.html`` and just above the heading for 'Local State', add the following:
 ```html
 <h4>Purescript Flare</h4>
 <div>
@@ -72,7 +72,7 @@ Then add the instantiation function to ``ngOnInit``:
 Flarey.combineTextEle("home-flare-in")("home-flare-out")();
 ```
 
-### Purescript functions only take one argument.
+### Purescript functions only take one argument
 
 Note that each input to the ``combineTextEle`` function is given as a separate function call. This is intentional and is because every Purescript function only ever takes one argument. Returning either a result or a function that needs more input.
 
@@ -178,7 +178,7 @@ public localState = {
   "flareValue": ''
 };
 ```
-Now we define our 'effectful function' that will be passed to Purescript. Recall from earlier that every Purescript function only takes one argument, and that ``Eff`` functions are 'thunks' that are evaluated to run their respective effects. Knowing that, we have to to create this:
+Now we define our 'effectful function' that will be passed to Purescript. Recall from earlier that every Purescript function only takes one argument, and that ``Eff`` functions are 'thunks' that are evaluated to run their respective effects. Knowing that, we have to create this:
 ```haskell
 :: forall eff. String -> Eff eff Unit
 ```
