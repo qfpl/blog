@@ -26,9 +26,9 @@ There is some general information about Nix that should be useful to those who w
 
 - [Introducing Nix](../../posts/nix/introducing-nix)
 - [Getting started with Nix](../../posts/nix/getting-started-with-nix)
-<!--
 - [Building things with Nix](../../posts/nix/building-things-with-nix)
 
+<!--
 If you're doing Haskell development, Nix is great for that:
 
 - [Working with Haskell and Nix](../../posts/nix/working-with-haskell-and-nix)
