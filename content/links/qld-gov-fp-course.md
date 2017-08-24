@@ -5,6 +5,10 @@ authors: tmorris
 project: courses
 ---
 
+<div class="jumbotron">
+  <h1>Write software that works</h1>
+</div>
+
 As part of the Queensland Government and CSIRO’s Data 61 Strategic Partnership, we would like to offer you the opportunity for a free Functional Programming training course from the Queensland Functional Programming Lab at the Queensland Startup Precinct, delivered by Data61.
 
 ### Course Structure
