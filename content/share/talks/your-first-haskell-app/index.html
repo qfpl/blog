@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Andrew McCluskey">
+  <title>Your first Haskell app</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="reveal.js/css/reveal.css">
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #303030; color: #cccccc; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; }
+td.sourceCode { padding-left: 5px; }
+pre, code { color: #cccccc; background-color: #303030; }
+code > span.kw { color: #f0dfaf; } /* Keyword */
+code > span.dt { color: #dfdfbf; } /* DataType */
+code > span.dv { color: #dcdccc; } /* DecVal */
+code > span.bn { color: #dca3a3; } /* BaseN */
+code > span.fl { color: #c0bed1; } /* Float */
+code > span.ch { color: #dca3a3; } /* Char */
+code > span.st { color: #cc9393; } /* String */
+code > span.co { color: #7f9f7f; } /* Comment */
+code > span.ot { color: #efef8f; } /* Other */
+code > span.al { color: #ffcfaf; } /* Alert */
+code > span.fu { color: #efef8f; } /* Function */
+code > span.er { color: #c3bf9f; } /* Error */
+code > span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+code > span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+code > span.sc { color: #dca3a3; } /* SpecialChar */
+code > span.vs { color: #cc9393; } /* VerbatimString */
+code > span.ss { color: #cc9393; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { } /* Variable */
+code > span.cf { color: #f0dfaf; } /* ControlFlow */
+code > span.op { color: #f0efd0; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+code > span.at { } /* Attribute */
+code > span.do { color: #7f9f7f; } /* Documentation */
+code > span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+code > span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+code > span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+  </style>
+  <link rel="stylesheet" href="reveal.js/css/theme/black.css" id="theme">
+<link rel="stylesheet" href="css/tweaks.css">
+<link rel="stylesheet" href="/nix/store/dxsgx3qli247m5yxdyv36aby7qmmzv9h-your-first-haskell-app/css/grid-dark.css">
+<link rel="stylesheet" href="/nix/store/dxsgx3qli247m5yxdyv36aby7qmmzv9h-your-first-haskell-app/css/fizzbuzz.css">
+<link rel="stylesheet" href="/nix/store/dxsgx3qli247m5yxdyv36aby7qmmzv9h-your-first-haskell-app/css/todo.css">
+  <script language="javascript" src="/nix/store/dxsgx3qli247m5yxdyv36aby7qmmzv9h-your-first-haskell-app/js/examples.min.js"></script>
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+
+  <!-- Start Piwik Code -->
+  <script language="javascript" src="js/examples.min.js"></script>
+        <!-- Piwik -->
+        <script type="text/javascript">
+          var _paq = _paq || [];
+          /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+          _paq.push(['trackPageView']);
+          _paq.push(['enableLinkTracking']);
+          _paq.push(['enableHeartBeatTimer', 30]);
+          (function() {
+            var u="//analytics.qfpl.io/";
+            _paq.push(['setTrackerUrl', u+'piwik.php']);
+            _paq.push(['setSiteId', '1']);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+            g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+          })();
+  </script>
+  <!-- End Piwik Code -->
+
+  <!--[if lt IE 9]>
+  <script src="reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div id="grid-setup"></div>
+  <div class="reveal">
+    <div class="slides">
+
+<section>
+  <h1 class="title">Your first Haskell app</h1>
+  <p class="author">Andrew McCluskey</p>
+<img src="images/data61-logo.png" alt="data61" style="height: 200px; background-color: inherit; margin-top: 25px;">
+</section>
+
+<section><section id="motivation" class="titleslide slide level1"><h1>Motivation</h1></section><section id="getting-started-can-be-intimidating" class="slide level2">
+<h2>Getting started can be intimidating</h2>
+</section><section id="section" class="slide level2">
+<h2></h2>
+<p>Applying concepts to a real application</p>
+</section><section id="section-1" class="slide level2">
+<h2></h2>
+<p>Navigating the ecosystem</p>
+</section><section id="my-experience" class="slide level2">
+<h2>My experience</h2>
+</section><section id="section-2" class="slide level2" data-background-image="images/learn-all-the-things.jpg" data-background-size="contain">
+<h2></h2>
+<!--
+I thought I needed to learn a huge number of concepts to write something useful - e.g.
+
+ - lens
+ - Monad Transformers / classy mtl
+-->
+</section><section id="section-3" class="slide level2">
+<h2></h2>
+<p>Write the code!</p>
+<!--
+ - Turns out you don't need them.
+ - Writing something is a great way to learn/solidify
+ - Motivates learning new concepts
+-->
+</section><section id="section-4" class="slide level2">
+<h2></h2>
+<p>Working examples</p>
+<!--
+I benefitted greatly from having a template/example to work from.
+Code and slides available on Github
+-->
+</section><section id="assumed-knowledge" class="slide level2">
+<h2>Assumed knowledge</h2>
+</section><section id="section-5" class="slide level2">
+<h2></h2>
+<p><code>Maybe</code><br />
+<code>Either</code><br />
+<code>Monoid</code><br />
+<code>Functor</code><br />
+<code>Applicative</code><br />
+<code>Monad</code></p>
+</section><section id="section-6" class="slide level2">
+<h2></h2>
+<p>...<em>BUT</em> you haven't written an application</p>
+</section><section id="section-7" class="slide level2" data-background-image="images/keep_calm_and_carry_on.jpg">
+<h2></h2>
+</section></section>
+<section><section id="section-8" class="titleslide slide level1" data-background-image="images/overview.png"><h1></h1></section></section>
+<section><section id="app" class="titleslide slide level1" data-background-image="images/the-app.png"><h1>App</h1></section><section id="requirements" class="slide level2">
+<h2>Requirements</h2>
+</section><section id="section-9" class="slide level2">
+<h2></h2>
+<p>I want comments on my static blog, but I don't want to deploy a database or use a third party service</p>
+</section><section id="section-10" class="slide level2">
+<h2></h2>
+<blockquote>
+<p>Par·ley n.</p>
+<p>To have a discussion, especially with an enemy.</p>
+</blockquote>
+</section><section id="section-11" class="slide level2" data-background-image="images/comment-section.jpg" data-background-size="contain">
+<h2></h2>
+</section><section id="spec" class="slide level2">
+<h2>Spec</h2>
+</section><section id="section-12" class="slide level2">
+<h2></h2>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Operation</th>
+<th style="text-align: left;">Route</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Add to a topic</td>
+<td style="text-align: left;">/&lt;topic&gt;/add</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">View comments for a topic</td>
+<td style="text-align: left;">/&lt;topic&gt;/view</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">List topics</td>
+<td style="text-align: left;">/list</td>
+</tr>
+</tbody>
+</table>
+</section><section id="section-13" class="slide level2">
+<h2></h2>
+<div id="logos">
+<div id="haskell-logo-wrapper">
+<img alt="Haskell logo" src="images/haskell-logo.svg" id="haskell-logo" class="logo" />
+</div>
+<div id="plus-between-logos">
++
+</div>
+<div id="sqlite-logo-wrapper">
+<img alt="SQLite logo" src="images/sqlite-logo.svg" id="sqlite-logo" class="logo" />
+</div>
+</div>
+<div style="clear: both;">
+
+</div>
+</section><section id="libraries" class="slide level2">
+<h2>Libraries</h2>
+</section><section id="section-14" class="slide level2">
+<h2></h2>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Library</th>
+<th style="text-align: left;">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>aeson</code></td>
+<td style="text-align: left;">JSON encoding</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>sqlite-simple</code></td>
+<td style="text-align: left;">Talk to SQLite</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>sqlite-simple-errors</code></td>
+<td style="text-align: left;">Exceptions to values</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>optparse-applicative</code></td>
+<td style="text-align: left;">Command line parsing</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>wai</code></td>
+<td style="text-align: left;">Web application interface</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>warp</code></td>
+<td style="text-align: left;">Web server</td>
+</tr>
+</tbody>
+</table>
+</section><section id="section-15" class="slide level2">
+<h2></h2>
+<p><strong>ONLY AN EDUCATIONAL EXAMPLE</strong></p>
+<!-- Not because we can't, but in the interests of simplicity of explanation in a 25 minute talk-->
+</section><section id="proof" class="slide level2">
+<h2>Proof</h2>
+</section><section id="section-16" class="slide level2" data-background-image="images/demo-list.png" data-background-size="contain">
+<h2></h2>
+</section><section id="section-17" class="slide level2" data-background-image="images/demo-view.png" data-background-size="contain">
+<h2></h2>
+</section><section id="section-18" class="slide level2" data-background-image="images/demo-not-found.png" data-background-size="contain">
+<h2></h2>
+</section></section>
+<section><section id="concepts" class="titleslide slide level1" data-background-image="images/concepts.png"><h1>Concepts</h1></section><section id="model-the-domain-with-data" class="slide level2">
+<h2>Model the domain with data</h2>
+</section><section id="model-actions-as-data" class="slide level2">
+<h2>Model actions as data</h2>
+</section><section id="error-values-over-exceptions" class="slide level2">
+<h2>Error values over exceptions</h2>
+</section><section id="loose-types-and-io-at-the-edges" class="slide level2">
+<h2>Loose types and IO at the edges</h2>
+</section></section>
+<section><section id="types" class="titleslide slide level1" data-background-image="images/types.png"><h1>Types</h1></section><section id="model-the-domain" class="slide level2">
+<h2>Model the domain</h2>
+</section><section id="section-19" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Comment</span> <span class="fu">=</span> <span class="dt">Comment</span> <span class="dt">CommentId</span>
+                       <span class="dt">Topic</span>
+                       <span class="dt">CommentText</span>
+                       <span class="dt">UTCTime</span>
+               <span class="kw">deriving</span> <span class="dt">Show</span></code></pre></div>
+<!--
+Note that each component of our product has a meaningful type. Haskell makes it
+easy and convenient to do this.
+-->
+</section><section id="section-20" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Error</span> <span class="fu">=</span> <span class="dt">NoTopicInRequest</span>
+           <span class="fu">|</span> <span class="dt">UnknownRoute</span>
+           <span class="fu">|</span> <span class="dt">NoCommentText</span>
+           <span class="fu">|</span> <span class="dt">SQLiteError</span> <span class="dt">SQLiteResponse</span></code></pre></div>
+<!--
+ - Errors as values, NOT exceptions
+ - SQLiteResponse comes from sqlite-simple-errors - wrap it up for our app
+ - All of our application errors in one place.
+ - Compilers stops us adding a new one and not handling it
+-->
+</section><section id="section-21" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">ContentType</span> <span class="fu">=</span> <span class="dt">PlainText</span>
+                 <span class="fu">|</span> <span class="dt">JSON</span>
+
+<span class="ot">render ::</span> <span class="dt">ContentType</span> <span class="ot">-&gt;</span> <span class="dt">ByteString</span>
+render <span class="dt">PlainText</span> <span class="fu">=</span> <span class="st">&quot;text/plain&quot;</span>
+render <span class="dt">JSON</span>      <span class="fu">=</span> <span class="st">&quot;text/json&quot;</span></code></pre></div>
+<!--
+Foreshadowing - responses take the content type header as a ByteString.
+Once again, we care about two content types, not the infinite universe of strings, so lock it down with a sum type.
+-->
+</section><section id="actions-as-data" class="slide level2">
+<h2>Actions as data</h2>
+</section><section id="section-22" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">ParleyRequest</span> <span class="fu">=</span> <span class="dt">AddRequest</span> <span class="dt">Topic</span> <span class="dt">CommentText</span>
+                   <span class="fu">|</span> <span class="dt">ViewRequest</span> <span class="dt">Topic</span>
+                   <span class="fu">|</span> <span class="dt">ListRequest</span></code></pre></div>
+<!--
+ - Correspondance to our spec.
+ - Compare to the universe of strings or an open inheritance hierarchy.
+ - Exhaustive pattern matches
+-->
+</section><section id="newtype" class="slide level2">
+<h2>newtype</h2>
+</section><section id="section-23" class="slide level2" data-background-image="images/newtype.png" data-background-size="contain">
+<h2></h2>
+<!--
+https://twitter.com/mattoflambda/status/892113796927324160
+
+ - Not an alias - a whole new type that fails to type check
+ - Prevents mistakes by allowing the type system to tell us when we're using the wrong `Text`
+ - acts as documentation
+ - Wrapper disappears at compile time
+-->
+</section><section id="section-24" class="slide level2">
+<h2></h2>
+<ul>
+<li class="fragment">Zero cost abstraction</li>
+<li class="fragment">Call out semantics</li>
+<li class="fragment">Compiler errors</li>
+</ul>
+</section><section id="section-25" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">newtype</span> <span class="dt">Table</span> <span class="fu">=</span> <span class="dt">Table</span> <span class="dt">Text</span>
+                <span class="kw">deriving</span> (<span class="dt">Show</span>)
+
+<span class="kw">newtype</span> <span class="dt">CommentId</span> <span class="fu">=</span> <span class="dt">CommentId</span> <span class="dt">Integer</span>
+                    <span class="kw">deriving</span> (<span class="dt">Eq</span>, <span class="dt">Show</span>, <span class="dt">ToJSON</span>)
+
+<span class="kw">newtype</span> <span class="dt">Port</span> <span class="fu">=</span> <span class="dt">Port</span> {<span class="ot"> unPort ::</span> <span class="dt">Int16</span> }
+               <span class="kw">deriving</span> <span class="dt">Show</span></code></pre></div>
+</section><section id="smart-constructors" class="slide level2">
+<h2>Smart constructors</h2>
+</section><section id="section-26" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">newtype</span> <span class="dt">Topic</span> <span class="fu">=</span> <span class="dt">Topic</span> {<span class="ot">getTopic ::</span> <span class="dt">Text</span>}
+                <span class="kw">deriving</span> (<span class="dt">Eq</span>, <span class="dt">Show</span>)
+
+<span class="kw">newtype</span> <span class="dt">CommentText</span> <span class="fu">=</span> <span class="dt">CommentText</span> {<span class="ot">getComment ::</span> <span class="dt">Text</span>}
+                      <span class="kw">deriving</span> (<span class="dt">Eq</span>, <span class="dt">Show</span>)</code></pre></div>
+</section><section id="section-27" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">module</span> <span class="dt">Parley.Types</span> ( <span class="fu">...</span>
+                    , <span class="dt">Topic</span> (getTopic)
+                    , <span class="dt">CommentText</span> (getComment)
+                    <span class="fu">...</span>
+                    )</code></pre></div>
+</section><section id="section-28" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">mkTopic ::</span> <span class="dt">Text</span> <span class="ot">-&gt;</span> <span class="dt">Either</span> <span class="dt">Error</span> <span class="dt">Topic</span>
+mkTopic <span class="st">&quot;&quot;</span> <span class="fu">=</span> <span class="dt">Left</span> <span class="dt">NoTopicInRequest</span>
+mkTopic t  <span class="fu">=</span> pure <span class="fu">$</span> <span class="dt">Topic</span> t
+
+<span class="ot">mkCommentText ::</span> <span class="dt">Text</span> <span class="ot">-&gt;</span> <span class="dt">Either</span> <span class="dt">Error</span> <span class="dt">CommentText</span>
+mkCommentText <span class="st">&quot;&quot;</span> <span class="fu">=</span> <span class="dt">Left</span> <span class="dt">NoCommentText</span>
+mkCommentText t  <span class="fu">=</span> pure <span class="fu">$</span> <span class="dt">CommentText</span> t</code></pre></div>
+</section><section id="section-29" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">module</span> <span class="dt">Parley.Types</span> ( <span class="fu">...</span>
+                    , <span class="dt">Topic</span> (getTopic)
+                    , <span class="dt">CommentText</span> (getComment)
+                    , mkTopic
+                    , mkCommentText
+                    <span class="fu">...</span>
+                    )</code></pre></div>
+</section><section id="untyped-at-the-border" class="slide level2">
+<h2>Untyped at the border</h2>
+</section><section id="section-30" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">DbComment</span> <span class="fu">=</span>
+  <span class="dt">DbComment</span> {<span class="ot"> dbCommentId    ::</span> <span class="dt">Integer</span>
+            ,<span class="ot"> dbCommentTopic ::</span> <span class="dt">Text</span>
+            ,<span class="ot"> dbCommentBody  ::</span> <span class="dt">Text</span>
+            ,<span class="ot"> dbCommentTime  ::</span> <span class="dt">UTCTime</span>
+            }
+            <span class="kw">deriving</span> <span class="dt">Show</span></code></pre></div>
+<!--
+Our database doesn't know about our types. So we use more clumsy representations, but
+only at the edges of our system.
+-->
+</section><section id="json" class="slide level2">
+<h2>JSON</h2>
+</section><section id="section-31" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">instance</span> <span class="dt">ToJSON</span> <span class="dt">Comment</span> <span class="kw">where</span>
+  toJSON (<span class="dt">Comment</span> id&#39; topic comment time) <span class="fu">=</span>
+    object [ <span class="st">&quot;id&quot;</span> <span class="fu">.=</span> id&#39;
+           , <span class="st">&quot;topic&quot;</span> <span class="fu">.=</span> topic
+           , <span class="st">&quot;comment&quot;</span> <span class="fu">.=</span> comment
+           , <span class="st">&quot;time&quot;</span> <span class="fu">.=</span> time
+           ]
+
+  toEncoding (<span class="dt">Comment</span> id&#39; topic comment time) <span class="fu">=</span>
+    pairs (  <span class="st">&quot;id&quot;</span> <span class="fu">.=</span> id&#39;
+          <span class="fu">&lt;&gt;</span> <span class="st">&quot;topic&quot;</span> <span class="fu">.=</span> topic
+          <span class="fu">&lt;&gt;</span> <span class="st">&quot;comment&quot;</span> <span class="fu">.=</span> comment
+          <span class="fu">&lt;&gt;</span> <span class="st">&quot;time&quot;</span> <span class="fu">.=</span> time
+          )</code></pre></div>
+<!--
+Could have got these for free, but names would correspond to field names in
+record - not as nice
+-->
+</section></section>
+<section><section id="flow" class="titleslide slide level1" data-background-image="images/flow.png"><h1>Flow</h1></section><section id="wai" class="slide level2">
+<h2>Wai</h2>
+<blockquote>
+<p>Web Application Interface: a low level interface between web servers and applications</p>
+</blockquote>
+<!-- Standard interface for web applications - think Rack in Ruby, WSGI in Pythong.
+Can talk to multiple servers -->
+</section><section id="section-32" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">app ::</span> <span class="dt">Request</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> <span class="dt">Response</span></code></pre></div>
+</section><section id="section-33" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">app ::</span> <span class="dt">Request</span>
+    <span class="ot">-&gt;</span> (<span class="dt">Response</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> <span class="dt">ResponseReceived</span>)
+    <span class="ot">-&gt;</span> <span class="dt">IO</span> <span class="dt">ResponseReceived</span></code></pre></div>
+<!--
+Still `Request -> Response` for our purposes.
+Callback is to ensure resources aren't cleaned up before response is evaluated - lazy IO
+-->
+</section><section id="section-34" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">app ::</span> <span class="dt">ParleyDb</span>
+    <span class="ot">-&gt;</span> <span class="dt">Request</span>
+    <span class="ot">-&gt;</span> (<span class="dt">Response</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> <span class="dt">ResponseReceived</span>)
+    <span class="ot">-&gt;</span> <span class="dt">IO</span> <span class="dt">ResponseReceived</span></code></pre></div>
+</section><section id="section-35" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">mkRequest ::</span> <span class="dt">Request</span>
+          <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">Either</span> <span class="dt">Error</span> <span class="dt">ParleyRequest</span>)
+
+<span class="ot">handleRequest ::</span> <span class="dt">ParleyDb</span>
+              <span class="ot">-&gt;</span> <span class="dt">ParleyRequest</span>
+              <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">Either</span> <span class="dt">Error</span> <span class="dt">Response</span>)
+
+<span class="ot">handleError ::</span> <span class="dt">Error</span>
+            <span class="ot">-&gt;</span> <span class="dt">Response</span></code></pre></div>
+</section><section id="section-36" class="slide level2" data-background-image="images/flow-diagram.jpg">
+<h2></h2>
+</section><section id="section-37" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">app ::</span> <span class="dt">ParleyDb</span>
+    <span class="ot">-&gt;</span> <span class="dt">Request</span>
+    <span class="ot">-&gt;</span> (<span class="dt">Response</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> <span class="dt">ResponseReceived</span>)
+    <span class="ot">-&gt;</span> <span class="dt">IO</span> <span class="dt">ResponseReceived</span>
+app db request cb <span class="fu">=</span> <span class="kw">do</span>
+ 
+ 
+
+ 
+ 
+ 
+  erq <span class="ot">&lt;-</span> mkRequest request
+  
+  </code></pre></div>
+</section><section id="section-38" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">app ::</span> <span class="dt">ParleyDb</span>
+    <span class="ot">-&gt;</span> <span class="dt">Request</span>
+    <span class="ot">-&gt;</span> (<span class="dt">Response</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> <span class="dt">ResponseReceived</span>)
+    <span class="ot">-&gt;</span> <span class="dt">IO</span> <span class="dt">ResponseReceived</span>
+app db request cb <span class="fu">=</span> <span class="kw">do</span>
+  <span class="kw">let</span> handleRq (<span class="dt">Left</span> e) <span class="fu">=</span> pure (<span class="dt">Left</span> e)
+      handleRq (<span class="dt">Right</span> r) <span class="fu">=</span> handleRequest db r
+
+      
+      
+
+  erq <span class="ot">&lt;-</span> mkRequest request
+  ersp <span class="ot">&lt;-</span> handleRq erq
+  </code></pre></div>
+</section><section id="section-39" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">app ::</span> <span class="dt">ParleyDb</span>
+    <span class="ot">-&gt;</span> <span class="dt">Request</span>
+    <span class="ot">-&gt;</span> (<span class="dt">Response</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> <span class="dt">ResponseReceived</span>)
+    <span class="ot">-&gt;</span> <span class="dt">IO</span> <span class="dt">ResponseReceived</span>
+app db request cb <span class="fu">=</span> <span class="kw">do</span>
+  <span class="kw">let</span> handleRq (<span class="dt">Left</span> e) <span class="fu">=</span> pure (<span class="dt">Left</span> e)
+      handleRq (<span class="dt">Right</span> r) <span class="fu">=</span> handleRequest db r
+
+      handleRsp (<span class="dt">Left</span> e) <span class="fu">=</span> handleError e
+      handleRsp (<span class="dt">Right</span> rsp) <span class="fu">=</span> rsp
+
+  erq <span class="ot">&lt;-</span> mkRequest request
+  ersp <span class="ot">&lt;-</span> handleRq erq
+  cb (handleRsp ersp)</code></pre></div>
+</section><section id="routing" class="slide level2">
+<h2>Routing</h2>
+</section><section id="section-40" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">mkRequest ::</span> <span class="dt">Request</span>
+          <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">Either</span> <span class="dt">Error</span> <span class="dt">ParleyRequest</span>)
+mkRequest request <span class="fu">=</span>
+  <span class="kw">case</span> pathInfo request <span class="kw">of</span>
+ 
+
+ 
+    [<span class="st">&quot;list&quot;</span>]   <span class="ot">-&gt;</span> pure (<span class="dt">Right</span> <span class="dt">ListRequest</span>)
+ </code></pre></div>
+</section><section id="section-41" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">mkRequest ::</span> <span class="dt">Request</span>
+          <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">Either</span> <span class="dt">Error</span> <span class="dt">ParleyRequest</span>)
+mkRequest request <span class="fu">=</span>
+  <span class="kw">case</span> pathInfo request <span class="kw">of</span>
+ 
+
+    [t,<span class="st">&quot;view&quot;</span>] <span class="ot">-&gt;</span> pure (mkViewRequest t)
+    [<span class="st">&quot;list&quot;</span>]   <span class="ot">-&gt;</span> pure (<span class="dt">Right</span> <span class="dt">ListRequest</span>)
+ </code></pre></div>
+</section><section id="section-42" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">mkRequest ::</span> <span class="dt">Request</span>
+          <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">Either</span> <span class="dt">Error</span> <span class="dt">ParleyRequest</span>)
+mkRequest request <span class="fu">=</span>
+  <span class="kw">case</span> pathInfo request <span class="kw">of</span>
+    [t,<span class="st">&quot;add&quot;</span>]  <span class="ot">-&gt;</span> fmap (mkAddRequest t)
+                       (strictRequestBody request)
+    [t,<span class="st">&quot;view&quot;</span>] <span class="ot">-&gt;</span> pure (mkViewRequest t)
+    [<span class="st">&quot;list&quot;</span>]   <span class="ot">-&gt;</span> pure (<span class="dt">Right</span> <span class="dt">ListRequest</span>)
+ </code></pre></div>
+</section><section id="section-43" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">mkRequest ::</span> <span class="dt">Request</span>
+          <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">Either</span> <span class="dt">Error</span> <span class="dt">ParleyRequest</span>)
+mkRequest request <span class="fu">=</span>
+  <span class="kw">case</span> pathInfo request <span class="kw">of</span>
+    [t,<span class="st">&quot;add&quot;</span>]  <span class="ot">-&gt;</span> fmap (mkAddRequest t)
+                       (strictRequestBody request)
+    [t,<span class="st">&quot;view&quot;</span>] <span class="ot">-&gt;</span> pure (mkViewRequest t)
+    [<span class="st">&quot;list&quot;</span>]   <span class="ot">-&gt;</span> pure (<span class="dt">Right</span> <span class="dt">ListRequest</span>)
+    _          <span class="ot">-&gt;</span> pure (<span class="dt">Left</span> <span class="dt">UnknownRoute</span>)</code></pre></div>
+</section><section id="request---response" class="slide level2">
+<h2>Request -&gt; Response</h2>
+</section><section id="section-44" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">handleRequest ::</span> <span class="dt">ParleyDb</span>
+              <span class="ot">-&gt;</span> <span class="dt">ParleyRequest</span>
+              <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">Either</span> <span class="dt">Error</span> <span class="dt">Response</span>)
+handleRequest db rq <span class="fu">=</span>
+  <span class="kw">case</span> rq <span class="kw">of</span>
+    <span class="dt">AddRequest</span> t c <span class="ot">-&gt;</span> handleAdd db t c
+ 
+ </code></pre></div>
+</section><section id="section-45" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">handleRequest ::</span> <span class="dt">ParleyDb</span>
+              <span class="ot">-&gt;</span> <span class="dt">ParleyRequest</span>
+              <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">Either</span> <span class="dt">Error</span> <span class="dt">Response</span>)
+handleRequest db rq <span class="fu">=</span>
+  <span class="kw">case</span> rq <span class="kw">of</span>
+    <span class="dt">AddRequest</span> t c <span class="ot">-&gt;</span> handleAdd db t c
+    <span class="dt">ViewRequest</span> t  <span class="ot">-&gt;</span> getComments db t <span class="fu">&gt;&gt;=</span> dbJSONResponse
+ </code></pre></div>
+</section><section id="section-46" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">handleRequest ::</span> <span class="dt">ParleyDb</span>
+              <span class="ot">-&gt;</span> <span class="dt">ParleyRequest</span>
+              <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">Either</span> <span class="dt">Error</span> <span class="dt">Response</span>)
+handleRequest db rq <span class="fu">=</span>
+  <span class="kw">case</span> rq <span class="kw">of</span>
+    <span class="dt">AddRequest</span> t c <span class="ot">-&gt;</span> handleAdd db t c
+    <span class="dt">ViewRequest</span> t  <span class="ot">-&gt;</span> getComments db t <span class="fu">&gt;&gt;=</span> dbJSONResponse
+    <span class="dt">ListRequest</span>    <span class="ot">-&gt;</span> getTopics db <span class="fu">&gt;&gt;=</span> dbJSONResponse</code></pre></div>
+</section><section id="section-47" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">dbJSONResponse ::</span> <span class="dt">ToJSON</span> a
+               <span class="ot">=&gt;</span> <span class="dt">Either</span> <span class="dt">Error</span> a
+               <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">Either</span> <span class="dt">Error</span> <span class="dt">Response</span>)
+ 
+ 
+ 
+ 
+ 
+ </code></pre></div>
+</section><section id="section-48" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">dbJSONResponse ::</span> <span class="dt">ToJSON</span> a
+               <span class="ot">=&gt;</span> <span class="dt">Either</span> <span class="dt">Error</span> a
+               <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">Either</span> <span class="dt">Error</span> <span class="dt">Response</span>)
+dbJSONResponse ea <span class="fu">=</span>
+  
+  
+  
+  
+      pure (fmap responseFromJSON ea)</code></pre></div>
+</section><section id="section-49" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">dbJSONResponse ::</span> <span class="dt">ToJSON</span> a
+               <span class="ot">=&gt;</span> <span class="dt">Either</span> <span class="dt">Error</span> a
+               <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">Either</span> <span class="dt">Error</span> <span class="dt">Response</span>)
+dbJSONResponse ea <span class="fu">=</span>
+  <span class="kw">let</span> responseFromJSON a <span class="fu">=</span>
+        responseLBS HT.status200
+                    [contentHeader <span class="dt">JSON</span>]
+                    (encode a)
+   <span class="kw">in</span> pure (fmap responseFromJSON ea)</code></pre></div>
+</section><section id="error---response" class="slide level2">
+<h2>Error -&gt; Response</h2>
+</section><section id="section-50" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">handleError ::</span> <span class="dt">Error</span> <span class="ot">-&gt;</span> <span class="dt">Response</span>
+handleError e <span class="fu">=</span>
+  <span class="kw">case</span> e <span class="kw">of</span>
+ 
+ 
+    <span class="dt">UnknownRoute</span> <span class="ot">-&gt;</span>
+      rsp HT.status404 <span class="st">&quot;Not found :(&quot;</span>
+ 
+ 
+ 
+ 
+ 
+ 
+ </code></pre></div>
+</section><section id="section-51" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">handleError ::</span> <span class="dt">Error</span> <span class="ot">-&gt;</span> <span class="dt">Response</span>
+handleError e <span class="fu">=</span>
+  <span class="kw">case</span> e <span class="kw">of</span>
+    <span class="dt">NoTopicInRequest</span> <span class="ot">-&gt;</span>
+      rsp HT.status400 <span class="st">&quot;Empty topics not allowed&quot;</span>
+    <span class="dt">UnknownRoute</span> <span class="ot">-&gt;</span>
+      rsp HT.status404 <span class="st">&quot;Not found :(&quot;</span>
+    <span class="dt">NoCommentText</span> <span class="ot">-&gt;</span>
+      rsp HT.status400 <span class="st">&quot;Empty body text not allowed&quot;</span>
+ 
+ 
+ 
+ 
+ </code></pre></div>
+</section><section id="section-52" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">handleError ::</span> <span class="dt">Error</span> <span class="ot">-&gt;</span> <span class="dt">Response</span>
+handleError e <span class="fu">=</span>
+  <span class="kw">case</span> e <span class="kw">of</span>
+    <span class="dt">NoTopicInRequest</span> <span class="ot">-&gt;</span>
+      rsp HT.status400 <span class="st">&quot;Empty topics not allowed&quot;</span>
+    <span class="dt">UnknownRoute</span> <span class="ot">-&gt;</span>
+      rsp HT.status404 <span class="st">&quot;Not found :(&quot;</span>
+    <span class="dt">NoCommentText</span> <span class="ot">-&gt;</span>
+      rsp HT.status400 <span class="st">&quot;Empty body text not allowed&quot;</span>
+    <span class="dt">SQLiteError</span> se <span class="ot">-&gt;</span>
+      rsp HT.status500 (dbError se)
+ 
+ 
+ </code></pre></div>
+</section><section id="section-53" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">handleError ::</span> <span class="dt">Error</span> <span class="ot">-&gt;</span> <span class="dt">Response</span>
+handleError e <span class="fu">=</span>
+  <span class="kw">case</span> e <span class="kw">of</span>
+    <span class="dt">NoTopicInRequest</span> <span class="ot">-&gt;</span>
+      rsp HT.status400 <span class="st">&quot;Empty topics not allowed&quot;</span>
+    <span class="dt">UnknownRoute</span> <span class="ot">-&gt;</span>
+      rsp HT.status404 <span class="st">&quot;Not found :(&quot;</span>
+    <span class="dt">NoCommentText</span> <span class="ot">-&gt;</span>
+      rsp HT.status400 <span class="st">&quot;Empty body text not allowed&quot;</span>
+    <span class="dt">SQLiteError</span> se <span class="ot">-&gt;</span>
+      rsp HT.status500 (dbError se)
+  <span class="kw">where</span>
+ 
+    dbError se <span class="fu">=</span> <span class="st">&quot;Database error: &quot;</span> <span class="fu">&lt;&gt;</span> LBS8.pack (show se)</code></pre></div>
+</section><section id="section-54" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">handleError ::</span> <span class="dt">Error</span> <span class="ot">-&gt;</span> <span class="dt">Response</span>
+handleError e <span class="fu">=</span>
+  <span class="kw">case</span> e <span class="kw">of</span>
+    <span class="dt">NoTopicInRequest</span> <span class="ot">-&gt;</span>
+      rsp HT.status400 <span class="st">&quot;Empty topics not allowed&quot;</span>
+    <span class="dt">UnknownRoute</span> <span class="ot">-&gt;</span>
+      rsp HT.status404 <span class="st">&quot;Not found :(&quot;</span>
+    <span class="dt">NoCommentText</span> <span class="ot">-&gt;</span>
+      rsp HT.status400 <span class="st">&quot;Empty body text not allowed&quot;</span>
+    <span class="dt">SQLiteError</span> se <span class="ot">-&gt;</span>
+      rsp HT.status500 (dbError se)
+  <span class="kw">where</span>
+    rsp s t <span class="fu">=</span> responseLBS s [contentHeader <span class="dt">PlainText</span>] t
+    dbError se <span class="fu">=</span> <span class="st">&quot;Database error: &quot;</span> <span class="fu">&lt;&gt;</span> LBS8.pack (show se)</code></pre></div>
+</section></section>
+<section><section id="config" class="titleslide slide level1" data-background-image="images/config.png"><h1>Config</h1></section><section id="section-55" class="slide level2">
+<h2></h2>
+<p><img alt="partial options post" src="images/partial-options.png" /></p>
+</section><section id="section-56" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Config</span> <span class="fu">=</span>
+  <span class="dt">Config</span> {<span class="ot"> port   ::</span> <span class="dt">Port</span>
+         ,<span class="ot"> dbPath ::</span> FilePath
+         }</code></pre></div>
+</section><section id="section-57" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">PartialConfig</span> <span class="fu">=</span>
+  <span class="dt">PartialConfig</span> {<span class="ot"> pcPort   ::</span> <span class="dt">Last</span> <span class="dt">Port</span>
+                ,<span class="ot"> pcDBPath ::</span> <span class="dt">Last</span> FilePath
+                }</code></pre></div>
+</section><section id="section-58" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">newtype</span> <span class="dt">Last</span> a <span class="fu">=</span> <span class="dt">Last</span> {<span class="ot">getLast ::</span> <span class="dt">Maybe</span> a}
+
+<span class="kw">instance</span> <span class="dt">Monoid</span> (<span class="dt">Last</span> a) <span class="kw">where</span>
+  mempty <span class="fu">=</span> <span class="dt">Last</span> <span class="dt">Nothing</span>
+  l <span class="ot">`mappend`</span> <span class="dt">Last</span> <span class="dt">Nothing</span> <span class="fu">=</span> l
+  _ <span class="ot">`mappend`</span> r            <span class="fu">=</span> r</code></pre></div>
+</section><section id="section-59" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">instance</span> <span class="dt">Monoid</span> <span class="dt">PartialConfig</span> <span class="kw">where</span>
+  mempty <span class="fu">=</span> <span class="dt">PartialConfig</span> mempty mempty
+  mappend a b <span class="fu">=</span> mempty { pcPort <span class="fu">=</span> pcPort a <span class="fu">&lt;&gt;</span> pcPort b
+                       , pcDBPath <span class="fu">=</span> pcDBPath a <span class="fu">&lt;&gt;</span> pcDBPath b
+                       }</code></pre></div>
+</section><section id="section-60" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"> 
+ 
+ 
+ 
+           (defaultConfig <span class="fu">&lt;&gt;</span> fileConfig <span class="fu">&lt;&gt;</span> commandLineConfig)
+ </code></pre></div>
+</section><section id="section-61" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">parseOptions ::</span> FilePath <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">Either</span> <span class="dt">ConfigError</span> <span class="dt">Config</span>)
+parseOptions configFilePath <span class="fu">=</span> <span class="kw">do</span>
+  fileConfig <span class="ot">&lt;-</span> parseConfigFile configFilePath
+  commandLineConfig <span class="ot">&lt;-</span> parseCommandLine
+  <span class="kw">let</span> pc <span class="fu">=</span> (defaultConfig <span class="fu">&lt;&gt;</span> fileConfig <span class="fu">&lt;&gt;</span> commandLineConfig)
+  pure (makeConfig pc)</code></pre></div>
+</section><section id="section-62" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">makeConfig ::</span> <span class="dt">PartialConfig</span> <span class="ot">-&gt;</span> <span class="dt">Either</span> <span class="dt">ConfigError</span> <span class="dt">Config</span>
+
+ 
+ 
+ 
+ 
+ </code></pre></div>
+</section><section id="section-63" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">makeConfig ::</span> <span class="dt">PartialConfig</span> <span class="ot">-&gt;</span> <span class="dt">Either</span> <span class="dt">ConfigError</span> <span class="dt">Config</span>
+makeConfig pc <span class="fu">=</span> <span class="kw">do</span>
+  <span class="kw">let</span> lastToEither e (<span class="dt">Last</span> <span class="dt">Nothing</span>) <span class="fu">=</span> <span class="dt">Left</span> e
+      lastToEither _ (<span class="dt">Last</span> (<span class="dt">Just</span> v)) <span class="fu">=</span> <span class="dt">Right</span> v
+ 
+ 
+ </code></pre></div>
+</section><section id="section-64" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">makeConfig ::</span> <span class="dt">PartialConfig</span> <span class="ot">-&gt;</span> <span class="dt">Either</span> <span class="dt">ConfigError</span> <span class="dt">Config</span>
+makeConfig pc <span class="fu">=</span> <span class="kw">do</span>
+  <span class="kw">let</span> lastToEither e (<span class="dt">Last</span> <span class="dt">Nothing</span>) <span class="fu">=</span> <span class="dt">Left</span> e
+      lastToEither _ (<span class="dt">Last</span> (<span class="dt">Just</span> v)) <span class="fu">=</span> <span class="dt">Right</span> v
+  port&#39; <span class="ot">&lt;-</span> lastToEither <span class="dt">MissingPort</span> (pcPort pc)
+  dbPath&#39; <span class="ot">&lt;-</span> lastToEither <span class="dt">MissingDbPath</span> (pcDBPath pc)
+  pure <span class="dt">Config</span> {port <span class="fu">=</span> port&#39;, dbPath <span class="fu">=</span> dbPath&#39;}</code></pre></div>
+</section></section>
+<section><section id="cli" class="titleslide slide level1" data-background-image="images/cli.png"><h1>CLI</h1></section><section id="optparse-applicative" class="slide level2">
+<h2>optparse-applicative</h2>
+</section><section id="section-65" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">partialConfigParser ::</span> <span class="dt">Parser</span> <span class="dt">PartialConfig</span>
+partialConfigParser <span class="fu">=</span>
+  <span class="dt">PartialConfig</span> <span class="fu">&lt;$&gt;</span> portParser <span class="fu">&lt;*&gt;</span> dbParser</code></pre></div>
+</section><section id="section-66" class="slide level2">
+<h2></h2>
+<pre class="shell"><code>parley - simple comment management
+
+Usage: parley [-p|--port PORT] [-d|--database SQLITE_FILE]
+  Manage comments for a web blog
+
+Available options:
+  -p,--port PORT           TCP port to accept requests on
+  -d,--database SQLITE_FILE
+                           Path to sqlite database
+  -h,--help                Show this help text</code></pre>
+</section><section id="section-67" class="slide level2">
+<h2></h2>
+<p><code>execParser :: Parser     a -&gt; IO a</code></p>
+</section><section id="section-68" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">dbParser ::</span> <span class="dt">Parser</span> (<span class="dt">Last</span> FilePath)
+dbParser <span class="fu">=</span>
+  
+  
+  
+  
+               optional  strOption</code></pre></div>
+</section><section id="section-69" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">dbParser ::</span> <span class="dt">Parser</span> (<span class="dt">Last</span> FilePath)
+dbParser <span class="fu">=</span>
+  
+  
+  
+  
+      <span class="dt">Last</span> <span class="fu">&lt;$&gt;</span> optional  strOption</code></pre></div>
+</section><section id="section-70" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">dbParser ::</span> <span class="dt">Parser</span> (<span class="dt">Last</span> FilePath)
+dbParser <span class="fu">=</span>
+  <span class="kw">let</span> mods <span class="fu">=</span>  long <span class="st">&quot;database&quot;</span>
+           <span class="fu">&lt;&gt;</span> short <span class="ch">&#39;d&#39;</span>
+           <span class="fu">&lt;&gt;</span> metavar <span class="st">&quot;SQLITE_FILE&quot;</span>
+           <span class="fu">&lt;&gt;</span> help <span class="st">&quot;Path to sqlite database&quot;</span>
+   <span class="kw">in</span> <span class="dt">Last</span> <span class="fu">&lt;$&gt;</span> optional (strOption mods)</code></pre></div>
+</section><section id="section-71" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">portParser ::</span> <span class="dt">Parser</span> (<span class="dt">Last</span> <span class="dt">Port</span>)
+portParser <span class="fu">=</span>
+  <span class="kw">let</span> mods <span class="fu">=</span>  long <span class="st">&quot;port&quot;</span>
+           <span class="fu">&lt;&gt;</span> short <span class="ch">&#39;p&#39;</span>
+           <span class="fu">&lt;&gt;</span> metavar <span class="st">&quot;PORT&quot;</span>
+           <span class="fu">&lt;&gt;</span> help <span class="st">&quot;TCP port to accept requests on&quot;</span>
+      portReader <span class="fu">=</span> eitherReader (fmap <span class="dt">Port</span> <span class="fu">.</span> readEither)
+   <span class="kw">in</span> <span class="dt">Last</span> <span class="fu">&lt;$&gt;</span> optional (option portReader mods)</code></pre></div>
+</section><section id="section-72" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"> 
+ 
+ 
+ 
+ 
+ 
+ 
+                         option portReader</code></pre></div>
+</section><section id="section-73" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">readEither ::</span> <span class="dt">Read</span> a <span class="ot">=&gt;</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">Either</span> <span class="dt">String</span> a
+ 
+ 
+ 
+ 
+ 
+      portReader <span class="fu">=</span> eitherReader (fmap <span class="dt">Port</span> <span class="fu">.</span> readEither)
+                         option portReader</code></pre></div>
+</section><section id="section-74" class="slide level2">
+<h2></h2>
+<p><code>execParser :: Parser     a -&gt; IO a</code></p>
+</section><section id="section-75" class="slide level2">
+<h2></h2>
+<p><code>execParser :: ParserInfo a -&gt; IO a</code></p>
+</section><section id="section-76" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">commandLineParser ::</span> <span class="dt">ParserInfo</span> <span class="dt">PartialConfig</span>
+commandLineParser <span class="fu">=</span>
+  
+  
+  
+      info             partialConfigParser</code></pre></div>
+</section><section id="section-77" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">commandLineParser ::</span> <span class="dt">ParserInfo</span> <span class="dt">PartialConfig</span>
+commandLineParser <span class="fu">=</span>
+  
+  
+  
+      info (helper <span class="fu">&lt;*&gt;</span> partialConfigParser)</code></pre></div>
+</section><section id="section-78" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">commandLineParser ::</span> <span class="dt">ParserInfo</span> <span class="dt">PartialConfig</span>
+commandLineParser <span class="fu">=</span>
+  <span class="kw">let</span> mods <span class="fu">=</span>  fullDesc
+           <span class="fu">&lt;&gt;</span> progDesc <span class="st">&quot;Manage comments for a web blog&quot;</span>
+           <span class="fu">&lt;&gt;</span> header <span class="st">&quot;parley - simple comment management&quot;</span>
+   <span class="kw">in</span> info (helper <span class="fu">&lt;*&gt;</span> partialConfigParser) mods</code></pre></div>
+</section></section>
+<section><section id="database" class="titleslide slide level1" data-background-image="images/db.png"><h1>Database</h1></section><section id="sqlite-simple-errors" class="slide level2">
+<h2>sqlite-simple-errors</h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">type</span> <span class="dt">DatabaseResponse</span> a <span class="fu">=</span> <span class="dt">Either</span> <span class="dt">SQLiteResponse</span> a
+
+<span class="ot">runDBAction ::</span> <span class="dt">IO</span> a <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">DatabaseResponse</span> a)</code></pre></div>
+</section><section id="parleydb" class="slide level2">
+<h2>ParleyDb</h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">ParleyDb</span> <span class="fu">=</span> <span class="dt">ParleyDb</span> <span class="dt">Connection</span> <span class="dt">Table</span></code></pre></div>
+</section><section id="queries" class="slide level2">
+<h2>Queries</h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">newtype</span> <span class="dt">Query</span> <span class="fu">=</span> <span class="dt">Query</span> {fromQuery <span class="dt">Text</span>}
+
+<span class="ot">query ::</span> (<span class="dt">ToRow</span> q, <span class="dt">FromRow</span> r)
+      <span class="ot">=&gt;</span> <span class="dt">Connection</span> <span class="ot">-&gt;</span> <span class="dt">Query</span> <span class="ot">-&gt;</span> q <span class="ot">-&gt;</span> <span class="dt">IO</span> [r]
+
+<span class="ot">execute ::</span> <span class="dt">ToRow</span> q
+        <span class="ot">=&gt;</span> <span class="dt">Connection</span> <span class="ot">-&gt;</span> <span class="dt">Query</span> <span class="ot">-&gt;</span> q <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</code></pre></div>
+</section><section id="only" class="slide level2">
+<h2>Only</h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">newtype</span> <span class="dt">Only</span> a <span class="fu">=</span> <span class="dt">Only</span> {<span class="ot">fromOnly ::</span> a}</code></pre></div>
+</section><section id="initialisation" class="slide level2">
+<h2>Initialisation</h2>
+</section><section id="section-79" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">initDB ::</span> FilePath
+       <span class="ot">-&gt;</span> <span class="dt">Table</span>
+       <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">Either</span> <span class="dt">SQLiteResponse</span> <span class="dt">ParleyDb</span>)
+
+
+
+
+
+
+
+ </code></pre></div>
+</section><section id="section-80" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">initDB ::</span> FilePath
+       <span class="ot">-&gt;</span> <span class="dt">Table</span>
+       <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">Either</span> <span class="dt">SQLiteResponse</span> <span class="dt">ParleyDb</span>)
+initDB dbPath t<span class="fu">@</span>(<span class="dt">Table</span> tbl) <span class="fu">=</span> runDBAction <span class="fu">$</span> <span class="kw">do</span>
+
+
+
+
+ 
+
+ </code></pre></div>
+</section><section id="section-81" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">initDB ::</span> FilePath
+       <span class="ot">-&gt;</span> <span class="dt">Table</span>
+       <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">Either</span> <span class="dt">SQLiteResponse</span> <span class="dt">ParleyDb</span>)
+initDB dbPath t<span class="fu">@</span>(<span class="dt">Table</span> tbl) <span class="fu">=</span> runDBAction <span class="fu">$</span> <span class="kw">do</span>
+
+
+
+
+  conn <span class="ot">&lt;-</span> open dbPath
+
+  pure (<span class="dt">ParleyDb</span> conn t)</code></pre></div>
+</section><section id="section-82" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">initDB ::</span> FilePath
+       <span class="ot">-&gt;</span> <span class="dt">Table</span>
+       <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">Either</span> <span class="dt">SQLiteResponse</span> <span class="dt">ParleyDb</span>)
+initDB dbPath t<span class="fu">@</span>(<span class="dt">Table</span> tbl) <span class="fu">=</span> runDBAction <span class="fu">$</span> <span class="kw">do</span>
+  <span class="kw">let</span> createQ <span class="fu">=</span>
+        <span class="dt">Query</span> (<span class="st">&quot;CREATE TABLE IF NOT EXISTS &quot;</span> <span class="fu">&lt;&gt;</span> tbl
+            <span class="fu">&lt;&gt;</span> <span class="st">&quot; (id INTEGER PRIMARY KEY, topic TEXT,&quot;</span>
+            <span class="fu">&lt;&gt;</span> <span class="st">&quot;  comment TEXT, time INTEGER)&quot;</span>)
+  conn <span class="ot">&lt;-</span> open dbPath
+  execute_ conn createQ
+  pure (<span class="dt">ParleyDb</span> conn t)</code></pre></div>
+</section><section id="pattern" class="slide level2">
+<h2>Pattern</h2>
+</section><section id="section-83" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">dbToParley ::</span>
+              <span class="dt">IO</span> [a]
+           
+ 
+ 
+ 
+ 
+ </code></pre></div>
+</section><section id="section-84" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">dbToParley ::</span>
+              <span class="dt">IO</span> [a]
+           <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">Either</span> <span class="dt">Error</span> [b])
+ 
+ 
+ 
+ 
+ </code></pre></div>
+</section><section id="section-85" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">dbToParley ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Either</span> <span class="dt">Error</span> b)
+           <span class="ot">-&gt;</span> <span class="dt">IO</span> [a]
+           <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">Either</span> <span class="dt">Error</span> [b])
+ 
+ 
+ 
+ 
+ </code></pre></div>
+</section><section id="section-86" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">dbToParley ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Either</span> <span class="dt">Error</span> b)
+           <span class="ot">-&gt;</span> <span class="dt">IO</span> [a]
+           <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">Either</span> <span class="dt">Error</span> [b])
+dbToParley f a <span class="fu">=</span> <span class="kw">do</span>
+  result <span class="ot">&lt;-</span> runDBAction a
+  
+  
+  </code></pre></div>
+</section><section id="section-87" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">dbToParley ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Either</span> <span class="dt">Error</span> b)
+           <span class="ot">-&gt;</span> <span class="dt">IO</span> [a]
+           <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">Either</span> <span class="dt">Error</span> [b])
+dbToParley f a <span class="fu">=</span> <span class="kw">do</span>
+  result <span class="ot">&lt;-</span> runDBAction a
+  <span class="kw">case</span> result <span class="kw">of</span>
+    <span class="dt">Left</span> e   <span class="ot">-&gt;</span> (pure <span class="fu">.</span> <span class="dt">Left</span> <span class="fu">.</span> <span class="dt">SQLiteError</span>) e
+ </code></pre></div>
+</section><section id="section-88" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">dbToParley ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Either</span> <span class="dt">Error</span> b)
+           <span class="ot">-&gt;</span> <span class="dt">IO</span> [a]
+           <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">Either</span> <span class="dt">Error</span> [b])
+dbToParley f a <span class="fu">=</span> <span class="kw">do</span>
+  result <span class="ot">&lt;-</span> runDBAction a
+  <span class="kw">case</span> result <span class="kw">of</span>
+    <span class="dt">Left</span> e   <span class="ot">-&gt;</span> (pure <span class="fu">.</span> <span class="dt">Left</span> <span class="fu">.</span> <span class="dt">SQLiteError</span>) e
+    <span class="dt">Right</span> as <span class="ot">-&gt;</span> (pure <span class="fu">.</span> <span class="dt">Right</span> <span class="fu">.</span> rights <span class="fu">.</span> fmap f) as</code></pre></div>
+</section><section id="viewing" class="slide level2">
+<h2>Viewing</h2>
+</section><section id="section-89" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">getComments ::</span> <span class="dt">ParleyDb</span>
+            <span class="ot">-&gt;</span> <span class="dt">Topic</span>
+            <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">Either</span> <span class="dt">Error</span> [<span class="dt">Comment</span>])
+  
+  
+  
+  
+  
+ </code></pre></div>
+</section><section id="section-90" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">getComments ::</span> <span class="dt">ParleyDb</span>
+            <span class="ot">-&gt;</span> <span class="dt">Topic</span>
+            <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">Either</span> <span class="dt">Error</span> [<span class="dt">Comment</span>])
+getComments (<span class="dt">ParleyDb</span> conn _) t <span class="fu">=</span>
+  <span class="kw">let</span> q <span class="fu">=</span>  <span class="st">&quot;SELECT id, topic, comment, time &quot;</span>
+        <span class="fu">&lt;&gt;</span> <span class="st">&quot;FROM comments WHERE topic = ?&quot;</span>
+      p <span class="fu">=</span> <span class="dt">Only</span> (getTopic t)
+  
+  </code></pre></div>
+</section><section id="section-91" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">getComments ::</span> <span class="dt">ParleyDb</span>
+            <span class="ot">-&gt;</span> <span class="dt">Topic</span>
+            <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">Either</span> <span class="dt">Error</span> [<span class="dt">Comment</span>])
+getComments (<span class="dt">ParleyDb</span> conn _) t <span class="fu">=</span>
+  <span class="kw">let</span> q <span class="fu">=</span>  <span class="st">&quot;SELECT id, topic, comment, time &quot;</span>
+        <span class="fu">&lt;&gt;</span> <span class="st">&quot;FROM comments WHERE topic = ?&quot;</span>
+      p <span class="fu">=</span> <span class="dt">Only</span> (getTopic t)
+      result <span class="fu">=</span> query conn q p
+  </code></pre></div>
+</section><section id="section-92" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">getComments ::</span> <span class="dt">ParleyDb</span>
+            <span class="ot">-&gt;</span> <span class="dt">Topic</span>
+            <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">Either</span> <span class="dt">Error</span> [<span class="dt">Comment</span>])
+getComments (<span class="dt">ParleyDb</span> conn _) t <span class="fu">=</span>
+  <span class="kw">let</span> q <span class="fu">=</span>  <span class="st">&quot;SELECT id, topic, comment, time &quot;</span>
+        <span class="fu">&lt;&gt;</span> <span class="st">&quot;FROM comments WHERE topic = ?&quot;</span>
+      p <span class="fu">=</span> <span class="dt">Only</span> (getTopic t)
+      result <span class="fu">=</span> query conn q p
+   <span class="kw">in</span> dbToParley fromDbComment result</code></pre></div>
+</section></section>
+<section><section id="the-end" class="titleslide slide level1"><h1>THE END</h1></section><section id="section-93" class="slide level2">
+<h2></h2>
+<p>You can use Haskell to write a web app</p>
+</section><section id="section-94" class="slide level2">
+<h2></h2>
+<p>You can use Haskell to write almost anything</p>
+</section><section id="section-95" class="slide level2">
+<h2></h2>
+<p>You don't need to learn all of Haskell's abstractions to write an app or get big benefits</p>
+</section><section id="references" class="slide level2">
+<h2>References</h2>
+<ul>
+<li class="fragment">http://blog.charleso.org/lambdajam-web-functions</li>
+<li class="fragment">http://blog.infinitenegativeutility.com/2016/8/resources--laziness--and-continuation-passing-style</li>
+<li class="fragment">https://medium.com/<span class="citation" data-cites="jonathangfischoff/the-partial-options-monoid-pattern-31914a71fc67">@jonathangfischoff/the-partial-options-monoid-pattern-31914a71fc67</span></li>
+</ul>
+</section><section id="the-app" class="slide level2">
+<h2>The app</h2>
+<p>https://github.com/qfpl/parley</p>
+</section><section id="get-help" class="slide level2">
+<h2>Get help</h2>
+<p>#qfpl<br />
+#bfpg</p>
+</section></section>
+    </div>
+  </div>
+
+  <script src="reveal.js/lib/js/head.min.js"></script>
+  <script src="reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Transition style
+        transition: 'none', // none/fade/slide/convex/concave/zoom
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+              { src: 'reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>
