@@ -211,7 +211,6 @@ If you want to track how many people have viewed a talk and for how long, you sh
 
 For a HTML talk, add this snippet somewhere in the head of the HTML:
 ```
-  <script language="javascript" src="js/examples.min.js"></script>
         <!-- Piwik -->
         <script type="text/javascript">
           var _paq = _paq || [];

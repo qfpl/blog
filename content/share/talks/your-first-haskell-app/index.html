@@ -63,22 +63,20 @@ code > span.in { color: #7f9f7f; font-weight: bold; } /* Information */
     document.getElementsByTagName( 'head' )[0].appendChild( link );
   </script>
 
-  <!-- Start Piwik Code -->
-  <script language="javascript" src="js/examples.min.js"></script>
-        <!-- Piwik -->
-        <script type="text/javascript">
-          var _paq = _paq || [];
-          /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-          _paq.push(['trackPageView']);
-          _paq.push(['enableLinkTracking']);
-          _paq.push(['enableHeartBeatTimer', 30]);
-          (function() {
-            var u="//analytics.qfpl.io/";
-            _paq.push(['setTrackerUrl', u+'piwik.php']);
-            _paq.push(['setSiteId', '1']);
-            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-            g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
-          })();
+  <!-- Piwik -->
+  <script type="text/javascript">
+      var _paq = _paq || [];
+      /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
+      _paq.push(['enableHeartBeatTimer', 30]);
+      (function() {
+      var u="//analytics.qfpl.io/";
+      _paq.push(['setTrackerUrl', u+'piwik.php']);
+      _paq.push(['setSiteId', '1']);
+      var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+      g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+      })();
   </script>
   <!-- End Piwik Code -->
 
