@@ -1,5 +1,9 @@
+{ nixpkgs ? import <nixpkgs> {} 
+, generator ? import ../generator
+, reflex-tutorial ? import ../reflex-tutorial {}
+}:
 let
-  pkgs = import <nixpkgs> {};
+  inherit (nixpkgs) pkgs;
 
   mytexlive = (pkgs.texlive.combine {
     inherit (pkgs.texlive)
@@ -8,8 +12,6 @@ let
     collection-latexrecommended
     collection-mathextra;
   });
-
-  generator = import ../generator;
 
   activate = pkgs.writeScriptBin "activate" ''
     #!${pkgs.bash}/bin/bash -e
@@ -22,12 +24,12 @@ in
     src = ./.;
 
     unpackPhase = ''
-      mkdir $name
-      cp -r $src/* $name
+      cp -r $src/* .
+      chmod -R +w .
+      cp -r ${reflex-tutorial}/* .
     '';
 
     buildPhase = ''
-      cd $name
       export LANG=en_US.UTF-8
       export LOCALE_ARCHIVE=/run/current-system/sw/lib/locale/locale-archive
       site build

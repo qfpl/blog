@@ -16,11 +16,6 @@
             <link rel="stylesheet" href="$body$">
           $endfor$
         $endif$
-        $if(extra-js)$
-          $for(extra-js)$
-            <script src="$body$"></script>
-          $endfor$
-        $endif$
         <link rel="alternate" type="application/atom+xml" title="Queensland Functional Programming Lab Blog" href="/atom.xml">
         <link rel="alternate" type="application/rss+xml" title="Queensland Functional Programming Lab Blog" href="/rss.xml">
         <!-- Piwik -->
@@ -87,5 +82,10 @@
        </div>
        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
        <script src="/js/bootstrap.min.js"></script>
+        $if(extra-js)$
+          $for(extra-js)$
+            <script src="$body$" defer></script>
+          $endfor$
+        $endif$
     </body>
 </html>
