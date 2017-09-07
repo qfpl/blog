@@ -1,6 +1,6 @@
 { nixpkgs ? import <nixpkgs> {} 
 , generator ? import ../generator
-, reflex-tutorial ? import ../reflex-tutorial
+, reflex-tutorial ? import ../reflex-tutorial {}
 }:
 let
   inherit (nixpkgs) pkgs;
