@@ -1,6 +1,6 @@
 { nixpkgs ? import <nixpkgs> {} 
 , generator ? import ../generator
-, reflex-tutorial ? import ../reflex-tutorial {}
+, reflex-tutorial ? import ../reflex-tutorial
 }:
 let
   inherit (nixpkgs) pkgs;
@@ -17,7 +17,7 @@ let
     #!${pkgs.bash}/bin/bash -e
 
     '';
-  
+
 in
   pkgs.stdenv.mkDerivation {
     name = "blog-content";
