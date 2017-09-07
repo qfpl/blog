@@ -26,9 +26,9 @@ in
     unpackPhase = ''
       cp -r $src/* .
       chmod -R +w .
-      ln -sf ${reflex-tutorial}/drafts/reflex ./drafts/reflex
-      ln -sf ${reflex-tutorial}/css/reflex ./css/reflex
-      ln -sf ${reflex-tutorial}/js/reflex ./js/reflex
+      ln -sv ${reflex-tutorial}/drafts/reflex ./drafts/reflex
+      ln -sv ${reflex-tutorial}/css/reflex ./css/reflex
+      ln -sv ${reflex-tutorial}/js/reflex ./js/reflex
     '';
 
     buildPhase = ''
