@@ -4,7 +4,7 @@ let
   inherit (nixpkgs) pkgs;
 
   reflex-tutorial-src = import <reflex-tutorial> {};
-  reflex-tutorial = import ${reflex-tutorial-src}/ {};
+  reflex-tutorial = import "${reflex-tutorial-src}/" {};
 
   # Import the nix package for our site generator
   generator = import ./generator;
