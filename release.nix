@@ -12,7 +12,6 @@ let
 
   jobs = rec {
     inherit generator;
-    inherit reflex-tutorial;
     inherit blog;
   };
 in
