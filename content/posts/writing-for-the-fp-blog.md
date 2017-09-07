@@ -81,9 +81,6 @@ to build the site in `_site`, or
 ```
 to set up a preview server on `localhost:8000` that will update as you work on your posts.
 
-If you just want to get hold of a build of the site you can use `nix-build release.nix -A blog`.
-After that has finished running, the blog will be in `./result/blog`.
-
 ## The Hakyll workflow
 
 You should be able to publish posts by pushing your changes to the `master` branch of the repository.
