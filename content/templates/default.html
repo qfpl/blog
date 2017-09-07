@@ -18,8 +18,6 @@
         $endif$
         <link rel="alternate" type="application/atom+xml" title="Queensland Functional Programming Lab Blog" href="/atom.xml">
         <link rel="alternate" type="application/rss+xml" title="Queensland Functional Programming Lab Blog" href="/rss.xml">
-       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-       <script src="/js/bootstrap.min.js"></script>
         <!-- Piwik -->
         <script type="text/javascript">
           var _paq = _paq || [];
@@ -28,7 +26,7 @@
           _paq.push(['trackPageView']);
           _paq.push(['enableLinkTracking']);
           (function() {
-            var u="//analytics.qfpl.io/";
+            var u="/analytics.qfpl.io/";
             _paq.push(['setTrackerUrl', u+'piwik.php']);
             _paq.push(['setSiteId', '1']);
             var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
@@ -82,6 +80,8 @@
                 </div>
             </footer>
        </div>
+       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+       <script src="/js/bootstrap.min.js"></script>
         $if(extra-js)$
           $for(extra-js)$
             <script src="$body$" defer></script>
