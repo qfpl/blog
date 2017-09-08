@@ -1,8 +1,9 @@
 { nixpkgs ? import <nixpkgs> {}
-, reflex-tutorial ? import <reflex-tutorial>
 }:
 let
   inherit (nixpkgs) pkgs;
+
+  reflex-tutorial = import <reflex-tutorial>;
 
   # Import the nix package for our site generator
   generator = import ./generator;
