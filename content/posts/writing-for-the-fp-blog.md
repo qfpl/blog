@@ -212,11 +212,11 @@ For a HTML talk, add this snippet somewhere in the head of the HTML:
         <script type="text/javascript">
           var _paq = _paq || [];
           /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+          _paq.push(['enableHeartBeatTimer', 30]);
           _paq.push(['trackPageView']);
           _paq.push(['enableLinkTracking']);
-          _paq.push(['enableHeartBeatTimer', 30]);
           (function() {
-            var u="//analytics.qfpl.io/";
+            var u="//qfpl.qfpl.io/";
             _paq.push(['setTrackerUrl', u+'piwik.php']);
             _paq.push(['setSiteId', '1']);
             var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
