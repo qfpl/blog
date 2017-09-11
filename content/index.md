@@ -2,8 +2,11 @@
 title: Home
 ---
 
-# Queensland Functional Programming Lab
+<div class="text-right">
+  <img alt="Data61 logo" src="images/data61-logo_213x137.png" id="data61-logo"/>
+</div>
 
+# Queensland Functional Programming Lab
 <div class="jumbotron">
   <h1>Write software that works</h1>
   We are a software development team, committed to producing quality software and helping others do same.
