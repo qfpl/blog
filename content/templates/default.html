@@ -18,22 +18,15 @@
         $endif$
         <link rel="alternate" type="application/atom+xml" title="Queensland Functional Programming Lab Blog" href="/atom.xml">
         <link rel="alternate" type="application/rss+xml" title="Queensland Functional Programming Lab Blog" href="/rss.xml">
-        <!-- Piwik -->
-        <script type="text/javascript">
-          var _paq = _paq || [];
-          /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-          _paq.push(['enableHeartBeatTimer', 30]);
-          _paq.push(['trackPageView']);
-          _paq.push(['enableLinkTracking']);
-          (function() {
-            var u="/analytics.qfpl.io/";
-            _paq.push(['setTrackerUrl', u+'piwik.php']);
-            _paq.push(['setSiteId', '1']);
-            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-            g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
-          })();
+        <!-- Global Site Tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-106321204-1"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments)};
+          gtag('js', new Date());
+
+          gtag('config', 'UA-106321204-1');
         </script>
-        <!-- End Piwik Code -->
     </head>
     <body>
         <nav class="navbar navbar-default">

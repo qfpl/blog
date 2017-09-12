@@ -202,28 +202,22 @@ Everything else will get displayed or linked to if it is mentioned.
 
 The talk will only be linked to if `slides-base` is specified, in which case the link will be to `./share/talks/<talk-nickname>/${slides-base}`.
 
-#### Adding Piwik tracking to a talk
+#### Adding Google Analytics to a talk
 
-If you want to track how many people have viewed a talk and for how long, you should add a snippet of JS to talk to Piwik.
+If you want to track how many people have viewed a talk and for how long, you should add a snippet of JS to talk to Google Analytics.
 
 For a HTML talk, add this snippet somewhere in the head of the HTML:
 ```
-        <!-- Piwik -->
-        <script type="text/javascript">
-          var _paq = _paq || [];
-          /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-          _paq.push(['trackPageView']);
-          _paq.push(['enableLinkTracking']);
-          _paq.push(['enableHeartBeatTimer', 30]);
-          (function() {
-            var u="//analytics.qfpl.io/";
-            _paq.push(['setTrackerUrl', u+'piwik.php']);
-            _paq.push(['setSiteId', '1']);
-            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-            g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
-          })();
-        </script>
-        <!-- End Piwik Code -->
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-106321204-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments)};
+  gtag('js', new Date());
+
+  gtag('config', 'UA-106321204-1');
+</script>
+
 ```
 
 If you have a PDF of your slides, you'd have to write a landing page that includes the snippet.
