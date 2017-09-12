@@ -8,6 +8,8 @@ Tony generally uses the Haskell programming language for professional work, but 
 
 Tony is a regular conference speaker and his talks are published at [http://talks.tmorris.net/](http://talks.tmorris.net/)
 
+Tony can be contacted at [tony@qfpl.io](mailto:tony@qfpl.io).
+
 <img src="/images/people/tmorris.jpg" alt="Tony Morris" />
 
 [^1]: [Asymmetric Lenses in Scala](http://days2012.scala-lang.org/sites/days2012/files/morris_lenses.pdf)
