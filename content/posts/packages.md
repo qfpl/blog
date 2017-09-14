@@ -25,7 +25,7 @@ writing that is version 8.2.1.
 Since not everyone upgrades immediately, we also try our best to support the
 second-most recent major version, which is 8.0.2 at the time of writing.
 
-When possibly, we also try to support older major versions of GHC shipped by
+When possible, we also try to support older major versions of GHC shipped by
 more slowly-moving Linux distributions: examples include
 [Ubuntu](https://packages.ubuntu.com/search?keywords=ghc)
 or [OpenSUSE](https://software.opensuse.org/package/ghc).
