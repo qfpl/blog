@@ -27,6 +27,7 @@ in
       cp -r $src/* .
       chmod -R +w .
       ln -sv ${reflex-tutorial}/drafts/reflex ./drafts/reflex
+      ln -sv ${reflex-tutorial}/posts/reflex ./posts/reflex
       ln -sv ${reflex-tutorial}/css/reflex ./css/reflex
       ln -sv ${reflex-tutorial}/js/reflex ./js/reflex
     '';
