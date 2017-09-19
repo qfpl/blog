@@ -133,4 +133,4 @@ The easiest way to manage these is via channels, which I'll cover once you get s
 
 For now, those are the definitions that you need to know about.
 
-If you're ready to get started, we begin diving in [here](../getting-started-with-nix).
+If you're ready to get started, we begin diving in [here](../getting-started-with-nix/).
