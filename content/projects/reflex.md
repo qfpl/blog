@@ -20,3 +20,4 @@ This project has two main goals:
 If you're new to FRP or to `reflex`, we're working on a series of posts to help get you started:
 
 - [An introduction to `reflex`](../../posts/reflex/basics/introduction/)
+- [`Event`s](../../posts/reflex/basics/events/)
