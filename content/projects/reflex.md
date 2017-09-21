@@ -21,3 +21,4 @@ If you're new to FRP or to `reflex`, we're working on a series of posts to help 
 
 - [An introduction to `reflex`](../../posts/reflex/basics/introduction/)
 - [`Event`s](../../posts/reflex/basics/events/)
+- [`Behavior`s](../../posts/reflex/basics/behaviors/)
