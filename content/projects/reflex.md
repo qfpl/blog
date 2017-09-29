@@ -24,3 +24,4 @@ If you're new to FRP or to `reflex`, we're working on a series of posts to help 
 - [`Behavior`s](../../posts/reflex/basics/behaviors/)
 - [`Dynamic`s](../../posts/reflex/basics/dynamics/)
 - [Working with the `DOM`](../../posts/reflex/basics/dom/)
+- [Switching](../../posts/reflex/basics/switching/)
