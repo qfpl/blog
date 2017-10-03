@@ -7,4 +7,5 @@ author: ajmccluskey
 author-name: Andrew McCluskey
 code-url: https://github.com/qfpl/your-first-haskell-app
 slides-base: index.html
+video-url: https://www.youtube.com/watch?v=lUibiSzIgG4
 ---
