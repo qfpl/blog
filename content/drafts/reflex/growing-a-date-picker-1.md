@@ -123,10 +123,8 @@ tI <- textInput $ def
   & textInputConfig_attributes .~ dateCfg ^. dateInputConfig_textInputAttrs
   & textInputConfig_setValue .~ (fmtDate <$> updated dDayValue)
 ```
-><small>
->``^.`` and ``.~`` are from [Control.Lens](https://hackage.haskell.org/package/lens), in case you hadn't
->seen them before. In the simplest terms, they are getters and setters, respectively, to simplify
->updating the default ``TextInputConfig`` record.
+> <small>
+> ``^.`` and ``.~`` are from [Control.Lens](https://hackage.haskell.org/package/lens), in case you hadn't seen them before. In the simplest terms, they are getters and setters, respectively, to simplify updating the ``TextInputConfig`` record.
 > </small>
 
 The ``fmtDate`` will format the given ``Day`` using the provided format from the ``DateInputConfig``
@@ -141,7 +139,7 @@ yet, but that will be ``Dynamic t Day`` we use to build the list of days, calcul
 previous month values, and finally provide to the user.
 
 The ``textInput`` will provide us with, amongst other things, a ``Dynamic t Text`` that will contain
-the input values from the user. We need to parse this value over time and _if_ it is valid then we
+the input values from the user. We need to parse this value over time and if it is valid then we
 update our ``Dynamic t Day``. 
 
 We use ``updated`` from [Reflex] to retrieve the ``Event t Text`` from our ``Dynamic t Text``: 
