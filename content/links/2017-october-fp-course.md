@@ -31,6 +31,10 @@ The course is open to anyone, with a view to target people who develop or mainta
 
 Numbers are limited.
 
+### Cost
+
+Free.
+
 ### Where
 
 The Queensland Startup Precinct
