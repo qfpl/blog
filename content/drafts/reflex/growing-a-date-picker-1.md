@@ -19,10 +19,9 @@ process. The goal is to document as much as I can about designing, implementing,
 component. As well as the lessons learned along the way, so expect to see me making lots of
 mistakes.
 
-This also seemed like a suitably meaty challenge to try to level up my [Reflex] skills, and if I am
-successful then the Reflex ecosystem hopefully gains a sufficiently generic date picker widget. Or
+If I am successful then the Reflex ecosystem hopefully gains a sufficiently generic date picker widget. Or
 I'll do everything wrong, then someone will be able to look at what I've done and have a list of
-what you shouldn't do. Win win, really.
+what you shouldn't do. Win win.
 
 #### Some assumptions...
 
@@ -126,7 +125,7 @@ tI <- textInput $ def
 ```
 ><small>
 >``^.`` and ``.~`` are from [Control.Lens](https://hackage.haskell.org/package/lens), in case you hadn't
->seen them before. In the simplist terms, they are getters and setters, respectively, to simplify
+>seen them before. In the simplest terms, they are getters and setters, respectively, to simplify
 >updating the default ``TextInputConfig`` record.
 > </small>
 
@@ -270,9 +269,13 @@ that fires events when it is updated... [Oh dear](http://gunshowcomic.com/648).
 
 ### Untie the knot 
 
-The fix for this is to untie the updates of the text field from the updates of our ``Dynamic t
-Day``. Since, perhaps obviously to some of you, the text field doesn't need to be notified when it
-has a valid ``Day`` value entered. Since that value is, by definition, in the text field.
+There are two possible fixes for this.
+
+#### Separate ``textInput_value`` ``Event``
+
+One is to untie the updates of the text field from the updates of our ``Dynamic t Day``. Since,
+perhaps obviously to some of you, the text field doesn't need to be notified when it has a valid
+``Day`` value entered. Since that value is, by definition, in the text field.
 
 If we refer back to our specification, such as it is, the only times when we will need to format a
 ``Day`` value into our text field are:
@@ -313,12 +316,48 @@ without allowing it to fall out of sync if there are other relevant update ``Eve
 the ``Dynamic t Day`` doesn't miss out on any updates or valid changes to the ``textInput``. More
 testing indicated no page slow down and no more loops, hooray.
 
+#### Use ``textInput_input`` instead
+
+The problem was the loop created by using the ``Event t Text`` from the ``textInput_value``
+``Dynamic``, when creating the ``Event`` responsible for updating the value on the ``textInput``.
+What should have been used to prevent this is the ``Event t Text`` provided on the
+``textInput_input`` from the ``TextInput``.
+
+That particular ``Event`` is not triggered by updates to the value of the ``textInput`` that occur
+through the ``Event t Text`` that you provide on the ``TextInputConfig``. You can spam updates to
+the value of the ``textInput`` via the ``textInput_setValue`` ``Event`` and the ``textInput_input``
+``Event`` will not fire.
+
+This has the added bonus of containing the core update logic of the ``DateInput`` widget to a single
+``Event``:
+```haskell
+let eDateUpdate = leftmost
+      [ ePrevMonth
+      , eNextMonth
+      , dateInpCfg ^. dateInputConfig_setValue
+      , eDaySelect
+      -- Will not be fired on 'textInput_setValue' Event triggers, only direct input
+      , fmapMaybe parseDate (tI ^. textInput_input)
+      ]
+```
+
+The respective update ``Event``s for our ``textInput`` and the ``Dynamic t Day`` are now as follows:
+```haskell
+tI <- textInput $ def
+  ...
+  -- This Event will not trigger the textInput_input Event.
+  & textInputConfig_setValue .~ ( fmtDt <$> eDateUpdate )
+
+dDayValue <- holdDyn initialVal eDateUpdate
+```
+
 ## What's next?
 
+That was a lot to get through, but now that we have the core update structure built, we can move on
+to some fun things like adding in the next/previous month functionality. As well as the clickable
+list of days in the month, and some suitably ``Dynamic`` styling. This comes with a '_Terrible CSS
+Warning_'.
 
-Now that we have the core update structure built, we can move on to some fun things like adding in
-the next/previous month functionality. As well as the clickable list of days in the month, and some
-suitably ``Dynamic`` styling. _Terrible CSS Warning_
+We'll also write some tests for our widget so we can make sure that everything works as desired and
+to see how one tests and verifies a [Reflex] widget.
 
-Also we'll write some tests for our widget so we can make sure that everything works as desired and
-to see just how we test and verify our [Reflex] widgets.
