@@ -35,7 +35,7 @@ The initial course offering will be repeated in early September, late September 
 
 The Queensland Startup Precinct
 
-Level 2 TC Beirne Building, 315 Brunswick St, Fortitude Valley Q 4306.
+Level 2 TC Beirne Building, 315 Brunswick St, Fortitude Valley Q 4006.
 
 [https://qfpl.io/location/](https://qfpl.io/location/)
 
