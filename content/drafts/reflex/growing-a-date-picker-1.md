@@ -19,25 +19,25 @@ process. The goal is to document as much as I can about designing, implementing,
 component. As well as the lessons learned along the way, so expect to see me making lots of
 mistakes.
 
-If I am successful then the Reflex ecosystem hopefully gains a sufficiently generic date picker widget. Or
-I'll do everything wrong, then someone will be able to look at what I've done and have a list of
-what you shouldn't do. Win win.
+If I am successful then the Reflex ecosystem gains a sufficiently generic date picker widget. Or
+I'll do everything wrong, in which case, someone will be able to look at what I've done and have a
+list of what you shouldn't do. Win win.
 
 #### Some assumptions...
 
 I assume an understanding of [Reflex] and [FRP]. If you don't know [FRP] or [Reflex] yet, or you
-find yourself a bit lost at times, I must recommend the [Reflex Introduction][ReflexIntro] series by
-Dave Laing, and if you're keen the [Functional Reactive Programming][ManningFRP] book by Stephen
+find yourself a bit lost at times, I recommend the [Reflex Introduction][ReflexIntro] series by
+Dave Laing, and if you're keen, the [Functional Reactive Programming][ManningFRP] book by Stephen
 Blackheath and Anthony Jones is a wonderful resource.
 
 ### Why a date picker?
 
 In a previous role, my colleagues and I would use the phrase, "Show me your date picker", as a
-subjective and slightly silly metric for evaluating JavaScript frameworks. We required a date picker
-widget in every application and it began to be an interesting indicator of the maturity and
+subjective and slightly silly metric for evaluating JavaScript frameworks. But we required a date
+picker widget in every application, and it began to be an interesting indicator of the maturity and
 reliability of the framework in question. Since a date picker is quite a complex beast at the best
-of times as it requires complex styling, state management, and more configurable options than one
-cares to mention.
+of times. Requiring complex styling, state management, and more configurable options than one cares
+to mention.
 
 ### Basic Design
 
@@ -45,7 +45,8 @@ The following are the goals or loose specification for a '0.1' release:
 
 - Only handle selecting a date, not a time.
 - Display a text input field for manual date entry.
-- Accept a configurable format for both the date and the list of days in the relevant month.
+- Accept a configurable format for both the date and the day.
+- Use the given date format for parsing, validation, and printing.
 
 - Display buttons to move to the next/previous month.
 - Display a list of days for the month that correctly matches the latest valid input date.
@@ -123,7 +124,8 @@ tI <- textInput $ def
   & textInputConfig_attributes .~ dateCfg ^. dateInputConfig_textInputAttrs
   & textInputConfig_setValue .~ (fmtDate <$> updated dDayValue)
 ```
-> <small>
+
+> <small class="no-dash-small-quote">
 > ``^.`` and ``.~`` are from [Control.Lens](https://hackage.haskell.org/package/lens), in case you hadn't seen them before. In the simplest terms, they are getters and setters, respectively, to simplify updating the ``TextInputConfig`` record.
 > </small>
 
@@ -131,11 +133,11 @@ The ``fmtDate`` will format the given ``Day`` using the provided format from the
 before setting it as the current value on the text input. We also pass on the attributes to the text
 input field in case there is extra styling or related shenanigans that the user would like to
 leverage. There is the possibility you can do something silly with that, but for now lets [pretend
-that won't happen](https://xkcd.com/908/).
+we don't know anyone like that](https://xkcd.com/908/).
 
 We also provide an ``Event`` that we will fire when we have a new ``Day`` value and we want to
 update the contents of the text field. In true [Reflex] fashion, we haven't defined ``dDayValue``
-yet, but that will be ``Dynamic t Day`` we use to build the list of days, calculate the next and
+yet, but that will be the ``Dynamic t Day`` we use to build the list of days, calculate the next or
 previous month values, and finally provide to the user.
 
 The ``textInput`` will provide us with, amongst other things, a ``Dynamic t Text`` that will contain
@@ -147,35 +149,36 @@ We use ``updated`` from [Reflex] to retrieve the ``Event t Text`` from our ``Dyn
 let eDateTextInput = updated $ tI ^. textInput_value
 ```
 
-Then we need to run our parsing function over ``Text`` value each time the ``Event`` fires.
-Thankfully the ``Event`` is an instance of ``Functor``, so that is straight forward enough:
+Then we need to run our parsing function over the ``Text`` value each time the ``Event`` fires.
 
+Thankfully, ``Event`` is an instance of ``Functor``, so one ``fmap`` later and we're done:
 ```haskell
-parseDay <$> eDateTextInput
+fmap parseDay eDateTextInput
 ```
 
 Except that will give us an ``Event t (Maybe Day)`` and the ``Nothing`` values aren't terribly
-interesting to us yet. So we could do this:
-
+interesting to us yet. To handle this we could:
 ```haskell
-(fromMaybe someDayValue . parseDay) <$> eDateTextInput
+fmap (fromMaybe someDayValue . parseDay) eDateTextInput
 ```
 
-This will provide us clear out the ``Maybe`` to just a ``Day`` value whenever the text input is
-updated even if it isn't valid.
+This will reduce the ``Maybe`` to a ``Day`` value whenever the text input is updated, using a given
+default, ``someDayValue``, when a ``Nothing`` result occurs. But there are a couple of things
+wrong with this...
 
-But there are a couple of things wrong with this... For starters, how do we select the correct value to put
-in as the default? We could tag the ``current`` value of the ``Dynamic t Day`` at the time of
-this event, but that doesn't make much sense because we'd be performing unnecessary updates with an
-identical value. We could use the initial value from the ``DateInputConfig`` but that value is stale
-from the moment the user selects/inputs any other value.
+For starters, how do we select the _correct_ value to put in as the default? We could tag the
+``current`` value of the ``Dynamic t Day`` at the time of this event, but that doesn't make much
+sense because we'd be performing unnecessary updates with an identical value. We could use the
+initial value from the ``DateInputConfig``, but that value is stale from the moment the user
+selects/inputs any other value.
 
 Regardless of the choice of default, by using this solution we would be spamming updates on **_every_**
 update to the text input. Potentially performing a DOS attack against our own widget.
 
-So we want to run our function but filter for events where we have a valid value. Turns out that
-[Reflex] has a function for this exact situation, ``fmapMaybe``. The ``Event t Day`` now looks like
-this:
+So we want to run our function but filter for events where we have a valid update. Turns out that
+[Reflex] has a function for this exact situation, ``fmapMaybe``.
+
+The ``Event t Day`` now looks like this:
 ```haskell
 fmapMaybe parseDay eDateTextInput
 ```
@@ -185,9 +188,9 @@ successfully parses using the provided date format, perfect.
 ### Creating our Dynamic
 
 We have the ``Event t Day`` from the ``textInput``, but we also need to include any update
-``Event``s from outside our little world. So, just like the ``TextInput``, we included a ``Event t
-Day`` that on the ``DateInputConfig``. This is expected to be fired external to our widget with an
-update to the value of our widget:
+``Event``s from outside our little world. So, like the ``TextInput``, we included a ``Event t Day``
+on the ``DateInputConfig``. This is expected to be fired external to our widget with an update to
+the value of our widget:
 
 ```haskell
 dateCfg ^. dateInputConfig_setValue
@@ -195,8 +198,8 @@ dateCfg ^. dateInputConfig_setValue
 
 Now that we have an ``Event`` that will fire on valid ``Day`` updates, and we can accept any updates
 from outside our widget, we can construct the ``Dynamic t Day`` that will be given to the user.
-Using our given initial value, plus the two ``Event``s described above:
 
+Using our given initial value, plus the two ``Event``s described above:
 ```haskell
 dDayValue <- holdDyn (dateCfg ^. dateInputConfig_initialValue) $ leftmost
   [ dateCfg ^. dateInputConfig_setValue
@@ -219,10 +222,10 @@ return $ DateInput
 
 ### Something is not quite right...
 
-During testing, the page would quickly become unusable even though the various inputs appeared to be
-flowing through correctly. Invalid dates were being filtered out and valid ones were triggering the
-expected updates. If you have a quick scroll back through the ``Dynamic`` and ``Event`` values that
-were constructed and how they were used, can you see where I went wrong?
+During testing, the page would quickly become unusable even though the data itself was flowing
+through correctly. Invalid dates were being filtered out and valid ones were triggering the expected
+updates. If you have a quick scroll back through the ``Dynamic`` and ``Event`` values that were
+constructed and how they were used, can you see where I went wrong?
 
 The issue was that I had built an ``Event`` loop that would trigger itself and lead to an infinite
 loop. Whoops. Let's have a look at that...
@@ -252,7 +255,7 @@ dDayValue <- ...
   [ fmapMaybe parseDay ( updated $ tI ^. textInput_value )
   ...
 ```
-Note that the text field will be updated by the ``Event`` of ``dDayValue`` being updated. 
+The text field will be updated by every ``Event`` of ``dDayValue`` being updated. 
 
 * Text field updated
 * Fires Event to parse value
@@ -267,20 +270,20 @@ that fires events when it is updated... [Oh dear](http://gunshowcomic.com/648).
 
 ### Untie the knot 
 
-There are two possible fixes for this.
+Here are two possible fixes for this situation.
 
 #### Separate ``textInput_value`` ``Event``
 
 One is to untie the updates of the text field from the updates of our ``Dynamic t Day``. Since,
-perhaps obviously to some of you, the text field doesn't need to be notified when it has a valid
-``Day`` value entered. Since that value is, by definition, in the text field.
+perhaps obviously to some of you, the ``textInput`` doesn't need to be notified when it has a valid
+``Day`` value entered. That value is, by definition, in the text field.
 
-If we refer back to our specification, such as it is, the only times when we will need to format a
-``Day`` value into our text field are:
+Referring back to our specification, such as it is, the only times when we will need to format a
+``Day`` value into our text field are
 
-- Next / Previous month button is clicked
+- Next/Previous month button is clicked
 - A day is clicked from the list of days in that month
-- The provided ``Event t Day`` from our ``DateInputConfig`` is triggered
+- The given ``Event t Day`` from our ``DateInputConfig`` is triggered
 
 The only times we need to update our ``Dynamic t Day`` are all of the above, plus:
 
@@ -309,25 +312,27 @@ dDayValue <- holdDyn initialVal $ leftmost
   , fmapMaybe parseDate eDateTextInput
   ]
 ```
+
 These changes de-couple the updates of the ``textInput`` from the changes to the ``Dynamic t Day``,
-without allowing it to fall out of sync if there are other relevant update ``Event``s. Additionally
-the ``Dynamic t Day`` doesn't miss out on any updates or valid changes to the ``textInput``. More
-testing indicated no page slow down and no more loops, hooray.
+without allowing it to fall out of sync if there are other relevant update ``Event``s. 
+
+Additionally the ``Dynamic t Day`` doesn't miss out on any updates or valid changes to the
+``textInput``. More testing indicated no page slow down and no more loops, hooray.
 
 #### Use ``textInput_input`` instead
 
-The problem was the loop created by using the ``Event t Text`` from the ``textInput_value``
-``Dynamic``, when creating the ``Event`` responsible for updating the value on the ``textInput``.
-What should have been used to prevent this is the ``Event t Text`` provided on the
-``textInput_input`` from the ``TextInput``.
+I had identified the problem as the loop created by using the ``Event t Text`` from the
+``textInput_value`` ``Dynamic``, when creating the ``Event`` responsible for updating the value on
+the ``textInput``. What could have been used to prevent this is the ``Event t Text`` provided on
+the ``textInput_input`` field of the ``TextInput``.
 
 That particular ``Event`` is not triggered by updates to the value of the ``textInput`` that occur
 through the ``Event t Text`` that you provide on the ``TextInputConfig``. You can spam updates to
 the value of the ``textInput`` via the ``textInput_setValue`` ``Event`` and the ``textInput_input``
 ``Event`` will not fire.
 
-This has the added bonus of containing the core update logic of the ``DateInput`` widget to a single
-``Event``:
+If we write our ``eDateUpdate`` ``Event`` using this we have an added bonus of containing the core
+update logic of the ``DateInput`` widget to a single ``Event``:
 ```haskell
 let eDateUpdate = leftmost
       [ ePrevMonth
@@ -352,9 +357,8 @@ dDayValue <- holdDyn initialVal eDateUpdate
 ## What's next?
 
 That was a lot to get through, but now that we have the core update structure built, we can move on
-to some fun things like adding in the next/previous month functionality. As well as the clickable
-list of days in the month, and some suitably ``Dynamic`` styling. This comes with a '_Terrible CSS
-Warning_'.
+to some fun things like adding in the next/previous month functionality, clickable list of days, and
+some suitably ``Dynamic`` styling. Albeit with a '_Terrible CSS Warning_'.
 
 We'll also write some tests for our widget so we can make sure that everything works as desired and
 to see how one tests and verifies a [Reflex] widget.
