@@ -3,6 +3,7 @@ title: Growing a Date Picker in Reflex - Part 1
 date: 2017-09-29
 authors: schalmers
 project: reflex
+extra-css: /css/reflex/growing-dp/part1.css
 ---
 
 [Reflex]: (https://github.com/reflex-frp/reflex)
@@ -220,6 +221,9 @@ return $ DateInput
   (_textInput_element tI)
 ```
 
+Now that enough of a widget has been built, I can build a quick test page, include the widget and
+see what happens.
+
 ### Something is not quite right...
 
 During testing, the page would quickly become unusable even though the data itself was flowing
@@ -358,8 +362,7 @@ dDayValue <- holdDyn initialVal eDateUpdate
 
 That was a lot to get through, but now that we have the core update structure built, we can move on
 to some fun things like adding in the next/previous month functionality, clickable list of days, and
-some suitably ``Dynamic`` styling. Albeit with a '_Terrible CSS Warning_'.
+some suitably ``Dynamic`` styling. The styling comes with a '_Terrible CSS Warning_', just saying...
 
 We'll also write some tests for our widget so we can make sure that everything works as desired and
 to see how one tests and verifies a [Reflex] widget.
-
