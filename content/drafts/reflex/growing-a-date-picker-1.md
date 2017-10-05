@@ -14,21 +14,20 @@ extra-css: /css/reflex/growing-dp/part1.css
 
 ## Stay a while, and listen.
 
-In the interests of learning more about [FRP] and [Reflex], I decided to try to build a component
+In the interests of learning more about [FRP] and [Reflex], I decided to attempt to build a component
 that appears in many a user facing application, the date picker. This series will be a tale of that
 process. The goal is to document as much as I can about designing, implementing, and debugging the
-component. As well as the lessons learned along the way, so expect to see me making lots of
-mistakes.
+component. As well as the lessons learned along the way, so expect to see me making lots of mistakes.
 
 If I am successful then the Reflex ecosystem gains a sufficiently generic date picker widget. Or
-I'll do everything wrong, in which case, someone will be able to look at what I've done and have a
-list of what you shouldn't do. Win win.
+I'll do everything wrong, in which case, maybe someone will be able to look at what I've done and
+have a list of what you shouldn't do. Win win.
 
 #### Some assumptions...
 
-I assume an understanding of [Reflex] and [FRP]. If you don't know [FRP] or [Reflex] yet, or you
-find yourself a bit lost at times, I recommend the [Reflex Introduction][ReflexIntro] series by
-Dave Laing, and if you're keen, the [Functional Reactive Programming][ManningFRP] book by Stephen
+I assume a 'dabblers' understanding of [Reflex] and [FRP]. If you don't know [FRP] or [Reflex] yet,
+or you find yourself a bit lost at times, I recommend the [Reflex Introduction][ReflexIntro] series
+by Dave Laing. If you're keen, the [Functional Reactive Programming][ManningFRP] book by Stephen
 Blackheath and Anthony Jones is a wonderful resource.
 
 ### Why a date picker?
@@ -47,7 +46,7 @@ The following are the goals or loose specification for a '0.1' release:
 - Only handle selecting a date, not a time.
 - Display a text input field for manual date entry.
 - Accept a configurable format for both the date and the day.
-- Use the given date format for parsing, validation, and printing.
+- Use the given date format for parsing, validation, and display.
 
 - Display buttons to move to the next/previous month.
 - Display a list of days for the month that correctly matches the latest valid input date.
@@ -56,19 +55,19 @@ The following are the goals or loose specification for a '0.1' release:
 - If a day is clicked, then the text input is updated to match.
 - If the next month is selected and we're at the end or start of the year then rollover correctly.
 - If the text input is not valid, don't break the UI and don't allow bad data to propagate.
-- If the text input is valid then update the list of days if needed
+- If the text input is valid then update the list of days if needed.
 
-The plan was to start with an existing Reflex ``textInput`` and expand from there.
+The plan was to start with an existing Reflex ``textInput`` widget and build from there.
 
 ### Always start with the data structures
 
-**Plan (A)** is to imitate the style of the existing [Reflex-DOM] input widgets, to start I created
+**Plan (A)** is to imitate the structure of the existing [Reflex-DOM] input widgets, so I created
 two records:
 
-- One to hold all the required configuration to build and run our date input
-- Another to be handed to the user so they could manage the date ``Dynamic`` and various related ``Event``s.
+- ``DateInputConfig``: To hold all the required configuration to build and run our date input
+- ``DateInput``: To be handed to the user so they could manage the date ``Dynamic`` and related ``Event``s.
 
-As we are using the ``textInput`` internally, some of it's requirements flowed through to the
+As we are using the ``textInput`` internally, some of those requirements flowed through to the
 ``DateInputConfig`` structure. Plus some extra information required to handle the ``Day`` value.
 
 ```haskell
@@ -81,6 +80,7 @@ data DateInputConfig t = DateInputConfig
   , _dateInputConfig_textInputAttrs :: Dynamic t (Map Text Text)
   ...
 ```
+
 Similar to the ``TextInputConfig`` structure:
 ```haskell
 data TextInputConfig t = TextInputConfig
@@ -91,9 +91,8 @@ data TextInputConfig t = TextInputConfig
   }
 ```
 
-Then consider what we need to provide to the user of this widget to provide sufficient utility.
-Since we're just ripping off the text input widget for now, this isn't anything terribly
-interesting.
+Next is the ``DateInput`` that will be returned to the user, this contains the ``Dynamic t Day``,
+along with set value ``Event``s and similar ``Event``s from the underlying ``textInput``.
 
 ```haskell
 -- The Modified Julian `Day` is a standard count of 
@@ -118,7 +117,7 @@ First up is displaying the text input and parsing the input, only using the new 
 successfully parsed using the format we were given. This proved to be straightforward enough using
 the basic [Reflex] tools.
 
-First we need a ``textInput`` on to provide us with something to work with:
+Build a ``textInput`` for direct input:
 ```haskell
 tI <- textInput $ def
   & textInputConfig_initialValue .~ dateCfg ^. dateInputConfig_initialValue . to fmtDate
@@ -138,12 +137,11 @@ we don't know anyone like that](https://xkcd.com/908/).
 
 We also provide an ``Event`` that we will fire when we have a new ``Day`` value and we want to
 update the contents of the text field. In true [Reflex] fashion, we haven't defined ``dDayValue``
-yet, but that will be the ``Dynamic t Day`` we use to build the list of days, calculate the next or
-previous month values, and finally provide to the user.
+yet, but that will be the name of the ``Dynamic t Day`` we use to build the list of days, calculate
+the next or previous month values, and finally provide to the user.
 
-The ``textInput`` will provide us with, amongst other things, a ``Dynamic t Text`` that will contain
-the input values from the user. We need to parse this value over time and if it is valid then we
-update our ``Dynamic t Day``. 
+The ``textInput`` contains, among other things, a ``Dynamic t Text`` that is the input values from
+the user. We need to parse this value over time and if it is valid then we update our ``Dynamic t Day``.
 
 We use ``updated`` from [Reflex] to retrieve the ``Event t Text`` from our ``Dynamic t Text``: 
 ```haskell
@@ -197,9 +195,6 @@ the value of our widget:
 dateCfg ^. dateInputConfig_setValue
 ```
 
-Now that we have an ``Event`` that will fire on valid ``Day`` updates, and we can accept any updates
-from outside our widget, we can construct the ``Dynamic t Day`` that will be given to the user.
-
 Using our given initial value, plus the two ``Event``s described above:
 ```haskell
 dDayValue <- holdDyn (dateCfg ^. dateInputConfig_initialValue) $ leftmost
@@ -221,18 +216,15 @@ return $ DateInput
   (_textInput_element tI)
 ```
 
-Now that enough of a widget has been built, I can build a quick test page, include the widget and
-see what happens.
-
 ### Something is not quite right...
 
-During testing, the page would quickly become unusable even though the data itself was flowing
-through correctly. Invalid dates were being filtered out and valid ones were triggering the expected
-updates. If you have a quick scroll back through the ``Dynamic`` and ``Event`` values that were
-constructed and how they were used, can you see where I went wrong?
+Unfortunately, during testing the page would quickly become unusable even though the data was being
+handled correctly. Invalid dates were being filtered out, and valid ones were triggering the
+expected updates. If you have a quick scroll back through the ``Dynamic`` and ``Event`` values that
+were constructed and how they were used, can you see where I went wrong?
 
-The issue was that I had built an ``Event`` loop that would trigger itself and lead to an infinite
-loop. Whoops. Let's have a look at that...
+The issue was that I had built an ``Event`` loop that would trigger itself and lead to hot mess of
+infinite recursion and sadness. Whoops. Let's have a look at that...
 
 Starting with the ``Event`` from the text input:
 ```haskell
@@ -360,9 +352,9 @@ dDayValue <- holdDyn initialVal eDateUpdate
 
 ## What's next?
 
-That was a lot to get through, but now that we have the core update structure built, we can move on
-to some fun things like adding in the next/previous month functionality, clickable list of days, and
-some suitably ``Dynamic`` styling. The styling comes with a '_Terrible CSS Warning_', just saying...
+Now that we have the core update structure built, we can have fun with adding the next/previous
+month functionality, a clickable list of days, and some suitably ``Dynamic`` styling. The styling
+comes with a '_Terrible CSS Warning_', just saying...
 
 We'll also write some tests for our widget so we can make sure that everything works as desired and
 to see how one tests and verifies a [Reflex] widget.
