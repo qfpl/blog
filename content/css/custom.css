@@ -36,3 +36,21 @@ h1, h2, h3, h4, h5, h6 {
 small.no-dash-small-quote::before {
   content: "";
 }
+
+@media (max-width: 768px) {
+  #advance-qld-logo {
+      transform: scale(0.75);
+      transform-origin: top left;
+  }
+  .data61-logo-fp {
+    float: none;
+  }
+}
+@media (min-width: 769px) {
+  .data61-logo-fp {
+    float: right;
+  }
+  #advance-qld-logo {
+    margin-top: 2.5em;
+  }
+}

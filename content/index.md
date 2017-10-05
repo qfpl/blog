@@ -2,11 +2,19 @@
 title: Home
 ---
 
-<div class="text-right">
-  <img alt="Data61 logo" src="images/data61-logo_213x137.png" id="data61-logo"/>
+<div class="container-fluid">
+  <div class="row">
+  <div class="col-xs-12 col-md-6">
+  <img alt="Advance Queensland" src="images/advance-queensland.jpg" id="advance-qld-logo" width="344.4px" height="67.2px"/>
+  </div>
+  <div class="col-xs-12 col-md-6">
+  <img class="data61-logo-fp" alt="Data61 logo" src="images/data61-logo_213x137.png" id="data61-logo"/>
+  </div>
+  </div>
 </div>
 
 # Queensland Functional Programming Lab
+
 <div class="jumbotron">
   <h1>Write software that works</h1>
   We are a software development team, committed to producing quality software and helping others do same.
