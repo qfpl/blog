@@ -61,9 +61,10 @@ The plan was to start with an existing Reflex ``textInput`` widget and build fro
 
 ### Always start with the data structures
 
-**Plan (A)** is to imitate the structure of the existing [Reflex-DOM] input widgets, so I created
-two records:
+To start with, the plan is to imitate the structure of the existing [Reflex-DOM] input widgets,
+adjusting as necessary.
 
+So I created two records:
 - ``DateInputConfig``: To hold all the required configuration to build and run our date input
 - ``DateInput``: To be handed to the user so they could manage the date ``Dynamic`` and related ``Event``s.
 
