@@ -358,3 +358,5 @@ comes with a '_Terrible CSS Warning_', just saying...
 
 We'll also write some tests for our widget so we can make sure that everything works as desired and
 to see how one tests and verifies a [Reflex] widget.
+
+The code for this widget can be here: https://github.com/qfpl/reflex-dom-datepicker
