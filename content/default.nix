@@ -26,6 +26,7 @@ in
     unpackPhase = ''
       cp -r $src/* .
       chmod -R +w .
+      mkdir ./drafts/reflex
       ln -sv ${reflex-tutorial}/drafts/reflex/basics ./drafts/reflex/basics
       ln -sv ${reflex-tutorial}/posts/reflex/basics ./posts/reflex/basics
       ln -sv ${reflex-tutorial}/css/reflex/basics ./css/reflex/basics
