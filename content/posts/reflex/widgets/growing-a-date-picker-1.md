@@ -6,18 +6,9 @@ project: reflex
 extra-css: /css/reflex/growing-dp/part1.css
 ---
 
-[Reflex]:      (https://github.com/reflex-frp/reflex)
-[Reflex-DOM]:  (https://github.com/reflex-frp/reflex-dom)
-[FRP]:         (https://gist.github.com/staltz/868e7e9bc2a7b8c1f754)
-[ReflexIntro]: (https://qfpl.io/posts/reflex/basics/introduction/)
-[ManningFRP]:  (https://www.manning.com/books/functional-reactive-programming)
-
 ## Stay a while, and listen.
 
-In the interests of learning more about [FRP] and [Reflex], I decided to attempt to build a component
-that appears in many a user facing application, the date picker. This series will be a tale of that
-process. The goal is to document as much as I can about designing, implementing, and debugging the
-component. As well as the lessons learned along the way, so expect to see me making lots of mistakes.
+In the interests of learning more about [FRP](https://gist.github.com/staltz/868e7e9bc2a7b8c1f754) and [Reflex](https://github.com/reflex-frp/reflex), I decided to attempt to build a component that appears in many a user facing application, the date picker. This series will be a tale of that process. The goal is to document as much as I can about designing, implementing, and debugging the component. As well as the lessons learned along the way, so expect to see me making lots of mistakes.
 
 If I am successful then the Reflex ecosystem gains a sufficiently generic date picker widget. Or
 I'll do everything wrong, in which case, maybe someone will be able to look at what I've done and
@@ -25,10 +16,7 @@ have a list of what you shouldn't do. Win win.
 
 #### Some assumptions...
 
-I assume a 'dabblers' understanding of [Reflex] and [FRP]. If you don't know [FRP] or [Reflex] yet,
-or you find yourself a bit lost at times, I recommend the [Reflex Introduction][ReflexIntro] series
-by Dave Laing. If you're keen, the [Functional Reactive Programming][ManningFRP] book by Stephen
-Blackheath and Anthony Jones is a wonderful resource.
+I assume a 'dabblers' understanding of [Reflex](https://github.com/reflex-frp/reflex) and [FRP](https://gist.github.com/staltz/868e7e9bc2a7b8c1f754). If you don't know [FRP](https://gist.github.com/staltz/868e7e9bc2a7b8c1f754) or [Reflex](https://github.com/reflex-frp/reflex) yet, or you find yourself a bit lost at times, I recommend the [Reflex Introduction](https://qfpl.io/posts/reflex/basics/introduction/) series by Dave Laing. If you're keen, the [Functional Reactive Programming](https://www.manning.com/books/functional-reactive-programming) book by Stephen Blackheath and Anthony Jones is a wonderful resource.
 
 ### Why a date picker?
 
@@ -61,8 +49,7 @@ The plan was to start with an existing Reflex ``textInput`` widget and build fro
 
 ### Always start with the data structures
 
-To start with, the plan is to imitate the structure of the existing [Reflex-DOM] input widgets,
-adjusting as necessary.
+To start with, the plan is to imitate the structure of the existing [Reflex-DOM](https://github.com/reflex-frp/reflex-dom) input widgets, adjusting as necessary.
 
 So I created two records:
 - ``DateInputConfig``: To hold all the required configuration to build and run our date input
@@ -115,7 +102,7 @@ data DateInput t = DateInput
 
 First up is displaying the text input and parsing the input, only using the new date if the input
 successfully parsed using the format we were given. This proved to be straightforward enough using
-the basic [Reflex] tools.
+the basic [Reflex](https://github.com/reflex-frp/reflex) tools.
 
 Build the ``textInput``:
 ```haskell
@@ -132,18 +119,14 @@ tI <- textInput $ def
 The ``fmtDate`` will format the given ``Day`` using the provided format from the ``DateInputConfig``
 before setting it as the current value on the text input. We also pass on the attributes to the text
 input field in case there is extra styling or related shenanigans that the user would like to
-leverage. There is the possibility you can do something silly with that, but for now lets [pretend
-we don't know anyone like that](https://xkcd.com/908/).
+leverage. There is the possibility you can do something silly with that, but for now lets [pretend we don't know anyone like that](https://xkcd.com/908/).
 
-We also provide an ``Event`` that we will fire when we have a new ``Day`` value and we want to
-update the contents of the text field. In true [Reflex] fashion, we haven't defined ``dDayValue``
-yet, but that will be the name of the ``Dynamic t Day`` we use to build the list of days, calculate
-the next or previous month values, and finally provide to the user.
+We also provide an ``Event`` that we will fire when we have a new ``Day`` value and we want to update the contents of the text field. In true [Reflex](https://github.com/reflex-frp/reflex) fashion, we haven't defined ``dDayValue`` yet, but that will be the name of the ``Dynamic t Day`` we use to build the list of days, calculate the next or previous month values, and finally provide to the user.
 
 The ``textInput`` contains, among other things, a ``Dynamic t Text`` that is the input values from
 the user. We need to parse this value over time and if it is valid then we update our ``Dynamic t Day``.
 
-We use ``updated`` from [Reflex] to retrieve the ``Event t Text`` from our ``Dynamic t Text``: 
+We use ``updated`` from [Reflex](https://github.com/reflex-frp/reflex) to retrieve the ``Event t Text`` from our ``Dynamic t Text``: 
 ```haskell
 let eDateTextInput = updated $ tI ^. textInput_value
 ```
@@ -175,7 +158,7 @@ Regardless of the choice of default, by using this solution we would be spamming
 update to the text input. Potentially performing a DOS attack against our own widget.
 
 So we want to run our function but filter for events where we have a valid update. Turns out that
-[Reflex] has a function for this exact situation, ``fmapMaybe``.
+[Reflex](https://github.com/reflex-frp/reflex) has a function for this exact situation, ``fmapMaybe``.
 
 The ``Event t Day`` now looks like this:
 ```haskell
@@ -357,6 +340,6 @@ month functionality, a clickable list of days, and some suitably ``Dynamic`` sty
 comes with a '_Terrible CSS Warning_', just saying...
 
 We'll also write some tests for our widget so we can make sure that everything works as desired and
-to see how one tests and verifies a [Reflex] widget.
+to see how one tests and verifies a [Reflex](https://github.com/reflex-frp/reflex) widget.
 
 The code for this widget can be here: https://github.com/qfpl/reflex-dom-datepicker
