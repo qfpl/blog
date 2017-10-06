@@ -6,11 +6,11 @@ project: reflex
 extra-css: /css/reflex/growing-dp/part1.css
 ---
 
-[Reflex]: (https://github.com/reflex-frp/reflex)
-[Reflex-DOM]: (https://github.com/reflex-frp/reflex-dom)
-[FRP]: (https://gist.github.com/staltz/868e7e9bc2a7b8c1f754)
+[Reflex]:      (https://github.com/reflex-frp/reflex)
+[Reflex-DOM]:  (https://github.com/reflex-frp/reflex-dom)
+[FRP]:         (https://gist.github.com/staltz/868e7e9bc2a7b8c1f754)
 [ReflexIntro]: (https://qfpl.io/posts/reflex/basics/introduction/)
-[ManningFRP]: (https://www.manning.com/books/functional-reactive-programming)
+[ManningFRP]:  (https://www.manning.com/books/functional-reactive-programming)
 
 ## Stay a while, and listen.
 
@@ -92,11 +92,10 @@ data TextInputConfig t = TextInputConfig
 ```
 
 Next is the ``DateInput`` that will be returned to the user, this contains the ``Dynamic t Day``,
-along with set value ``Event``s and similar ``Event``s from the underlying ``textInput``.
+along with set value ``Event``s, and similar ``Event``s from the underlying ``textInput``.
 
 ```haskell
--- The Modified Julian `Day` is a standard count of 
--- days, with zero being the day 1858-11-17
+-- The Modified Julian `Day` is a standard count of days, with zero being the day 1858-11-17
 data DateInput t = DateInput
   { _dateInput_value       :: Dynamic t Day -- ^ Our date picker value
 
@@ -117,7 +116,7 @@ First up is displaying the text input and parsing the input, only using the new 
 successfully parsed using the format we were given. This proved to be straightforward enough using
 the basic [Reflex] tools.
 
-Build a ``textInput`` for direct input:
+Build the ``textInput``:
 ```haskell
 tI <- textInput $ def
   & textInputConfig_initialValue .~ dateCfg ^. dateInputConfig_initialValue . to fmtDate
