@@ -1,6 +1,6 @@
 ---
 title: Growing a Date Picker in Reflex - Part 1
-date: 2017-09-29
+date: 2017-10-06
 authors: schalmers
 project: reflex
 extra-css: /css/reflex/growing-dp/part1.css
@@ -87,7 +87,7 @@ along with set value ``Event``s, and similar ``Event``s from the underlying ``te
 data DateInput t = DateInput
   { _dateInput_value       :: Dynamic t Day -- ^ Our date picker value
 
-  -- Text input box for date selection, Events and 
+  -- Text input box for date selection, Events and
   -- HTML Element from the underlying widget
   , _dateInput_rawInput    :: Event t Text
   , _dateInput_keypress    :: Event t Word
@@ -126,7 +126,7 @@ We also provide an ``Event`` that we will fire when we have a new ``Day`` value 
 The ``textInput`` contains, among other things, a ``Dynamic t Text`` that is the input values from
 the user. We need to parse this value over time and if it is valid then we update our ``Dynamic t Day``.
 
-We use ``updated`` from [Reflex](https://github.com/reflex-frp/reflex) to retrieve the ``Event t Text`` from our ``Dynamic t Text``: 
+We use ``updated`` from [Reflex](https://github.com/reflex-frp/reflex) to retrieve the ``Event t Text`` from our ``Dynamic t Text``:
 ```haskell
 let eDateTextInput = updated $ tI ^. textInput_value
 ```
@@ -216,7 +216,7 @@ let eDateTextInput = updated $ tI ^. textInput_value
 This ``Event`` is attached to the ``Dynamic`` of the text input, so it will fire for every update to
 the value of the ``TextInput``.
 
-The next piece is the update to our ``Dynamic t Day``, specifically one of its update ``Event``s. 
+The next piece is the update to our ``Dynamic t Day``, specifically one of its update ``Event``s.
 ```haskell
 dDayValue <- ...
   [ fmapMaybe parseDay eDateTextInput
@@ -234,7 +234,7 @@ dDayValue <- ...
   [ fmapMaybe parseDay ( updated $ tI ^. textInput_value )
   ...
 ```
-The text field will be updated by every ``Event`` of ``dDayValue`` being updated. 
+The text field will be updated by every ``Event`` of ``dDayValue`` being updated.
 
 * Text field updated
 * Fires Event to parse value
@@ -247,7 +247,7 @@ I was trying to set the value of the text field, that was triggered by an ``Even
 valid ``Day`` input, from the ``Event`` that was fired because text was entered into the text field
 that fires events when it is updated... [Oh dear](http://gunshowcomic.com/648).
 
-### Untie the knot 
+### Untie the knot
 
 Here are two possible fixes for this situation.
 
@@ -293,7 +293,7 @@ dDayValue <- holdDyn initialVal $ leftmost
 ```
 
 These changes de-couple the updates of the ``textInput`` from the changes to the ``Dynamic t Day``,
-without allowing it to fall out of sync if there are other relevant update ``Event``s. 
+without allowing it to fall out of sync if there are other relevant update ``Event``s.
 
 Additionally the ``Dynamic t Day`` doesn't miss out on any updates or valid changes to the
 ``textInput``. More testing indicated no page slow down and no more loops, hooray.
