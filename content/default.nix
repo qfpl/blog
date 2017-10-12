@@ -32,8 +32,10 @@ in
       ln -sv ${reflex-tutorial}/posts/reflex/basics ./posts/reflex/basics
       mkdir -p ./css/reflex
       ln -sv ${reflex-tutorial}/css/reflex/basics ./css/reflex/basics
+      ln -sv ${reflex-tutorial}/css/reflex/basics-exercises ./css/reflex/basics-exercises
       mkdir -p ./js/reflex
       ln -sv ${reflex-tutorial}/js/reflex/basics ./js/reflex/basics
+      ln -sv ${reflex-tutorial}/js/reflex/basics-exercises ./js/reflex/basics-exercises
     '';
 
     buildPhase = ''
