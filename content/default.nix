@@ -1,6 +1,7 @@
-{ nixpkgs ? import <nixpkgs> {} 
+{ nixpkgs ? import <nixpkgs> {}
 , generator ? import ../generator
 , reflex-tutorial ? import ../reflex-tutorial {}
+, growing-a-datepicker ? import ../growing-a-datepicker {}
 }:
 let
   inherit (nixpkgs) pkgs;
@@ -36,6 +37,12 @@ in
       mkdir -p ./js/reflex
       ln -sv ${reflex-tutorial}/js/reflex/basics ./js/reflex/basics
       ln -sv ${reflex-tutorial}/js/reflex/basics-exercises ./js/reflex/basics-exercises
+
+      ln -sv ${growing-a-datepicker}/drafts/reflex/widget ./drafts/reflex/widget
+      ln -sv ${growing-a-datepicker}/posts/reflex/widget ./posts/reflex/widget
+      ln -sv ${growing-a-datepicker}/css/reflex/growing-a-datepicker ./css/reflex/growing-a-datepicker
+      ln -sv ${growing-a-datepicker}/js/reflex/growing-a-datepicker ./js/reflex/growing-a-datepicker
+
     '';
 
     buildPhase = ''
