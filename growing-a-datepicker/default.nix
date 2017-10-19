@@ -5,8 +5,8 @@ in
   import ( pkgs.fetchFromGitHub {
     owner  = "qfpl";
     repo   = "growing-a-datepicker";
-    rev    = "8f11c7ccff5fa3f7ab6dbca4c1154856dd14c15c";
-    sha256 = "1wwgs49r90mavzm5ardq063yjhmlcaifbd7lrn9ai84n15145r00";
+    rev    = "676c304cd2449e48165c3aa6324a01b67e9bfcdc";
+    sha256 = "1ja3rwczzzyj1kyvp601ww9rcpb6kcyhyg9lpfc33ba6sndjds0g";
   })
 
 
