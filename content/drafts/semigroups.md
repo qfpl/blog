@@ -5,7 +5,7 @@ project: infra
 authors: gwilson
 ---
 
-## An Abridged Hisory of Semigroup in Haskell
+## An Abridged History of Semigroup in Haskell
 
 Monoids have been a ubiquitous part of modern functional programming for many
 years. Recently Semigroups, which are more general but weaker than monoids,
