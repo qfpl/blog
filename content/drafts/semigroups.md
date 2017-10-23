@@ -13,13 +13,14 @@ have seen a lot of use as well.
 
 At the time `Monoid` was added to base, a `Semigroup` class was not added
 alongside it. In hindsight, we would have liked a `Semigroup` class as a
-superclass of `Monoid`. Lots of useful structures like `NonEmpty` lists are
-semigroups but not monoids.
-Lots of useful structures come about that are related to Semigroup and don't
+superclass of `Monoid`. Every Monoid is a Semigroup, and there are lots of
+useful structures that are only semigroups, like `NonEmpty` lists. NonEmpty
+Lists lack the empty list, which is the identity of the append operation.
+Other useful structures come about that are related to Semigroup but don't
 need a full Monoid, such as [`Validation`](https://github.com/qfpl/validation/)
 and [`Foldable1`](https://hackage.haskell.org/package/semigroupoids/docs/Data-Semigroup-Foldable.html).
 Hence Edward Kmett wrote a library called [semigroups](https://hackage.haskell.org/package/semigroups).
-Semigroups provides the `Semigroup` class and `NonEmpty` lists. Due to the
+The package provides the `Semigroup` class and `NonEmpty` lists. Due to the
 usefulness of the abstraction, and the fact that many of Edward's other
 packages depend on it, the semigroups package is
 [very widely used](https://packdeps.haskellers.com/reverse/semigroups).
@@ -50,7 +51,7 @@ will clash with the modules recently added to base! Thankfully this is not the
 case, because semigroups is smart enough to "turn itself off" with CPP when it
 detects a new enough base version.
 
-In summary, please depend on semigroups if you depend on `Semigroup`s :)
+In summary, please depend on semigroups if you depend on `Semigroup` :)
 
 [^1]:
   In order to preserve backward compatibility, `Semigroup`
