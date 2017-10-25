@@ -1,6 +1,6 @@
 ---
 title: Please Depend on Semigroups
-date: 2017-10-20
+date: 2017-10-25
 project: infra
 authors: gwilson
 ---
