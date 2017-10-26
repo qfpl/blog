@@ -47,9 +47,13 @@ Let's get into it.
 
 module FreePlated where
 
-import Control.Lens
-import Control.Monad.Free
-import Data.Monoid
+import Control.Lens.Fold   ((^?))
+import Control.Lens.Plated (Plated, rewrite)
+import Control.Lens.Prism  (aside)
+import Control.Lens.Review ((#))
+import Control.Lens.TH     (makeClassyPrisms)
+import Control.Monad.Free  (Free, liftF, _Free)
+import Data.Monoid         (First(..))
 \end{code}
 
 &nbsp;
