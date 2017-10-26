@@ -1,14 +1,14 @@
 ---
-title: Optimisating free monad programs using Plated
+title: Optimising free monad programs using Plated
 date: 2017-10-26
 authors: ielliott
 ---
 
-This document is a Literal Haskell file, available [here](https://github.com/qfpl/blog/blob/master/content/posts/optimising-free-with-plated.lhs)
+This document is a Literate Haskell file, available [here](https://github.com/qfpl/blog/blob/master/content/posts/optimising-free-with-plated.lhs)
 
 ---
 
-In this article I demonstrate how to use classy prisms and Plated to write and
+In this article I demonstrate how to use classy prisms and `Plated` to write and
 apply optimisations to programs written in a free monad DSL.
 
 [Plated](https://hackage.haskell.org/package/lens-4.15.4/docs/Control-Lens-Plated.html#t:Plated)
@@ -18,17 +18,18 @@ powerful tools to work with self-recursive datastructures. One such tool is
 which repeatedly applies a transformation everywhere in a `Plated` structure
 until it can no longer be applied.
 
-`Free` has an instance of `Plated`:
+[The free monad](https://hackage.haskell.org/package/free-4.12.4/docs/Control-Monad-Free.html#t:Free)
+has an instance of `Plated`:
 
 ```haskell
-instance Traversable f => Plated (Free f a)
+Traversable f => Plated (Free f a)
 ```
 so if you derive `Foldable` and `Traversable` for the underlying functor,
 you can use the `Plated` combinators on your free monad DSL.
 
-[Classy prisms](https://hackage.haskell.org/package/lens-4.15.4/docs/Control-Lens-TH.html#v:makeClassyPrisms)
-provide pattern matching on free monad programs with zero boilerplate. When
-coupled with `rewrite`, we get a system for applying optimisations to
+Defining [classy prisms](https://hackage.haskell.org/package/lens-4.15.4/docs/Control-Lens-TH.html#v:makeClassyPrisms)
+for the base functor provides pattern matching on free monad programs for free.
+When coupled with `rewrite`, we get a system for applying optimisations to
 our free monad programs with minimal effort.
 
 ---
@@ -50,6 +51,8 @@ import Control.Lens
 import Control.Monad.Free
 import Data.Monoid
 \end{code}
+
+&nbsp;
 
 First, define the DSL. This is a bit of a contrived one:
 
@@ -76,7 +79,10 @@ pause = liftF $ Pause ()
 * `many n` - "do something `n` times"
 * `pause` - "take a break"
 
-In this DSL, we are going impose the property that `many n` is equivalent to `replicateM_ n one`
+In this DSL, we are going impose the property that `many n` should be
+equivalent to `replicateM_ n one`.
+
+&nbsp;
 
 Next, generate classy prisms for the functor.
 
@@ -103,6 +109,7 @@ makeClassyPrisms ''InstF
     _Pause :: AsInstF s a => Prism' s a`
     ```
 
+&nbsp;
 
 Lift the classy prisms into the free monad:
 
@@ -127,12 +134,14 @@ We can now use the prisms as if they had these types:
     ```
 
 If one of these prisms match, it means the program begins with that particular
-intruction, and the `Inst a` returned is the tail of the program.
+instruction, and the `Inst a` returned is the tail of the program.
+
+&nbsp;
 
 Now it's time to write optimisations over the free monad structure. A
 rewrite rule has the type `a -> Maybe a`- if the function returns a `Just`,
 the input will be replaced with the contents of the `Just`. If it returns
-`Nothing`, no rewriting will occur.
+`Nothing` then no rewriting will occur.
 
 \begin{code}
 optimisations :: AsInstF s s => [s -> Maybe s]
@@ -164,6 +173,8 @@ Rule 3: `many n` followed by `one` is equivalent to `many (n+1)`
       pure $ _Many # (n+1, s')
 \end{code}
 
+&nbsp;
+
 The last step is to write a function that applies all the optmisations to
 a program.
 
@@ -175,6 +186,8 @@ optimise = rewrite $ getFirst . foldMap (First .) optimisations
 `getFirst . foldMap (First .)` has type `[a -> Maybe a] -> a -> Maybe a`.
 It combines all the rewrite rules into a single rule that picks the first
 rule to succeed for the input.
+
+&nbsp;
 
 Now we can optimise a program:
 
