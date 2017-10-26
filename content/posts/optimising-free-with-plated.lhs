@@ -13,7 +13,7 @@ apply optimisations to programs written in a free monad DSL.
 
 [Plated](https://hackage.haskell.org/package/lens-4.15.4/docs/Control-Lens-Plated.html#t:Plated)
 is a class in [lens](https://hackage.haskell.org/package/lens) that provides
-powerful tools to work with self-recursive datastructures. One such tool is
+powerful tools to work with self-recursive data structures. One such tool is
 [recursive bottom-up rewriting](https://hackage.haskell.org/package/lens-4.15.4/docs/Control-Lens-Plated.html#v:rewrite),
 which repeatedly applies a transformation everywhere in a `Plated` structure
 until it can no longer be applied.
