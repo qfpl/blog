@@ -179,7 +179,7 @@ Rule 3: `many n` followed by `one` is equivalent to `many (n+1)`
 
 &nbsp;
 
-The last step is to write a function that applies all the optmisations to
+The last step is to write a function that applies all the optimisations to
 a program.
 
 \begin{code}
