@@ -4,6 +4,7 @@ module Util.Pandoc (
   , setupPandocMathCompiler
   ) where
 
+import qualified Data.Set as S
 import           Image.LaTeX.Render
 
 import           Text.Pandoc
@@ -68,15 +69,25 @@ setupPandocMathCompiler pmcc = do
     compiler =
       pandocCompilerWithTransformM
         defaultHakyllReaderOptions
-        defaultHakyllWriterOptions
+        writerOptions
         transform
     renderFn =
       renderPandocWithTransformM
         defaultHakyllReaderOptions
-        defaultHakyllWriterOptions
+        writerOptions
         transform
 
   return $
     PandocMathCompilerFunctions
       compiler
       renderFn
+  where
+    writerOptions :: WriterOptions
+    writerOptions =
+      let
+        d = defaultHakyllWriterOptions
+      in
+        d
+        { writerExtensions =
+            S.delete Ext_literate_haskell $ writerExtensions d
+        }

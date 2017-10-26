@@ -33,6 +33,7 @@ executable site
                   , aeson
                   , scientific
                   , filepath
+                  , containers
   hs-source-dirs:   src
   ghc-options:      -Wall -threaded
   default-language: Haskell2010

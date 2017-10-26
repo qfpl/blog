@@ -1,4 +1,4 @@
-{ mkDerivation, aeson, base, filepath, hakyll
+{ mkDerivation, aeson, base, containers, filepath, hakyll
 , latex-formulae-hakyll, latex-formulae-image
 , latex-formulae-pandoc, pandoc, scientific, stdenv, text
 , unordered-containers
@@ -10,7 +10,7 @@ mkDerivation {
   isLibrary = false;
   isExecutable = true;
   executableHaskellDepends = [
-    aeson base filepath hakyll latex-formulae-hakyll
+    aeson base containers filepath hakyll latex-formulae-hakyll
     latex-formulae-image latex-formulae-pandoc pandoc scientific text
     unordered-containers
   ];
