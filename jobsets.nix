@@ -17,7 +17,7 @@
             "emailoverride": "",
             "keepnr": 5,
             "inputs": {
-                "nixpkgs": { "type": "git", "value": "https://github.com/NixOS/nixpkgs.git release-17.03", "emailresponsible": false },
+                "nixpkgs": { "type": "git", "value": "https://github.com/NixOS/nixpkgs.git release-17.09", "emailresponsible": false },
                 "blog": { "type": "git", "value": "https://github.com/qfpl/blog", "emailresponsible": false },
                 "reflex-tutorial": { "type": "git", "value": "https://github.com/qfpl/reflex-tutorial", "emailresponsible": false },
                 "growing-a-datepicker": { "type": "git", "value": "https://github.com/qfpl/growing-a-datepicker", "emailresponsible": false }
