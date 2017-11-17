@@ -276,7 +276,7 @@ table.
 
     * It is left-associative:
         * Inspect its right child
-            * If the right child node has equal precedence to the input node
+            * If the right child node is an operator and has equal precedence to the input node
                 * And is also left-associative, then re-order the tree
                   to be left-associative
                 * And is right-associative, then report an ambiguity
@@ -286,7 +286,7 @@ table.
  
     * It is right-associative
         * Inspect its left child
-            * If the left child node has equal precedence to the input node
+            * If the left child node is an operator and has equal precedence to the input node
                 * And is also right-associative, then re-order the tree to
                   be right-associative
                 * And is left-associative, then report an ambiguity
