@@ -117,8 +117,13 @@ A      OP1(prec=X, assoc=Right)
      B                     C
 ```
 
-If a parent and child node have different precedences or associativities,
-then they do not need to be re-associated.
+If a parent and child node have different precedences and different associativities,
+then they won't be re-associated. If they have the same precedence but different
+associativities, an "ambiguous parse" error is raised.
+
+If we have two operators `!` and `^`, with the same precedence and different
+associativity, any unparenthesised expression that uses them has two valid parenthesisations
+&mdash; `5 ^ 4 ! 3` could be `[5 ^ 4] ! 3` or `5 ^ [4 ! 3]`.
 
 Precedence Correction
 ---------------------
@@ -186,10 +191,11 @@ This is where `Plated` comes in. To make your datatype an instance of
 you write a
 [Traversal](https://hackage.haskell.org/package/lens/docs/Control-Lens-Type.html#t:Traversal)
 that operates over its immediate self-similar children.
-[rewrite](https://hackage.haskell.org/package/lens/docs/Control-Lens-Plated.html#v:rewrite)
+[rewriteM](https://hackage.haskell.org/package/lens/docs/Control-Lens-Plated.html#v:rewriteM)
 then allows you to write transformations on trees as deep or as shallow
-as you wish, and will recursively apply those transformations from the
-bottom of a tree upwards until it can no longer be transformed.
+as you wish, interleaving a monadic context, and will recursively apply those
+transformations from the bottom of a tree upwards until it can no longer be
+transformed.
 
 Good abstractions reduce boilerplate and help you focus on what's
 important. The "recursive bottom-up tree rewriting" algorithm has already
@@ -204,7 +210,7 @@ Let's write some code.
 module Operators where
 
 import Control.Applicative ((<|>), liftA2)
-import Control.Lens.Plated (Plated(..), rewrite)
+import Control.Lens.Plated (Plated(..), rewriteM)
 import Data.Maybe (fromMaybe)
 \end{code}
 
@@ -255,43 +261,73 @@ type OpTable = [(String, OperatorInfo)]
 
 <br>
 
+Our reordering function could fail due to ambiguity
+\begin{code}
+data ParseError = AmbiguousParse
+  deriving (Eq, Show, Ord)
+\end{code}
+
+<br>
+
 Re-association. This code crashes when an operator is missing from the
 table.
 
 * If the input node is an operator, and:
 
     * It is left-associative:
-        1. Inspect its right child
-        2. If that node is also left-associative, and has equal
-           precedence to the input node:
-             * Re-order the tree to be left-associative
+        * Inspect its right child
+            * If the right child node is an operator and has equal precedence to the input node
+                * And is also left-associative, then re-order the tree
+                  to be left-associative
+                * And is right-associative, then report an ambiguity
+        * Inspect its left child
+            * If the left child node is an operator, has equal precedence to
+              the input node and is right-associative, then report an ambiguity
  
     * It is right-associative
-        1. Inspect its left child
-        2. If that node is also right-associative, and has equal
-           precedence to the input node:
-             * Re-order the tree to be right-associative
+        * Inspect its left child
+            * If the left child node is an operator and has equal precedence to the input node
+                * And is also right-associative, then re-order the tree to
+                  be right-associative
+                * And is left-associative, then report an ambiguity
+        * Inspect its right child
+            * If the right child node is an operator, has equal precedence to
+              the input node and is left-associative, then report an ambiguity
+
 * Otherwise, do nothing
 
 \begin{code}
-associativity :: OpTable -> Expr -> Maybe Expr
+associativity :: OpTable -> Expr -> Either ParseError (Maybe Expr)
 associativity table (BinOp name l r)
   | Just entry <- lookup name table =
       case opAssoc entry of
         AssocL
           | BinOp name' l' r' <- r
           , Just entry' <- lookup name' table
-          , AssocL <- opAssoc entry'
           , opPrecedence entry == opPrecedence entry' ->
-              Just $ BinOp name' (BinOp name l l') r'
+              case opAssoc entry' of
+                AssocL -> Right . Just $ BinOp name' (BinOp name l l') r'
+                AssocR -> Left AmbiguousParse
+          | BinOp name' _ _ <- l
+          , Just entry' <- lookup name' table
+          , opPrecedence entry == opPrecedence entry'
+          , AssocR <- opAssoc entry' ->
+              Left AmbiguousParse
+          | otherwise -> Right Nothing
         AssocR
           | BinOp name' l' r' <- l
           , Just entry' <- lookup name' table
-          , AssocR <- opAssoc entry'
           , opPrecedence entry == opPrecedence entry' ->
-              Just $ BinOp name' l' (BinOp name r' r)
-        _ -> Nothing
-associativity _ _ = Nothing
+              case opAssoc entry' of
+                AssocL -> Left AmbiguousParse
+                AssocR -> Right . Just $ BinOp name' l' (BinOp name r' r)
+          | BinOp name' _ _ <- r
+          , Just entry' <- lookup name' table
+          , opPrecedence entry == opPrecedence entry'
+          , AssocL <- opAssoc entry' ->
+              Left AmbiguousParse
+          | otherwise -> Right Nothing
+associativity _ _ = Right Nothing
 \end{code}
 
 <br>
@@ -336,12 +372,14 @@ precedence _ _ = Nothing
 
 `precedence` and `associativity` have type `Expr -> Maybe Expr` because
 eventually the transformations will no longer be applicable. We can use
-`liftA2 (<|>)` to combine the two rewrite rules, and `rewrite` will run
-until both always produce `Nothing`
+`liftA2 (liftA2 (<|>))` to combine the two rewrite rules, and `rewriteM`
+will run until one produces a `Left`, or until both always produce
+`Right Nothing`
 \begin{code}
-reorder :: OpTable -> Expr -> Expr
+reorder :: OpTable -> Expr -> Either ParseError Expr
 reorder table =
-  rewrite (liftA2 (<|>) (precedence table) (associativity table))
+  rewriteM $
+  liftA2 (liftA2 (<|>)) (Right . precedence table) (associativity table)
 \end{code}
 
 <br>
@@ -350,10 +388,10 @@ Let's try it on the expression `5 - 4 + 3 * 2 + 1`. It will be parsed as
 `5 - [4 + [3 * [2 + 1]]]`, but after re-ordering should become
 `[[5 - 4] + [3 * 2]] + 1`.
 ```
-ghci> let o = [("+", Operator AssocL 5), ("-", Operator AssocL 5), ("*", Operator AssocL 6)]
+ghci> let o = [("+", OperatorInfo AssocL 5), ("-", OperatorInfo AssocL 5), ("*", OperatorInfo AssocL 6)]
 ghci> let input = BinOp "-" (Number 5) (BinOp "+" (Number 4) (BinOp "*" (Number 3) (BinOp "+" (Number 2) (Number 1))))
 ghci> reorder o input
-BinOp "+" (BinOp "+" (BinOp "-" (Number 5) (Number 4)) (BinOp "*" (Number 3) (Number 2))) (Number 1)
+Right (BinOp "+" (BinOp "+" (BinOp "-" (Number 5) (Number 4)) (BinOp "*" (Number 3) (Number 2))) (Number 1))
 ```
 
 We can also use `Parens` to explicitly parenthesise the expression. If we
@@ -361,20 +399,32 @@ input `5 - (4 + (3 * (2 + 1)))`, it will not be re-ordered at all.
 ```
 ghci> let input = BinOp "-" (Number 5) (Parens $ BinOp "+" (Number 4) (Parens $ BinOp "*" (Number 3) (Parens $ BinOp "+" (Number 2) (Number 1))))
 ghci> reorder o input
-BinOp "-" (Number 5) (Parens (BinOp "+" (Number 4) (Parens (BinOp "*" (Number 3) (Parens (BinOp "+" (Number 2) (Number 1)))))))
-ghci> reorder o input == input
+Right (BinOp "-" (Number 5) (Parens (BinOp "+" (Number 4) (Parens (BinOp "*" (Number 3) (Parens (BinOp "+" (Number 2) (Number 1))))))))
+
+ghci> reorder o input == Right input
 True
 ```
 
-Exercise
---------
+Ambiguous expressions are reported. Here's the example from earlier &mdash; `5 ^ 4 ! 3`:
+```
+ghci> let o = [("^", OperatorInfo AssocL 5), ("!", OperatorInfo AssocR 5)]
+ghci> let input = BinOp "^" (Number 5) (BinOp "!" (Number 4) (Number 3))
+ghci> reorder o input
+Left AmbiguousParse
 
-If you're interested in playing around with this a bit more, here's an
-exercise for you. Earlier I said that `precedence` and `associativity`
-will crash if they encounter operators that are missing from the operator
-table.
+ghci> let input = BinOp "!" (BinOp "^" (Number 5) (Number 4)) (Number 3)
+ghci> reorder o input
+Left AmbiguousParse
+```
 
-*Extend `precedence`, `associativity` and `reorder` to gracefully handle
-undefined operators by returning an `Either`.*
+And are resolved by adding explicit parentheses &mdash; `5 ^ (4 ! 3)` and `(5 ^ 4) ! 3` respectively:
+```
+ghci> let o = [("^", OperatorInfo AssocL 5), ("!", OperatorInfo AssocR 5)]
+ghci> let input = BinOp "^" (Number 5) (Parens $ BinOp "!" (Number 4) (Number 3))
+ghci> reorder o input
+Right (BinOp "!" (Number 5) (Parens (BinOp "^" (Number 4) (Number 3))))
 
-Hint: You might want to use a different combinator from `Control.Lens.Plated`
+ghci> let input = BinOp "!" (Parens $ BinOp "^" (Number 5) (Number 4)) (Number 3)
+ghci> reorder o input
+Right (BinOp "!" (Parens (BinOp "^" (Number 5) (Number 4)) (Number 3)))
+```
