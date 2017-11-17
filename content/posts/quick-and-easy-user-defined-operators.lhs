@@ -281,8 +281,8 @@ table.
                   to be left-associative
                 * And is right-associative, then report an ambiguity
         * Inspect its left child
-            * If the left child node has equal precedence to the input node
-              and is right-associative, then report an ambiguity
+            * If the left child node is an operator, has equal precedence to
+              the input node and is right-associative, then report an ambiguity
  
     * It is right-associative
         * Inspect its left child
@@ -291,8 +291,8 @@ table.
                   be right-associative
                 * And is left-associative, then report an ambiguity
         * Inspect its right child
-            * If the right child node has equal precedence to the input node
-              and is left-associative, then report an ambiguity
+            * If the right child node is an operator, has equal precedence to
+              the input node and is left-associative, then report an ambiguity
 
 * Otherwise, do nothing
 
