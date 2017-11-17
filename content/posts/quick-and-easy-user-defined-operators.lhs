@@ -4,7 +4,7 @@ date: 2017-11-17
 authors: ielliott
 ---
 
-All operators have
+All [infix](https://en.wikipedia.org/wiki/Infix_notation) operators have
 [precedence](https://en.wikipedia.org/wiki/Order_of_operations)
 and
 [associativity](https://en.wikipedia.org/wiki/Operator_associativity).
@@ -15,7 +15,8 @@ are associated with a
 [precedence group](https://developer.apple.com/documentation/swift/operator_declarations).
 User-defined operators in F# get their precedence and associativity from the
 [combination of characters](https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/operator-overloading)
-that make up the operator. In Haskell-like languages, the user explicitly states the precedence and associativity using special syntax. For example,
+that make up the operator. In Haskell-like languages, the user explicitly states the
+precedence and associativity using special syntax. For example,
 `infixl 5 +` says "the `+` operator is left-associative and has
 precedence level 5".
 
@@ -56,7 +57,7 @@ Haskell-style infix operators are generally implemented like this:
 Re-association
 --------------
 
-Consider the input `2 - 3 + 4`. We implicit read this as `[2 - 3] + 4`,
+Consider the input `2 - 3 + 4`. We implicitly read this as `[2 - 3] + 4`,
 because `-` and `+` have the same precedence and are left-associative.
 According to our grammar this expression will always be parsed as
 `2 - [3 + 4]`, which has a completely different meaning. Changing the
