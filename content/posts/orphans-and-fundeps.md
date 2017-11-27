@@ -4,7 +4,7 @@ date: 2017-11-27
 authors: gwilson
 ---
 
-*If you are already familiar with multiparameter type classes, functional dependencies,
+*If you are already familiar with multi-parameter type classes, functional dependencies,
 and orphan instances, you can skip to the final section for the orphan rules.*
 
 ## Type classes and orphan instances
@@ -17,7 +17,7 @@ an in-depth exploration of that topic, I'd recommend
 
 One of the requirements for the coherence property is the absence of
 *orphan instances*. An instance of a type class for a type is not
-an orphan if it is defined in the same file as that type class, or
+an orphan if it is defined in the same module as that type class, or
 in the same module as that type. It is an orphan instance if it is defined in
 any module other than these two. So for example, the `Eq` instance for `Int`
 could be defined in the same module as `Eq` is defined (`GHC.Classes`), or in the
@@ -27,7 +27,7 @@ neither defines `Eq` nor `Int`.
 
 ## Multi-Parameter Type classes and functional dependencies
 
-Over the years. there have been many GHC language extensions extending the
+Over the years, there have been many GHC language extensions extending the
 type class mechanism in different ways. I recommend the 
 [24 Days of GHC Extensions](https://ocharles.org.uk/blog/posts/2014-12-01-24-days-of-ghc-extensions.html)
 blog series as an accessible introduction to several of them, among other
@@ -74,7 +74,7 @@ This greatly helps reduce the ambiguity multi-parameter type classes introduce,
 meaning GHC can infer the types of expressions like the following.
 
 ```haskell
-measure ['a', 'b'. 'c'] <> measure ['d', 'e']
+measure ['a', 'b', 'c'] <> measure ['d', 'e']
 ```
 
 Without the functional dependency `a -> v` in the type class declaration,
@@ -106,9 +106,9 @@ When is an instance of a multi-parameter type class considered an orphan
 instance?
 After some digging, I found the answer [here](https://ghc.haskell.org/trac/ghc/ticket/11999#comment:1).
 
-To summarise the above link: in order to not be an orphan, a multiparameter
-typeclass instance involving functional dependencies can occur in the module
-where the typeclass is defined, or in a module which defines a type that is *not
+To summarise the above link: in order to not be an orphan, a multi-parameter
+type class instance involving functional dependencies can occur in the module
+where the type class is defined, or in a module which defines a type that is *not
 determined* by any of the functional dependencies.
 
 For our `Measured` example above and its instance `Measured (Sum Int) [a]`,
