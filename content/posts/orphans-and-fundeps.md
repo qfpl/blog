@@ -70,7 +70,7 @@ instance Measured (Sum Int) [x] where
 
 When the type inferencer learns what type `a` is (in this case `[x]`), it will
 learn what `v` is (in this case `Sum Int`).
-This greatly helps reduce the ambituity multi-parameter type classes introduce,
+This greatly helps reduce the ambiguity multi-parameter type classes introduce,
 meaning GHC can infer the types of expressions like the following.
 
 ```haskell
@@ -114,7 +114,7 @@ determined* by any of the functional dependencies.
 For our `Measured` example above and its instance `Measured (Sum Int) [a]`,
 that instance could occur in the module that defines `Measured`, or the module
 that defines list. That instance would be an orphan if it
-occured in the module where `Sum` is defined, since `Sum Int` is determined by
+occurred in the module where `Sum` is defined, since `Sum Int` is determined by
 `[a]` according to the functional dependency.
 
 This has a consequence that I've hit recently. Suppose you have something like:
