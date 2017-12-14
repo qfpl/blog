@@ -20,8 +20,8 @@ This post will demonstrate a couple of techniques for using the
 
 During some experiments with [reflex-dom-canvas](https://github.com/qfpl/reflex-dom-canvas), a
 library for interacting with the [Canvas
-API](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API). I started having runtime
-exceptions regarding a vertex index being out of bounds. Initially I thought it was due to an
+API](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API), I started having runtime
+exceptions regarding a vertex index being out of bounds. Initially I thought this was due to an
 incorrect memory plan:
 
 ```haskell
@@ -36,7 +36,7 @@ incorrect memory plan:
   Gl.vertexAttribPointerF (fromIntegral _rPosAttrLoc) size dataType normalise stride offset
 ```
 
-After trying a few iterations of different ``stride`` values, I inspected the list of vertices, in
+After trying a few iterations of different ``stride`` values I inspected the list of vertices, in
 case something hadn't survived the trip from Haskell -> JavaScript. It wasn't the first point of
 investigation because it seemed so innocuous:
 
@@ -57,8 +57,8 @@ Using the ``toJSVal`` function from ``jsaddle`` to take our ``[Double]`` and tur
 toJSVal positions
 ```
 
-Upon closer inspection, I was performing the conversion to a JavaScript value incorrectly. The list
-of vertices was being inlined as arguments to the ``bufferData`` function:
+The problem was that the list of vertices were being inlined as separate arguments to the ``bufferData`` 
+function, instead of the list itself being treated as a single argument.
 
 What I expected:
 
@@ -72,9 +72,9 @@ What was appearing in JavaScript:
 bufferData(ARRAY_BUFFER, 0.0, 0.0, 0.0, 0.5, 0.7, 0.0, STATIC_DRAW);
 ```
 
-This is because ``jsaddle`` provides a the ``MakeArgs`` typeclass for turning a list into the
+This is because ``jsaddle`` provides the ``MakeArgs`` typeclass for turning a list into the
 arguments of a function. So my list of vertices was being inlined as individual function inputs, and
-I didn't understand it well enough to be able to solve my problem, yet.
+I didn't understand it well enough to be able to solve my problem - yet.
 
 ### From [Double] to ArrayBuffer
 
