@@ -228,7 +228,8 @@ buildBuffer positions = do
   buff <- new (jsg "ArrayBuffer") buffSize
   f32Arr <- new (jsg "Float32Array") buff
   itraverse_ (f32Arr <##) positions
-  f32Arr ! "buffer" >>= castTo ArrayBuffer
+  buffVal <- f32Arr ! "buffer"
+  castTo ArrayBuffer buffVal
 ```
 
 The different steps translate quite easily to Haskell, and we have the added benefit of the types
@@ -259,7 +260,8 @@ simply place my list in a list. Thus...
 buildBuffer :: [Double] -> JSM (Maybe ArrayBuffer)
 buildBuffer positions = do
   f32Arr <- new (jsg "Float32Array") [positions]
-  f32Arr ! "buffer" >>= castTo ArrayBuffer
+  buffVal <- f32Arr ! "buffer"
+  castTo ArrayBuffer buffVal
 ```
 
 Or if you don't like intermediate variables:
