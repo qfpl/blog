@@ -7,6 +7,7 @@ let
       latex-formulae-pandoc = pkgs.haskell.lib.doJailbreak super.latex-formulae-pandoc;
       latex-formulae-hakyll = pkgs.haskell.lib.doJailbreak super.latex-formulae-hakyll;
       foundation = pkgs.haskell.lib.dontCheck super.foundation;
+      skylighting = pkgs.haskell.lib.dontCheck super.skylighting;
     };
   };
 
