@@ -1,5 +1,5 @@
 ---
-title: NixOS install guide
+title: Installing NixOS
 date: 2018-01-17
 project: infra
 authors: ajmccluskey
