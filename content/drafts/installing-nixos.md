@@ -34,14 +34,15 @@ Firstly, we need to get the appropriate install media. We use the 64-bit minimal
 and others, are available on the [NixOS downloads page](https://nixos.org/nixos/download.html).
 
 Once you've obtained the installation media, copy it to a USB stick. **Note that this will destroy
-anything on the USB stick**. We'll assume that `/dev/sda` is the device you want to copy to.
+anything on the USB stick**. The snippet below uses `$DISK` as a placeholder for the USB stick you
+want the installer on, and `$INSTALLER_ISO` as a placeholder for the image file you downloaded.
 
 ```
-$ lsblk
 -- identify that /dev/sda is the USB stick we want the installer on
+$ lsblk
 
-# dd if=$INSTALLER_ISO of=/dev/sda bs=1M
 -- no output until it's finished
+# dd if=$INSTALLER_ISO of=/dev/sda bs=1M
 ```
 
 ## System configuration
