@@ -35,14 +35,15 @@ and others, are available on the [NixOS downloads page](https://nixos.org/nixos/
 
 Once you've obtained the installation media, copy it to a USB stick. **Note that this will destroy
 anything on the USB stick**. The snippet below uses `$DISK` as a placeholder for the USB stick you
-want the installer on, and `$INSTALLER_ISO` as a placeholder for the image file you downloaded.
+want the installer on, and `$INSTALLER_ISO` as a placeholder for the image file you downloaded. The
+`bs=1M` option sets the block size of the copy to one megabyte, which speeds up the copy.
 
 ```
--- identify that /dev/sda is the USB stick we want the installer on
+-- identify which disk you want the installer on
 $ lsblk
 
 -- no output until it's finished
-# dd if=$INSTALLER_ISO of=/dev/sda bs=1M
+# dd if=$INSTALLER_ISO of=$DISK bs=1M
 ```
 
 ## System configuration
@@ -100,7 +101,7 @@ To start, we'll delete any existing partitions and start with a clean slate:
 ```
 -- Identify the disk to install NixOS on - something like /dev/nvme0n1 or /dev/sda.
 -- We'll refer to it as $DISK.
-$ lsblk
+# lsblk
 
 -- Open gdisk on the disk we're installing on
 # gdisk $DISK 
@@ -147,18 +148,25 @@ Command: w
 ### Encryption and LVM
 
 Our partition table and primary partitions are in place. Now we can encrypt the partition that will
-contain our LVM partitions - `/` and swap. Note that our boot partition won't be encrypted, but I'm not
-sure why this would be a problem for most users. Also note that our swap partition _is_ encrypted,
-which is a good idea - you never know what'll get paged out of RAM and into swap!
+contain our LVM partitions. This is the second partition that we created above - so should be
+something like `/dev/nvme0n1p2` or `/dev/sda2`. We'll refer to it as `$LVM_PARTITION` below. Note
+that our boot partition won't be encrypted. I can't think of a reason why you would want this, and
+if you did, you probably wouldn't need partitioning advice from me. Also note that our swap
+partition _is_ encrypted. You don't have any control over what's moved into your swap space, so it
+could end up containing all sorts of private stuff in the clear - for example passwords copied from
+a password manager.
 
+In our example below, we're creating a swap space that is the same size as our RAM (16GB), and
+filling the rest of the disk with our root filesystem. You might want to tweak these sizes for your
+machine.
 
 ```
 -- You will be asked to enter your passphrase - DO NOT FORGET THIS
-# cryptsetup luksFormat /dev/nvme0n1p2
+# cryptsetup luksFormat $LVM_PARTITION
 
 -- Decrypt the encrypted partition and call it nixos-enc. The decrypted partition
 -- will get mounted at /dev/mapper/nixos-enc
-# cryptsetup luksOpen /dev/nvme0n1p2 nixos-enc
+# cryptsetup luksOpen $LVM_PARTITION nixos-enc
     
 -- Create the LVM physical volume using nixos-enc
 # pvcreate /dev/mapper/nixos-enc 
@@ -191,11 +199,13 @@ which is a good idea - you never know what'll get paged out of RAM and into swap
 ### Mount filesystems and prep for install
 
 We're almost there. Now it's time to mount the partitions we've created, put our system
-configuration in place, and finally pull the trigger.
+configuration in place, and finally, pull the trigger.
+
+The snippet below uses `$BOOT_PARTITION` as a placeholder for the UEFI boot partition we created
+earlier. This was the first partition on the disk, and will probably be something like `/dev/sda1`
+or `/dev/nvme0n1p1`.
 
 ```
--- The boot partition is the first partition on our disk. It will likely be
--- something like `/dev/sda1` or `/dev/nvme0n1p1`
 # mount /dev/nixos-vg/root /mnt
 # mkdir /mnt/boot
 # mount $BOOT_PARTITION /mnt/boot
@@ -217,8 +227,8 @@ If anything is broken in your config, installation should fail with an error mes
 diagnose your problem. Furthermore, because NixOS is the way it is, you can radically reconfigure
 your system later knowing that you can fallback to a known good configuration, and once you're
 confident everything works, clean up packages you no longer need. In short, don't stress too much
-about installing and configuring absolutely everything. It's fine to start from something that works
-and build up.
+about installing and configuring absolutely everything. It's fine to start with a small but working
+system and build up as you learn what you want.
 
 ```
 -- Vim 4 life! Or, you know, use `nano` or whatever else you might prefer.
@@ -252,15 +262,14 @@ the same, add the following, as well as the applet package mentioned below.
 networking.networkmanager.enable = true;
 ```
 
-There's a bunch of other stuff commented out in the generated `configuration.nix` and I encourage
-you to read through it and uncomment and/or set anything that takes your fancy. For example, setting
-your time zone is probably a good idea.
-
 In addition to these core configuration items, you might want to install some packages to get you
 started. Our NixOS install will be very bare without them. Packages can be specified as additional
 configuration items, and there should be a commented out section of configuration that you can
 uncomment and edit. For example, a fairly modest set of packages would look something like this.
 Note that `networkmanagerapplet` is included to give us a tray icon to configure networking from.
+
+As the comment in the configuration file tells you, you can search for packages to install with
+`nix-env -qaP | grep $PACKAGE`. 
 
 ```
 environment.systemPackages = (with pkgs; [
@@ -278,6 +287,34 @@ environment.systemPackages = (with pkgs; [
 ]);
 ```
 
+One last thing I'll call out, is specifying your user. It's not a good idea to use `root` all the
+time, so to create your user, add/uncomment something like the following. In the example below,
+we'll create a user called "qfpl". We'll give them a home directory and add them to a few groups.
+Most importantly, you probably want your user to be a member of `wheel` so they can run privileged
+commands with `sudo`.
+
+```
+users.extraUsers.qfpl = {
+  createHome = true;
+  extraGroups = ["wheel" "video" "audio" "disk" "networkmanager"];
+  group = "users";
+  home = "/home/andrew";
+  isNormalUser = true;
+  uid = 1000;
+};
+```
+
+By default you'll get [Plasma](https://www.kde.org/plasma-desktop) as your desktop environment. If
+you want something else, then you'll have to do some research on what's available and how to
+configure it.
+
+There's a bunch of other stuff commented out in the generated `configuration.nix` and I encourage
+you to read through it and uncomment and/or set anything that takes your fancy. For example, setting
+your time zone is probably a good idea. To see an example of a full configuration with XMonad
+configured as the window manager, you can check out [my
+config](https://github.com/ajmccluskey/dot-files/blob/master/etc/nixos/configuration.nix.5520) on
+GitHub.
+
 ### Pull the trigger!
 
 Once you're happy with your configuration, we can pull the trigger on an install.
@@ -289,6 +326,14 @@ Once you're happy with your configuration, we can pull the trigger on an install
 ```
 
 Go get a coffee while everything installs, and hopefully you'll reboot to your new system. 
+
+If something has gone wrong, don't worry. You can always boot back into the installation media,
+mount your partitions again, change your configuration, and install again.
+
+Assuming your system has booted to a login screen, you're going to want to set your user's password
+so you don't login to your graphical environment as `root`. To do this, press `Ctrl-Alt-F1` to open
+a terminal, login as `root`, and run `passwd $USER`, replacing `$USER` with the name of the user you
+configured. Once set, run `reboot` to reboot your machine and login as your regular user.
 
 ## References
 
