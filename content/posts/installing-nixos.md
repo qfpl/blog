@@ -298,7 +298,7 @@ users.extraUsers.qfpl = {
   createHome = true;
   extraGroups = ["wheel" "video" "audio" "disk" "networkmanager"];
   group = "users";
-  home = "/home/andrew";
+  home = "/home/qfpl";
   isNormalUser = true;
   uid = 1000;
 };

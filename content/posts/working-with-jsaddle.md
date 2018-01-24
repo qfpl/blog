@@ -154,7 +154,7 @@ take advantage of the fact that Haskell functions only take one argument
 function:
 
 ```haskell
--- Starting here with our original function, lets call it 'f' for now...
+-- Starting here with our original function, let's call it 'f' for now...
 f :: Int -> Double -> JSM ()
 f ix pos = (f32Arr <## ix) pos
 
@@ -250,8 +250,7 @@ function buildBuffer(positions) {
 ```
 
 Where I was coming unstuck with my usage of the ``jsaddle`` functions was my understanding of the
-[``MakeArgs``
-TypeClass](https://hackage.haskell.org/package/jsaddle-0.9.4.0/docs/Language-Javascript-JSaddle-Classes-Internal.html#t:MakeArgs).
+[``MakeArgs`` TypeClass](https://hackage.haskell.org/package/jsaddle-0.9.4.0/docs/Language-Javascript-JSaddle-Classes-Internal.html#t:MakeArgs).
 Its purpose is to allow you to construct the list of arguments for a function. I needed to pass a
 *list of inputs* as a *single* argument to the function. Perhaps obviously, the solution was to
 simply place my list in a list. Thus...
@@ -273,13 +272,17 @@ buildBuffer positions = new (jsg "Float32Array") [positions]
   >>= castTo ArrayBuffer
 ```
 
-Either way, this is a much more concise way of building an ``ArrayBuffer``, and knowing more about
+This is a much more concise way of building an ``ArrayBuffer``, and knowing more about
 the ``MakeArgs`` typeclass is extremely useful when it comes to creating things like callbacks and
 integrating with other JavaScript APIs.
 
+Now that we know how to use JavaScript constructors from within ``GHCJS`` code, pass arguments to
+the constructors, and access properties on the objects themselves. We can do all these things, we
+will try something a bit more adventurous...
+
 ### [Notification API](https://developer.mozilla.org/en-US/docs/Web/API/Notifications_API)
 
-Now, lets annoy, I mean communicate with, some users using desktop notifications! We'll use some of
+Now, let's annoy, I mean communicate with, some users using desktop notifications! We'll use some of
 the functions we introduced in the first section: ``new``, ``jsg``. To access the ``Notification``
 object on the window, check our permissions, and try to send a simple notification to the user.
 We'll work through the example from the [MDN API documentation
@@ -289,7 +292,7 @@ page](https://developer.mozilla.org/en-US/docs/Web/API/Notifications_API/Using_t
 
 Earlier we used the ``jsg`` function to acquire a top level JavaScript reference, in that case it
 was a constructor: ``Float32Array``. We'll use that function again, but this time we need access to
-the object because we need to run some of it's functions. You can think of the ``jsg`` function as a
+the object because we need to run some of its functions. You can think of the ``jsg`` function as a
 roughly equivalent to a property accessor for the ``window`` object.
 
 ```haskell
@@ -429,12 +432,22 @@ type JSCallAsFunction
 The purpose of placing the entire call to ``fun`` inside a list is that we want the ``MakeArgs``
 typeclass to pass in this function as a single input to the ``requestPermission`` function. Now we
 have all the moving parts in place to start using the Notification API in the Browser via GHCJS.
-Yay! A version of this integration is
-[here](https://github.com/mankyKitty/android-reflex-hello/blob/master/frontend/src/Notify.hs). It
+Yay! A version of this integration is being used [here](https://github.com/mankyKitty/android-reflex-hello/blob/master/frontend/src/Notify.hs). It
 won't work on Android at the moment. Chrome version 62 or higher will require a ``https`` website
 before it will enable notifications, but Firefox should work.
 
 #### Conclusion
+
+Phew, that was a lot to get through. But by now you should know how to:
+
+* Call JavaScript constructors.
+* Pass arguments to JavaScript functions & constructors.
+* Access properties on objects and top level references.
+* Convert from simple JavaScript values to Haskell types.
+* Interact with JavaScript APIs.
+* Create callback functions for JavaScript code to use.
+
+All from the nice type safe world of Haskell & GHCJS. 
 
 The ``jsaddle`` and ``jsaddle-dom`` packages are invaluable when working with GHCJS. However they
 cover an enormous surface area simply because of the size of the APIs they represent, which may be a

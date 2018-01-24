@@ -1,0 +1,12 @@
+#oh-my > ul,
+#traverse-3 > ul {
+  min-width: 75%;
+}
+
+#getter .sourceCode.haskell {
+  text-align: center;
+}
+
+#lens-family-tree > pre {
+  width: 23%;
+}
