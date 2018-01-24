@@ -312,8 +312,8 @@ There's a bunch of other stuff commented out in the generated `configuration.nix
 you to read through it and uncomment and/or set anything that takes your fancy. For example, setting
 your time zone is probably a good idea. To see an example of a full configuration with XMonad
 configured as the window manager, you can check out [my
-config](https://github.com/ajmccluskey/dot-files/blob/master/etc/nixos/configuration.nix.5520) on
-GitHub.
+config](https://github.com/ajmccluskey/dot-files/blob/c687b94f8c4bb0007fc8ebac2c5cbb06564a1cd4/etc/nixos/configuration.nix.5520)
+on GitHub.
 
 ### Pull the trigger!
 
