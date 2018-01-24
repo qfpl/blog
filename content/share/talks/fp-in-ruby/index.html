@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Andrew McCluskey">
+  <title>FP in Ruby</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="reveal.js/css/reveal.css">
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #303030; color: #cccccc; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; }
+td.sourceCode { padding-left: 5px; }
+pre, code { color: #cccccc; background-color: #303030; }
+code > span.kw { color: #f0dfaf; } /* Keyword */
+code > span.dt { color: #dfdfbf; } /* DataType */
+code > span.dv { color: #dcdccc; } /* DecVal */
+code > span.bn { color: #dca3a3; } /* BaseN */
+code > span.fl { color: #c0bed1; } /* Float */
+code > span.ch { color: #dca3a3; } /* Char */
+code > span.st { color: #cc9393; } /* String */
+code > span.co { color: #7f9f7f; } /* Comment */
+code > span.ot { color: #efef8f; } /* Other */
+code > span.al { color: #ffcfaf; } /* Alert */
+code > span.fu { color: #efef8f; } /* Function */
+code > span.er { color: #c3bf9f; } /* Error */
+code > span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+code > span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+code > span.sc { color: #dca3a3; } /* SpecialChar */
+code > span.vs { color: #cc9393; } /* VerbatimString */
+code > span.ss { color: #cc9393; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { } /* Variable */
+code > span.cf { color: #f0dfaf; } /* ControlFlow */
+code > span.op { color: #f0efd0; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+code > span.at { } /* Attribute */
+code > span.do { color: #7f9f7f; } /* Documentation */
+code > span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+code > span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+code > span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+  </style>
+  <link rel="stylesheet" href="reveal.js/css/theme/black.css" id="theme">
+<link rel="stylesheet" href="css/tweaks.css">
+<link rel="stylesheet" href="/nix/store/bd47y0giwb2gvmwm45fhk34jidmf6ar0-fp-in-ruby/css/grid-dark.css">
+<link rel="stylesheet" href="/nix/store/bd47y0giwb2gvmwm45fhk34jidmf6ar0-fp-in-ruby/css/fizzbuzz.css">
+<link rel="stylesheet" href="/nix/store/bd47y0giwb2gvmwm45fhk34jidmf6ar0-fp-in-ruby/css/todo.css">
+  <script language="javascript" src="/nix/store/bd47y0giwb2gvmwm45fhk34jidmf6ar0-fp-in-ruby/js/examples.min.js"></script>
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src="reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div id="grid-setup"></div>
+  <div class="reveal">
+    <div class="slides">
+
+<section>
+  <h1 class="title">FP in Ruby</h1>
+  <p class="author">Andrew McCluskey</p>
+  <p class="date"><span class="citation" data-cites="ajmacca">@ajmacca</span></p>
+<img src="images/data61-logo.png" alt="data61" style="height: 200px; background-color: inherit; margin-top: 25px;">
+</section>
+
+<section id="section" class="slide level2" data-background-image="images/from-the-government.jpg" data-background-size="contain">
+<h2></h2>
+<aside class="notes">
+<ul>
+<li>Part of my job is spreading the good word of functional programming</li>
+<li>Skeptics - hidden agenda <em>is</em> getting you all writing Haskell</li>
+<li>I've personally experienced the benefits of FP in industry - why I do this job</li>
+<li>Not only felt benefits, I've felt the benefits of applying some techniques in Ruby</li>
+<li>Rather than relying on my beliefs and experience, hopefully I can show you with code</li>
+</ul>
+</aside>
+</section>
+<section><section id="what-is-fp" class="titleslide slide level1"><h1>What is FP?</h1></section><section id="section-1" class="slide level2">
+<h2></h2>
+<p>It's programming with functions</p>
+<aside class="notes">
+<ul>
+<li>This isn't helpful without a clear definition of what I meant by function</li>
+</ul>
+</aside>
+</section><section id="whats-a-function" class="slide level2">
+<h2>What's a function?</h2>
+<div style="float: left; width: 30%">
+<p><img src="images/function.png" style="background-color: white" /></p>
+</div>
+<div style="float: left; width: 10%">
+ 
+</div>
+<div style="float: left; width: 60%; padding-top: 10%">
+<p>Mapping of inputs to outputs</p>
+</div>
+<aside class="notes">
+<ul>
+<li>Only one output per input</li>
+<li>Directional</li>
+</ul>
+</aside>
+</section><section id="section-2" class="slide level2">
+<h2></h2>
+<p>Consequences: referential transparency / purity</p>
+<div class="notes"
+- Consequences of mathematical function
+</div>
+
+</section><section id="referential-transparency" class="slide level2">
+<h2>Referential transparency</h2>
+<blockquote>
+<p>Replacing any call to a function with the function's return value results in a program with identical behavior.</p>
+</blockquote>
+<div class="notes"
+- Related to purity
+- Greatly enhances ability to reason about code
+- Greatly reduces risk of change - e.g. extracting function
+</div>
+
+</section><section id="section-3" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">def</span> add(a, b)
+  a + b
+<span class="kw">end</span>
+
+<span class="kw">def</span> lyf
+  <span class="dv">2</span> * add(<span class="dv">18</span>, <span class="dv">3</span>)
+<span class="kw">end</span></code></pre></div>
+</section><section id="section-4" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">def</span> add(a, b)
+  a + b
+<span class="kw">end</span>
+
+<span class="kw">def</span> lyf
+  <span class="dv">2</span> * <span class="dv">21</span>
+<span class="kw">end</span></code></pre></div>
+<div class="notes"
+- Replaced call to `add` in `lyf` with result of call.
+- This is safe because `add` is referentially transparent
+</div>
+
+</section><section id="section-5" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">def</span> add(a, b)
+  <span class="co"># HERE BE EFFECTS!</span>
+  puts <span class="st">&quot;Adding </span><span class="ot">#{</span>a<span class="ot">}</span><span class="st"> and </span><span class="ot">#{</span>b<span class="ot">}</span><span class="st"> and </span><span class="ot">#{@c}</span><span class="st">&quot;</span>
+  a + b + <span class="ot">@c</span>
+<span class="kw">end</span>
+
+<span class="kw">def</span> lyf
+  <span class="dv">2</span> * add(<span class="dv">18</span>, <span class="dv">3</span>)
+<span class="kw">end</span></code></pre></div>
+<aside class="notes">
+<ul>
+<li>instance variable and printing - can't replace call</li>
+</ul>
+</aside>
+</section><section id="section-6" class="slide level2">
+<h2></h2>
+<p>Why is referential transparency desirable?</p>
+</section><section id="section-7" class="slide level2">
+<h2></h2>
+<ul>
+<li class="fragment">Easy to reason about code</li>
+<li class="fragment">Easy to test</li>
+<li class="fragment">Fearless code changes</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Each function/method is entirely self contained
+<ul>
+<li>local reasoning</li>
+<li>Never have to worry about state of the system</li>
+<li>No pretending to be an interpreter/compiler</li>
+</ul></li>
+<li>Testing is simply passing arguments to functions and comparing the result</li>
+</ul>
+</aside>
+</section><section id="section-8" class="slide level2">
+<h2></h2>
+<p>What am I giving up with referential transparency?</p>
+<ul>
+<li class="fragment">Mutation</li>
+<li class="fragment">Free variables</li>
+<li class="fragment">Familiarity</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Mutation and free variables are usually a bad idea anyway</li>
+<li>Familiarity is just time and practice - remember when you didn't know how to for loop?</li>
+</ul>
+</aside>
+</section><section id="section-9" class="slide level2">
+<h2></h2>
+<p>What am I not giving up?</p>
+<ul>
+<li class="fragment">State</li>
+<li class="fragment">IO</li>
+<li class="fragment">Anything you need to write great software</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Still do things like</li>
+<li>Write to the DB</li>
+<li>Print to the console</li>
+<li>Read a file</li>
+<li>Generate random numbers</li>
+<li>People write software this way to do everything you do in Ruby</li>
+<li>Web apps, transport models, vector tile server, games</li>
+</ul>
+</aside>
+</section><section id="section-10" class="slide level2" data-background-image="images/one-weird-trick.jpg" data-background-size="contain">
+<h2></h2>
+<div class="notes"
+At this point might think I'm crazy for claiming you can maintain
+RT and do more than heat your CPU
+</div>
+
+</section><section id="section-11" class="slide level2">
+<h2></h2>
+<p>Our programs don't execute side effects, they produce computations as pure values that are executed by a runtime system.</p>
+<aside class="notes">
+<ul>
+<li>Monadic state and IO</li>
+</ul>
+</aside>
+</section><section id="section-12" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">def</span> main(args)
+  &lt;&lt;-<span class="kw">MAIN</span>
+<span class="ot">  num_echoes = #{</span>args[<span class="dv">0</span>]<span class="ot">}</span>
+<span class="ot">  loop do</span>
+<span class="ot">    s = $stdin.gets</span>
+<span class="ot">    break if s.chomp == &#39;q&#39;</span>
+<span class="ot">    puts(s * num_echoes)</span>
+<span class="ot">  end</span>
+<span class="ot">  MAIN</span>
+<span class="ot">end</span>
+
+<span class="ot">eval(main(ARGV))</span></code></pre></div>
+<aside class="notes">
+<ul>
+<li>This is very roughly analogous to what Haskell does</li>
+<li>We have a pure function that returns a computation (<code>String</code>)</li>
+<li>Computation is impure when evaluated - but the value representing the computation is pure</li>
+<li>Computation is evaluated separately (<code>eval</code> in this case)</li>
+<li>Please DO NOT do this - just illustrating the point</li>
+</ul>
+</aside>
+</section><section id="section-13" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">main <span class="fu">=</span> <span class="kw">do</span>
+  args <span class="ot">&lt;-</span> getArgs
+  <span class="kw">let</span>
+    e s <span class="fu">=</span>
+      error <span class="fu">$</span> <span class="st">&quot;Unable to parse &#39;&quot;</span> <span class="fu">++</span> s <span class="fu">++</span> <span class="st">&quot;&#39; as Int&quot;</span>
+    go&#39; <span class="fu">=</span>
+      <span class="kw">case</span> args <span class="kw">of</span>
+        (s<span class="fu">:</span>_) <span class="ot">-&gt;</span> either (const (e s)) go <span class="fu">$</span> readEither s
+        _     <span class="ot">-&gt;</span> error <span class="st">&quot;Expected at least one arg&quot;</span>
+    go _ <span class="st">&quot;q&quot;</span> <span class="fu">=</span> pure ()
+    go n s   <span class="fu">=</span> <span class="kw">do</span>
+      (() <span class="fu">&lt;$</span>) <span class="fu">.</span> replicateM n <span class="fu">.</span> putStrLn <span class="fu">$</span> s
+      getLine <span class="fu">&gt;&gt;=</span> go n
+  getLine <span class="fu">&gt;&gt;=</span> go&#39;</code></pre></div>
+<aside class="notes">
+<ul>
+<li>This code is pure and referentially transparent</li>
+<li>Returns a value representing an impure computation</li>
+</ul>
+</aside>
+</section><section id="types" class="slide level2">
+<h2>Types</h2>
+<div class="notes"
+- Not required by definition, but overlaps with notion of sets
+- Sets classify values and make our functions more precise - like types
+- Think they're a very important tool in producing robust software
+</div>
+
+</section><section id="section-14" class="slide level2">
+<h2></h2>
+<p>Why are types desirable?</p>
+</section><section id="section-15" class="slide level2">
+<h2></h2>
+<ul>
+<li class="fragment">Allow you to more precisely represent the intentions of the programmer</li>
+<li class="fragment">Catch many errors before runtime</li>
+<li class="fragment">Eliminate need for many tests</li>
+<li class="fragment">Support you in writing complex code</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Communication tool</li>
+<li>Easier to reason about - closed sums</li>
+<li>Gives us extra cycles to focus on our problem</li>
+</ul>
+</aside>
+</section><section id="section-16" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Vehicle</span> <span class="fu">=</span> <span class="dt">Car</span>
+             <span class="fu">|</span> <span class="dt">Bicycle</span>
+             <span class="fu">|</span> <span class="dt">MotorBike</span>
+             
+<span class="ot">describeVehicle ::</span> <span class="dt">Vehicle</span> <span class="ot">-&gt;</span> <span class="dt">String</span>
+describeVehicle <span class="dt">Car</span> <span class="fu">=</span>
+  <span class="st">&quot;Closed in people container on 3 or more wheels&quot;</span>
+describeVehicle <span class="dt">Bicycle</span> <span class="fu">=</span>
+  <span class="st">&quot;Person powers two wheels with pedals&quot;</span>
+describeVehicle <span class="dt">MotorBike</span> <span class="fu">=</span>
+  <span class="st">&quot;Two wheels powered by a motor&quot;</span></code></pre></div>
+<div class="notes"
+Defined a sum type and pattern matched it in a function
+
+ - Sum type is closed
+ - Compiler can tell us if we've forgotten to handle a case
+ - Compiler will fail if we include a case not in the type
+</div>
+
+</section><section id="section-17" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">def</span> describe_vehicle(v)
+  <span class="kw">case</span> v
+  <span class="kw">when</span> <span class="st">:car</span>
+    <span class="st">&quot;Closed in people container on 3 or more wheels&quot;</span>
+  <span class="kw">when</span> <span class="st">:bicycle</span>
+    <span class="st">&quot;Person powers two wheels with pedals&quot;</span>
+  <span class="kw">when</span> <span class="st">:motorbike</span>
+    <span class="st">&quot;Two wheels powered by a motor&quot;</span>
+  <span class="kw">else</span>
+    raise <span class="st">&quot;I don&#39;t know how to describe a &#39;</span><span class="ot">#{</span>v<span class="ot">}</span><span class="st">&#39;&quot;</span>
+  <span class="kw">end</span>
+<span class="kw">end</span></code></pre></div>
+<aside class="notes">
+<p><code>v</code> could be anything. We're not even sure it's a symbol, let alone a symbol from the set of vehicles.</p>
+<p>Runtime errors can mean someone gets woken up at night.</p>
+</aside>
+</section><section id="section-18" class="slide level2">
+<h2></h2>
+<p>Types aren't bad - type <em>systems</em> are <em>sometimes</em> bad.</p>
+<aside class="notes">
+<ul>
+<li>Types not expressive enough</li>
+<li>Compiler/tool support not good</li>
+<li>Very common, statically typed languages poisoned the well</li>
+<li>I felt this way too after using conventional, typed, OO languages</li>
+</ul>
+</aside>
+</section><section id="functions-are-values" class="slide level2">
+<h2>Functions are values</h2>
+</section><section id="section-19" class="slide level2">
+<h2></h2>
+<ul>
+<li class="fragment">functions are <em>first class</em> - can be treated like any other value</li>
+<li class="fragment">functions that take/return functions are <em>higher order</em></li>
+</ul>
+</section><section id="abstraction" class="slide level2">
+<h2>Abstraction</h2>
+<aside class="notes">
+<ul>
+<li>Finally - mathematics and software both about abstraction.</li>
+<li>Recognize patterns and factor them out.</li>
+</ul>
+</aside>
+</section></section>
+<section><section id="fp-in-ruby" class="titleslide slide level1"><h1>FP in Ruby</h1></section><section id="higher-order-functions" class="slide level2">
+<h2>Higher order functions</h2>
+<div class="notes"
+Starting here because later concepts depend on this
+</div>
+
+</section><section id="section-20" class="slide level2">
+<h2></h2>
+<p>Higher order functions are essential to FP. Ruby doesn't quite support them, but we can approximate them with blocks/<code>Proc</code>.</p>
+</section><section id="section-21" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">def</span> map_block(a)
+  b = []
+  <span class="kw">for</span> x <span class="kw">in</span> a
+    b &lt;&lt; (<span class="kw">yield</span> x)
+  <span class="kw">end</span>
+
+  b
+<span class="kw">end</span>
+
+a = [<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>]
+b = map(a) { |n| n * <span class="dv">3</span> }
+<span class="co"># b == [3,6,9]</span></code></pre></div>
+<aside class="notes">
+<p><code>yield</code> keyword calls block</p>
+</aside>
+</section><section id="section-22" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">def</span> map_block(a)
+  b = []
+  <span class="kw">for</span> x <span class="kw">in</span> a
+    b &lt;&lt; (<span class="kw">yield</span> x)
+  <span class="kw">end</span>
+
+  b
+<span class="kw">end</span>
+
+a = [<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>]
+f = <span class="dt">Proc</span>.new { |n| n * <span class="dv">3</span> }
+b = map(a, &amp;f)
+<span class="co"># b == [3,6,9]</span></code></pre></div>
+<aside class="notes">
+<p>If a method takes a block, can give it a <code>Proc</code> as its last arg and prefix with <code>&amp;</code></p>
+</aside>
+</section><section id="section-23" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">def</span> map_block_arg(a, &amp;f)
+  b = []
+  <span class="kw">for</span> x <span class="kw">in</span> a
+    b &lt;&lt; f.call(x)
+  <span class="kw">end</span>
+
+  b
+<span class="kw">end</span>
+
+a = [<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>]
+b = map(a) { |n| n * <span class="dv">3</span> }
+<span class="co"># b == [3,6,9]</span></code></pre></div>
+<aside class="notes">
+<p><code>&amp;</code> turns anonymous block into a named <code>Proc</code></p>
+</aside>
+</section><section id="section-24" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">def</span> map_proc(a, f)
+  b = []
+  <span class="kw">for</span> x <span class="kw">in</span> a
+    b &lt;&lt; f.call(x)
+  <span class="kw">end</span>
+
+  b
+<span class="kw">end</span>
+
+a = [<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>]
+f = <span class="dt">Proc</span>.new { |n| n * <span class="dv">3</span> }
+b = map_proc(a, f)
+<span class="co"># b = [3,6,9]</span></code></pre></div>
+</section><section id="section-25" class="slide level2">
+<h2></h2>
+<p><code>Symbol#to_proc</code> for instance methods</p>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="co"># You wrote:</span>
+[<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>].map { |n| n.to_s }
+
+<span class="co"># Why not:</span>
+[<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>].map(&amp;<span class="st">:to_s</span>)</code></pre></div>
+<ul>
+<li class="fragment"><code>&amp;</code> prefix calls <code>#to_proc</code></li>
+<li class="fragment"><code>#to_proc</code> on symbols returns a <code>Proc</code> that executes the named <em>instance</em> method</li>
+</ul>
+</section><section id="referential-transparency-purity" class="slide level2">
+<h2>Referential transparency / purity</h2>
+<ul>
+<li class="fragment">Immutability</li>
+<li class="fragment">No free variables</li>
+<li class="fragment">No side effects</li>
+</ul>
+<aside class="notes">
+<p>Reminder that RT implies these things</p>
+</aside>
+</section><section id="section-26" class="slide level2">
+<h2></h2>
+<p>Avoid methods with <code>!</code> suffix.</p>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="co"># Unneccessary mutation</span>
+things = [<span class="st">&#39;keyboard&#39;</span>, <span class="st">&#39;mouse&#39;</span>, <span class="st">&#39;display&#39;</span>]
+things.map! { |s| s.upcase }
+<span class="co"># things == [&#39;KEYBOARD&#39;, &#39;MOUSE&#39;, &#39;DISPLAY&#39;]</span>
+
+<span class="co"># Immutability</span>
+things2 = [<span class="st">&#39;keyboard&#39;</span>, <span class="st">&#39;mouse&#39;</span>, <span class="st">&#39;display&#39;</span>]
+up_things2 = things.map { |s| s.upcase }
+<span class="co"># things2 == [&#39;keyboard&#39;, &#39;mouse&#39;, &#39;display&#39;]</span>
+<span class="co"># up_things2 == [&#39;KEYBOARD&#39;, &#39;MOUSE&#39;, &#39;DISPLAY&#39;]</span></code></pre></div>
+<aside class="notes">
+<ul>
+<li>Can always replace mutation with another variable</li>
+<li>Tradeoff is coming up with more names for things</li>
+</ul>
+</aside>
+</section><section id="section-27" class="slide level2">
+<h2></h2>
+<p>Avoid <code>each</code> and <code>for</code> loops. Instead use functions like:</p>
+<ul>
+<li class="fragment"><code>select</code></li>
+<li class="fragment"><code>map</code></li>
+<li class="fragment"><code>inject</code></li>
+<li class="fragment"><code>zip</code></li>
+</ul>
+<aside class="notes">
+<ul>
+<li><code>each</code> and <code>for</code> suggest side effects - no return values</li>
+<li>Each of these are higher order functions in the sense that they expect a block</li>
+<li>Check the <code>Array</code> and <code>Enumerator</code> interfaces for more</li>
+</ul>
+</aside>
+</section><section id="section-28" class="slide level2">
+<h2></h2>
+<h3 id="select"><code>select</code></h3>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">nums = []
+(<span class="dv">1</span>..<span class="dv">10</span>).each { |n| nums &lt;&lt; n <span class="kw">if</span> n.even? }
+
+<span class="co"># Better</span>
+nums = (<span class="dv">1</span>..<span class="dv">10</span>).select { |n| n.even? }
+
+<span class="co"># Best</span>
+nums = (<span class="dv">1</span>..<span class="dv">10</span>).select(&amp;<span class="st">:even?</span>)
+
+<span class="co"># =&gt; [2,4,6,8,10]</span></code></pre></div>
+<div class="notes"
+`filter` in other langs
+</div>
+
+</section><section id="section-29" class="slide level2">
+<h2></h2>
+<h3 id="map"><code>map</code></h3>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">nums = [<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>]
+squares = []
+nums.each { |n| squares &lt;&lt; n ** <span class="dv">2</span> }
+
+<span class="co"># Better</span>
+squares = nums.map { |n| n ** <span class="dv">2</span> }
+
+<span class="co"># =&gt; [1,4,9]</span></code></pre></div>
+<aside class="notes">
+<ul>
+<li>Explicit mutation of <code>squares</code> - value change is observable</li>
+</ul>
+</aside>
+</section><section id="section-30" class="slide level2">
+<h2></h2>
+<h3 id="inject"><code>inject</code></h3>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="co"># Bad</span>
+nums = [<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>]
+total = <span class="dv">0</span>
+nums.each { |n| total += n }
+
+<span class="co"># Good</span>
+total = nums.inject(<span class="dv">0</span>) { |sum, n| sum + n }
+
+<span class="co"># Best</span>
+total = nums.inject(<span class="dv">0</span>, &amp;:+)</code></pre></div>
+<aside class="notes">
+<ul>
+<li><code>inject</code> is <code>fold</code> or <code>reduce</code> in other langs</li>
+<li>accumulates a value using elements in the input</li>
+</ul>
+</aside>
+</section><section id="section-31" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="co"># this...</span>
+nums = [<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>]
+nums_to_squares = {}
+nums.each { |n| nums_to_squares[n] = n ** <span class="dv">2</span> }
+
+<span class="co"># ...or this</span>
+nums_to_squares = nums.inject({}) <span class="kw">do</span> |h, n|
+  h[n] = n ** <span class="dv">2</span>
+  h
+<span class="kw">end</span></code></pre></div>
+<aside class="notes">
+<ul>
+<li>Sometimes we want to build up a different type of structure and map won't do</li>
+<li><code>inject</code> isn't about aggretaing/summarising - can accumulate to a new structure</li>
+</ul>
+</aside>
+</section><section id="section-32" class="slide level2">
+<h2></h2>
+<h3 id="zip"><code>zip</code></h3>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">odds = [<span class="dv">1</span>,<span class="dv">3</span>]
+evens = [<span class="dv">2</span>,<span class="dv">4</span>]
+
+pairs = []
+(<span class="dv">0</span>..[odds.length, evens.length].min).each { |i|
+  pairs &lt;&lt; [odds[i], evens[i]]
+}
+<span class="co"># pairs == [[1,2], [3,4]]</span>
+
+zip_pairs = odds.zip(evens)
+<span class="co"># zip_pairs == [[1,2], [3,4]]</span></code></pre></div>
+</section><section id="section-33" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">odds = [<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">5</span>]
+evens = [<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">6</span>]
+
+foo = odds.zip(evens) { |(a,b)| a * b }</code></pre></div>
+<aside class="notes">
+<p><code>zip</code> can also take a block to produce a value from each array of zipped together values</p>
+</aside>
+</section><section id="section-34" class="slide level2" data-background-image="images/its-a-trap.jpg" data-background-size="contain">
+<h2></h2>
+</section><section id="foo-nil" class="slide level2">
+<h2><code>foo == nil</code>!!!</h2>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">odds = [<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">5</span>]
+evens = [<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">6</span>]
+
+foo = odds.zip(evens) { |(a,b)| a * b }</code></pre></div>
+</section><section id="section-35" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">odds = [<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">5</span>]
+evens = [<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">6</span>]
+
+foo = []
+odds.zip(evens) { |(a,b)| foo &lt;&lt; a * b }
+<span class="co"># foo == [2,12,30]</span></code></pre></div>
+</section><section id="self-methods" class="slide level2">
+<h2><code>self</code> methods</h2>
+</section><section id="section-36" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Foo</span>
+  <span class="kw">def</span> <span class="dv">self</span>.do_the_thing
+    <span class="co"># can&#39;t access instance variables or methods</span>
+  <span class="kw">end</span>
+<span class="kw">end</span></code></pre></div>
+<aside class="notes">
+<p><code>self</code> methods help to enforce referential transparency</p>
+</aside>
+</section><section id="struct" class="slide level2">
+<h2><code>Struct</code></h2>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Foo</span> = <span class="dt">Struct</span>.new(<span class="st">:bar</span>, <span class="st">:baz</span>, <span class="st">:whoozitz</span>)
+
+foo = <span class="dt">Foo</span>.new(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>)
+
+<span class="co"># =&gt; true</span>
+foo.bar + foo.baz == foo.whoozitz
+
+<span class="co"># =&gt; Error!</span>
+foo.quux.nil?</code></pre></div>
+<aside class="notes">
+<ul>
+<li><code>Struct</code> is good for data types with known fields</li>
+<li><code>Hash</code> is problematic because it is open - <code>Struct</code> is closed</li>
+</ul>
+</aside>
+</section><section id="section-37" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Foo</span> = <span class="dt">Struct</span>.new(<span class="st">:bar</span>, <span class="st">:baz</span>) <span class="kw">do</span>
+  <span class="kw">def</span> with_bar(bar)
+    <span class="dv">self</span>.new(bar, <span class="dv">self</span>.baz)
+  <span class="kw">end</span>
+  
+  <span class="kw">def</span> total
+    <span class="dv">self</span>.bar + <span class="dv">self</span>.baz
+  <span class="kw">end</span>
+<span class="kw">end</span></code></pre></div>
+<aside class="notes">
+<ul>
+<li><code>Struct</code> can also contain methods</li>
+<li>Not that close to FP, but closer to idiomatic Ruby</li>
+<li>Can use methods to provide convenient, immutable operations</li>
+</ul>
+</aside>
+</section><section id="modules" class="slide level2">
+<h2>Modules</h2>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">module</span> <span class="dt">TicTacToe</span>
+  <span class="dt">Game</span> = <span class="dt">Struct</span>.new(<span class="st">:board</span>, <span class="st">:next_symbol</span>, <span class="st">:winner</span>)
+  
+  <span class="kw">def</span> <span class="dv">self</span>.finished?(game)
+    !game.winner.nil? || board_full?(game.board)
+  <span class="kw">end</span>
+
+  <span class="kw">def</span> <span class="dv">self</span>.with_winner(game, winner)
+    <span class="dv">self</span>.new(game.board, game.next_symbol, winner)
+  <span class="kw">end</span>
+<span class="kw">end</span></code></pre></div>
+<aside class="notes">
+<ul>
+<li>Modules cannot be instantiated</li>
+<li>Encapsulate data and functions, but no mutable state or inheritance</li>
+<li>Set fields by returning a new instance of the data type</li>
+</ul>
+</aside>
+</section><section id="section-38" class="slide level2" data-background-image="images/functional-core.png" data-background-size="contain">
+<h2></h2>
+<aside class="notes">
+<p>In addition to the smaller scale stuff, there's a big picture idea that was popularised about 5 years ago.</p>
+<p>May also hear IO or effects at the edges - very common in Haskell/FP world</p>
+<p>Talk given by Gary Bernhardt</p>
+</aside>
+</section><section id="section-39" class="slide level2">
+<h2></h2>
+<ul>
+<li class="fragment">Any effects/IO at boundaries of application</li>
+<li class="fragment">Bring things in to application's data structures</li>
+<li class="fragment">Validate aggressively before core of app uses data</li>
+<li class="fragment">Write pure transformations on those data structures</li>
+<li class="fragment">Turn data structures into effects as late as possible</li>
+</ul>
+</section></section>
+<section><section id="abstraction-1" class="titleslide slide level1"><h1>Abstraction</h1></section><section id="optional-data" class="slide level2">
+<h2>Optional data</h2>
+</section><section id="section-40" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">addThreeMaybes h <span class="fu">=</span>
+  liftA3 (\a b c <span class="ot">-&gt;</span> a <span class="fu">+</span> b <span class="fu">+</span> c)
+         (lookup h <span class="st">&quot;foo&quot;</span>)
+         (lookup h <span class="st">&quot;bar&quot;</span>)
+         (lookup h <span class="st">&quot;baz&quot;</span>)</code></pre></div>
+<aside class="notes">
+<p>Things to note:</p>
+<ul>
+<li>uses idea of an <code>Applicative</code></li>
+<li>no mention of failure/nil/Nothing values</li>
+<li>only contains things unique to our problem:</li>
+<li><code>liftA3</code> to run the computation</li>
+<li>lambda to specify what to do with each value</li>
+<li>each of the values</li>
+<li>no type signature - inference is great</li>
+</ul>
+</aside>
+</section><section id="section-41" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="co">-- List of keys can be arbitrarily long.</span>
+<span class="co">-- If any aren&#39;t present, we get `Nothing`.</span>
+addThreeMaybes h keys <span class="fu">=</span>
+  fmap sum <span class="fu">.</span> traverse (<span class="ot">`M.lookup`</span> h) <span class="fu">$</span> keys</code></pre></div>
+<aside class="notes">
+<p>Should the need arise, we can handle an arbitrary list of keys like so</p>
+</aside>
+</section><section id="section-42" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">if</span> h[<span class="st">:foo</span>]
+  <span class="kw">if</span> h[<span class="st">:bar</span>]
+    <span class="kw">if</span> h[<span class="st">:baz</span>]
+      h[<span class="st">:foo</span>] + h[<span class="st">:bar</span>] + h[<span class="st">:baz</span>]
+    <span class="kw">else</span>
+      <span class="dv">nil</span>
+    <span class="kw">end</span>
+  <span class="kw">else</span>
+    <span class="dv">nil</span>
+  <span class="kw">end</span>
+<span class="kw">else</span>
+  <span class="dv">nil</span>
+<span class="kw">end</span></code></pre></div>
+<aside class="notes">
+<p>This is the obvious code you might see in places. Gross repetition. Can do better in Ruby.</p>
+</aside>
+</section><section id="section-43" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">def</span> <span class="dv">self</span>.add_three_failures(h)
+  a = h[<span class="st">&quot;a&quot;</span>]
+  b = h[<span class="st">&quot;b&quot;</span>]
+  c = h[<span class="st">&quot;c&quot;</span>]
+
+  <span class="kw">unless</span> a.nil? || b.nil? || c.nil?
+    a + b + c
+  <span class="kw">else</span>
+    <span class="dv">nil</span>
+  <span class="kw">end</span>
+<span class="kw">end</span></code></pre></div>
+<aside class="notes">
+<ul>
+<li>Relies on hash lookups returning nil</li>
+<li>Explicit <code>nil</code> handling</li>
+</ul>
+</aside>
+</section><section id="section-44" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">def</span> <span class="dv">self</span>.add_three_failures_list(h, keys)
+  keys.inject(<span class="dv">0</span>) { |a, k|
+    n = h[k]
+    (a.nil? || n.nil?) ? <span class="dv">nil</span> : a + n
+  }
+<span class="kw">end</span></code></pre></div>
+<aside class="notes">
+<p>Closer to the Haskell in structure, but still explicitly handling nil.</p>
+</aside>
+</section><section id="section-45" class="slide level2">
+<h2></h2>
+<p>What if the computation to get each value changes?</p>
+<aside class="notes">
+<p>In the examples so far, we're doing hash lookups that might fail by returning nil. What if the computation returned either the value or an error message?</p>
+</aside>
+</section><section id="section-46" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">addThreeValidations h keys <span class="fu">=</span>
+  <span class="kw">let</span>
+    f k <span class="fu">=</span> maybe (<span class="dt">AccFailure</span> <span class="fu">$</span> [<span class="st">&quot;Couldn&#39;t find key: &quot;</span> <span class="fu">&lt;&gt;</span> k])
+                <span class="dt">AccSuccess</span>
+                (M.lookup k h)
+  <span class="kw">in</span>
+    fmap sum <span class="fu">.</span> traverse f <span class="fu">$</span> keys
+    
+<span class="co">-- &quot;foo&quot; and &quot;baz&quot; aren&#39;t keys in the map</span>
+addThreeValidations someMap [<span class="st">&quot;foo&quot;</span>, <span class="st">&quot;bar&quot;</span>, <span class="st">&quot;baz&quot;</span>]
+<span class="co">-- =&gt; AccFailure [ &quot;Couldn&#39;t find key: foo&quot;,</span>
+<span class="co">--               , &quot;Couldn&#39;t find key: baz&quot;</span>
+<span class="co">--               ]</span></code></pre></div>
+<aside class="notes">
+<p>Our map lookup is transformed into a type that captures errors and aggregates them.</p>
+</aside>
+</section><section id="section-47" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">addMaybes h keys <span class="fu">=</span>
+  <span class="kw">let</span>
+    f <span class="fu">=</span> (<span class="ot">`M.lookup`</span> h)
+  <span class="kw">in</span>
+    fmap sum <span class="fu">.</span> traverse f <span class="fu">$</span> keys
+
+addValidation h keys <span class="fu">=</span>
+  <span class="kw">let</span>
+    f k <span class="fu">=</span> maybe (<span class="dt">AccFailure</span> <span class="fu">$</span> [<span class="st">&quot;Couldn&#39;t find key: &quot;</span> <span class="fu">&lt;&gt;</span> k])
+                <span class="dt">AccSuccess</span>
+                (M.lookup k h)
+  <span class="kw">in</span>
+    fmap sum <span class="fu">.</span> traverse f <span class="fu">$</span> keys</code></pre></div>
+</section><section id="section-48" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">                  
+     
+                      
+    
+    fmap sum <span class="fu">.</span> traverse f <span class="fu">$</span> keys
+
+                      
+     
+                                                           
+                          
+                              
+    
+    fmap sum <span class="fu">.</span> traverse f <span class="fu">$</span> keys</code></pre></div>
+</section><section id="section-49" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">addThings f xs <span class="fu">=</span>
+  fmap sum <span class="fu">.</span> traverse f <span class="fu">$</span> xs</code></pre></div>
+<aside class="notes">
+<ul>
+<li>Factored repetition and separated concerns</li>
+<li>Function about adding things in some computational context</li>
+<li>missing data, failure with record, computations that require an input</li>
+</ul>
+</aside>
+</section><section id="section-50" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">addMaybes h keys <span class="fu">=</span>
+  addThings (<span class="ot">`M.lookup`</span> h) keys
+  
+addValidations h keys <span class="fu">=</span>
+  <span class="kw">let</span>
+    validatedLookup k <span class="fu">=</span>
+      maybe (<span class="dt">AccFailure</span> <span class="fu">$</span> [<span class="st">&quot;Couldn&#39;t find key: &quot;</span> <span class="fu">&lt;&gt;</span> k])
+            <span class="dt">AccSuccess</span>
+            (M.lookup k h)
+  <span class="kw">in</span>
+    addThings validatedLookup keys</code></pre></div>
+</section><section id="section-51" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">addMultiplesOf n ns <span class="fu">=</span>
+  addThings (<span class="fu">*</span>) ns n
+  
+<span class="co">-- &gt; addMultiplesOf 5 [1,2,3]</span>
+<span class="co">-- 30</span></code></pre></div>
+</section><section id="section-52" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">def</span> <span class="dv">self</span>.add_things(fmap, pure, lifta2, f, keys)
+  fas = keys.inject(pure.call([])) { |fas, k|
+    fa = f.call(k)
+    lifta2.call(fa, fas) { |a, as| as &lt;&lt; a }
+  }
+
+  fmap.call(fas) { |as| as.inject(<span class="dv">0</span>, &amp;:+) }
+<span class="kw">end</span></code></pre></div>
+<aside class="notes">
+<ul>
+<li>Have to pass in a bunch of extra functions that are defined for us in Haskell</li>
+<li>Could put these in a library</li>
+<li>Code was hard to write - got it wrong a few times and not confident there aren't corner cases</li>
+</ul>
+</aside>
+</section><section id="section-53" class="slide level2">
+<h2></h2>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">def</span> <span class="dv">self</span>.add_things_nil(h, keys)
+  pure = <span class="dt">Optional</span>.method(<span class="st">:new</span>)
+  fmap = -&gt;(o, &amp;f){
+    o.and_then { |x| pure.call(f.call(x)) }}
+  lifta2 = -&gt;(fa, fb, &amp;g){
+    fa.and_then { |a|
+      fb.and_then { |b|
+        pure.call(g.call(a, b))}}}
+  f = -&gt;(k){pure.call(h[k])}
+  add_things(fmap, pure, lifta2, f, keys)
+<span class="kw">end</span></code></pre></div>
+<aside class="notes">
+<p>Have to do a lot of work to call it - no lang/lib support</p>
+<p>Again, overly complicated and error prone without tools</p>
+</aside>
+</section><section id="section-54" class="slide level2">
+<h2></h2>
+<ul>
+<li class="fragment">No types or compiler to guide me or tell me when I'm wrong</li>
+<li class="fragment">No existing abstractions to build on</li>
+<li class="fragment">Struggling against the language and all other Ruby libs</li>
+</ul>
+</section></section>
+<section><section id="wrapping-up" class="titleslide slide level1"><h1>Wrapping up</h1></section><section id="take-away" class="slide level2">
+<h2>Take away</h2>
+<ul>
+<li class="fragment">Concepts from FP will give you more robust software</li>
+<li class="fragment">Some ideas from FP are achievable in Ruby
+<ul>
+<li class="fragment">Immutability (sometimes)</li>
+<li class="fragment">Higher order functions via blocks/<code>Proc</code></li>
+<li class="fragment">Effects at the boundaries</li>
+</ul></li>
+<li class="fragment">Ruby falls down with deeper abstractions
+<ul>
+<li class="fragment">Against the design/intentions of the language</li>
+<li class="fragment">Lack of types/tool suppport</li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Using what you can will make your code better</li>
+<li>You'll hit a limit fairly quickly</li>
+<li>Ability to keep everything in your head starts to break down</li>
+<li>This is where tools/types help</li>
+<li>Deeper abstraction <em>does</em> matter</li>
+<li>less repetition</li>
+<li>less bugs</li>
+<li>shared understanding and code</li>
+<li>steal from mathematicians</li>
+<li>You don't know what you're missing out on until you have it</li>
+</ul>
+</aside>
+</section><section id="what-now" class="slide level2">
+<h2>What now?</h2>
+</section><section id="section-55" class="slide level2">
+<h2></h2>
+<p>Try these ideas on your Ruby</p>
+</section><section id="section-56" class="slide level2">
+<h2></h2>
+<p>Homework: write tic-tac-toe using these principles</p>
+<ul>
+<li class="fragment">Functional core, imperative shell</li>
+<li class="fragment">Immutable data in the core</li>
+<li class="fragment">Higher order functions</li>
+<li class="fragment">Closed structs</li>
+</ul>
+</section><section id="learn-more-fp" class="slide level2">
+<h2>Learn more FP!</h2>
+<p>Data61 course in Brisbane 06-08 Feb</p>
+<p>Register by 26 Jan (<a href="https://notify.qfpl.io">notify.qfpl.io</a>)</p>
+</section><section id="need-help" class="slide level2">
+<h2>Need help?</h2>
+<p>#qfpl on Freenode</p>
+</section></section>
+<section><section id="credits" class="titleslide slide level1"><h1>Credits</h1></section><section id="images" class="slide level2">
+<h2>Images</h2>
+<ul>
+<li>From the government: <a href="https://imgflip.com/i/9n828" class="uri">https://imgflip.com/i/9n828</a></li>
+<li>Function diagram: <a href="https://en.wikipedia.org/wiki/Function_(mathematics)" class="uri">https://en.wikipedia.org/wiki/Function_(mathematics)</a></li>
+<li>One weird trick: <a href="http://www.johnphung.com" class="uri">http://www.johnphung.com</a></li>
+<li>It's a trap: <a href="https://www.teeturtle.com" class="uri">https://www.teeturtle.com</a></li>
+</ul>
+</section><section id="references" class="slide level2">
+<h2>References</h2>
+<ul>
+<li>Boundaries talk by Gary Bernhardt: <a href="https://www.youtube.com/watch?v=yTkzNHF6rMs" class="uri">https://www.youtube.com/watch?v=yTkzNHF6rMs</a></li>
+<li><code>&amp;:</code> explanation: <a href="https://stackoverflow.com/a/1961118/510722" class="uri">https://stackoverflow.com/a/1961118/510722</a></li>
+</ul>
+</section><section id="this-talk" class="slide level2">
+<h2>This talk</h2>
+<ul>
+<li>Code: <a href="https://github.com/qfpl/fp-in-ruby" class="uri">https://github.com/qfpl/fp-in-ruby</a></li>
+<li>Slides: <a href="https://qfpl.io/talks/fp-in-ruby" class="uri">https://qfpl.io/talks/fp-in-ruby</a></li>
+</ul>
+</section></section>
+    </div>
+  </div>
+
+  <script src="reveal.js/lib/js/head.min.js"></script>
+  <script src="reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Transition style
+        transition: 'none', // none/fade/slide/convex/concave/zoom
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+              { src: 'reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>
