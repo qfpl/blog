@@ -1,6 +1,6 @@
 ---
 title: Installing NixOS
-date: 2018-01-17
+date: 2018-01-24
 project: infra
 authors: ajmccluskey
 ---
