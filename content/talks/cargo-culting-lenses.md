@@ -7,4 +7,5 @@ author: schalmers
 author-name: Sean Chalmers
 code-url: https://github.com/qfpl/cargo-culting-lenses-ffp
 slides-base: talk.html
+video-url: http://youtu.be/qte7U3Cexhc
 ---
