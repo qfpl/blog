@@ -185,7 +185,12 @@ machine.
 
 ### Create our filesystems
 
+In the below snippet, `$BOOT` refers to the boot partition created above - something like `/dev/sda1`.
+
 ```
+-- Create a FAT32 filesystem on our boot partition
+# mkfs.vfat -n boot $BOOT
+
 -- Create an ext4 filesystem for our root partition
 # mkfs.ext4 -L nixos /dev/nixos-vg/root
 
