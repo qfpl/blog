@@ -16,7 +16,6 @@ He is also passionate about spreading all of this knowledge, mostly by giving ta
 
 ### Links
 
-He has a [personal website](dlaing.org), which mostly contains similar writing to what you'll see from him here.
+He has a [personal website](http://dlaing.org/), which mostly contains similar writing to what you'll see from him here.
 
 He also has [github page](http://github.com/dalaing) , which mostly contains similar code to what you'll see from him in the QFPL repository.
-
