@@ -39,7 +39,9 @@ import           GHC.Generics             (Generic)
 import           Network.Wai.Handler.Warp (run)
 import           Servant                  ((:<|>) ((:<|>)), (:>), Capture,
                                            FromHttpApiData (parseUrlPiece), Get,
-                                           PlainText, Server, Handler, serve)
+                                           Handler, PlainText, Server,
+                                           ToHttpApiData (toUrlPiece), serve)
+import           Servant.Client           (client)
 \end{code}
 
 <h3>A small server</h3>
@@ -229,19 +231,22 @@ Couldn't match type ‘(Adventurer -> Handler Text)
 
 Our friendly compiler who is our friend has told us we've made an error. Specifically, it's telling
 us that `Server TazApi` is a synonym for `Adventurer -> Handler Text :<|> Handler Text`, but we've
-provided a definition with type `(Adventurer -> Handler Text) :<|> (Adventurer -> Handler Text)`. To
-understand why, let's back up a step.
+provided a definition with type `(Adventurer -> Handler Text) :<|> (Adventurer -> Handler Text)`.
+pThe difference is the first is a function from `Adventurer` to a two `Handler Text`, while the
+second is two functions from `Adventurer` to `Handler Text`. To understand why, let's back up a
+step.
 
 As mentioned earlier, `Server` is a type family that, given the type of an API, produces the type of
 the server required to handle that API. The types of the handler functions produced include any
 inputs, such as captures or the request body, as function arguments. Furthermore, the return value
 of each handler function matches the type of the response in the API. Any static elements in the API
-are discarded, as they are known at compile time. _This_ is why `Server TazApiDup` isn't equal to
-`Server TazApi` - the former expects two functions that each take the `Adventurer` as an argument,
-while the latter has factored out the common capture and expects a function from `Adventurer` to two
-handler functions that don't take the common `Adventurer` argument.
+are discarded, as they are known at compile time and therefore not needed as arguments to the
+ahandler functions. _This_ is why `Server TazApiDup` isn't equal to `Server TazApi` - the former
+expects two functions that each take the `Adventurer` as an argument, while the latter has factored
+out the common capture and expects a function from `Adventurer` to two handler functions that don't
+take the common `Adventurer` argument.
 
-Knowing all this, the solution is hopefully makes sense: we need to provide a server definition that
+Knowing all this, the solution hopefully makes sense: we need to provide a server definition that
 matches the generated type. That is, a server that takes the `Adventurer` as an argument, and then
 distributes it over each sub-route so that the type of each partially applied function matches the
 type.
@@ -256,4 +261,20 @@ runTazApi
   :: IO ()
 runTazApi =
   run 8081 . serve (Proxy :: Proxy TazApi) $ tazApiServer
+\end{code}
+
+<h3>The client side</h3>
+
+One of the great things about `servant` is that because it represents an API as a type, it can use
+that type to produce both servers and clients for the API. So what happens if we want a client for a
+nested API? Let's start by creating a client for `TazApiDup` to see how clients are made.
+
+\begin{code}
+-- We need an instance of ToHttpApiData for Adventurer now because our client needs to put values of
+-- that type into the URL.
+instance ToHttpApiData Adventurer where
+  toUrlPiece a =
+    case a of
+      
+classClient :<|> classActor = client (Proxy :: Proxy TazApiDup)
 \end{code}
