@@ -19,7 +19,7 @@ tthen come back.
 This post is literate haskell, so feel free to grab [the
 code](https://github.com/qfpl/blog/tree/master/content/posts/nested-routes-in-servant.lhs) and play
 along at home. If you're running nix you can use `nix-shell -p 'haskellPackages.ghcWithPackages (hp:
- [hp.servant])'` to get a shell with everything you need. From there you can fire up `ghci` and load
+ [hp.servant-server])'` to get a shell with everything you need. From there you can fire up `ghci` and load
 the file.
 
 <h3>Setup</h3>
@@ -232,11 +232,28 @@ us that `Server TazApi` is a synonym for `Adventurer -> Handler Text :<|> Handle
 provided a definition with type `(Adventurer -> Handler Text) :<|> (Adventurer -> Handler Text)`. To
 understand why, let's back up a step.
 
-TODO:
+As mentioned earlier, `Server` is a type family that, given the type of an API, produces the type of
+the server required to handle that API. The types of the handler functions produced include any
+inputs, such as captures or the request body, as function arguments. Furthermore, the return value
+of each handler function matches the type of the response in the API. Any static elements in the API
+are discarded, as they are known at compile time. _This_ is why `Server TazApiDup` isn't equal to
+`Server TazApi` - the former expects two functions that each take the `Adventurer` as an argument,
+while the latter has factored out the common capture and expects a function from `Adventurer` to two
+handler functions that don't take the common `Adventurer` argument.
 
-- Captures/variables result in function arguments via `Server` type family
-- We joined together two routes that each took a capture in the duplicated version,
-  so we needed to join together two functions that each took an adventurer
-- De-duping the API resulted in a server type that takes an adventurer and returns two sub-routes,
-  so we need to change the definition of our server to reflect this
-- Run through handling this change for servant clients
+Knowing all this, the solution is hopefully makes sense: we need to provide a server definition that
+matches the generated type. That is, a server that takes the `Adventurer` as an argument, and then
+distributes it over each sub-route so that the type of each partially applied function matches the
+type.
+
+\begin{code}
+tazApiServer
+  :: Server TazApi
+tazApiServer a =
+  klass a :<|> actor a
+
+runTazApi
+  :: IO ()
+runTazApi =
+  run 8081 . serve (Proxy :: Proxy TazApi) $ tazApiServer
+\end{code}
