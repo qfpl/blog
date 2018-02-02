@@ -36,16 +36,15 @@ We'll start by importing what we need from `servant` and enabling the language e
 import Control.Monad.Error.Class (throwError)
 import qualified Data.Map as M
 import           Data.Proxy               (Proxy (Proxy))
-import           Data.Text                (Text, pack)
-import           GHC.Generics             (Generic)
+import           Data.Text                (Text)
 import           Network.Wai.Handler.Warp (run)
 import           Network.HTTP.Client      (defaultManagerSettings, newManager)
 import           Servant                  ((:<|>) ((:<|>)), (:>), Capture,
                                            FromHttpApiData (parseUrlPiece), Get,
                                            Handler, JSON, PlainText, Server,
                                            ToHttpApiData (toUrlPiece), err404, serve)
-import           Servant.Client           (BaseUrl (BaseUrl), Client,
-                                           ClientEnv (ClientEnv), ClientM, Scheme (Http), ServantError,
+import           Servant.Client           (BaseUrl (BaseUrl), ClientEnv (ClientEnv),
+                                           ClientM, Scheme (Http), ServantError,
                                            client, runClientM)
 import           Web.HttpApiData          (parseBoundedTextData, showTextData)
 \end{code}
@@ -240,7 +239,7 @@ Much better! But what happens if we try to use our old server?
 tazApiServer
   :: Server TazApi
 tazApiServer =
-  klass :<|> actor
+  klass :<|> actor :<|> stat
 
 {-
 Couldn't match type ‘(Adventurer -> Handler Text)
@@ -299,7 +298,8 @@ instance ToHttpApiData TazAdventurer where
 instance ToHttpApiData Stat where
   toUrlPiece = showTextData
 
-classClient :<|> actorlClient = client (Proxy :: Proxy TazApiDup)
+classClient :<|> actorlClient :<|> statClient =
+  client (Proxy :: Proxy TazApiDup)
 \end{code}
 
 The first thing we needed to do is define an instance of ToHttpApiData for `TazAdventurer`. The
