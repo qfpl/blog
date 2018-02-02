@@ -14,13 +14,13 @@ the problem again. This time I cracked it. Here are the fruits of my labour.
 
 I'm going to assume that you're already familiar with the basics of servant. If not, go check out
 their [excellent documentation](https://haskell-servant.readthedocs.io/en/stable/index.html) and
-tthen come back.
+then come back.
 
 This post is literate haskell, so feel free to grab [the
 code](https://github.com/qfpl/blog/tree/master/content/posts/nested-routes-in-servant.lhs) and play
 along at home. If you're running nix you can use `nix-shell -p 'haskellPackages.ghcWithPackages (hp:
 [hp.servant-client hp.servant-server])'` to get a shell with everything you need. From there you can
-fire up `ghci` and oad the file.
+fire up `ghci` and load the file.
 
 <h3>Setup</h3>
 
@@ -252,25 +252,19 @@ Couldn't match type ‘(TazAdventurer -> Handler Text)
 Our friendly compiler has told us we've made an error. Specifically, it's telling us that `Server
 TazApi` is a synonym for `TazAdventurer -> Handler Text :<|> Handler Text :<|> (Stat -> Handler
 Int)`, but we've provided a definition with type `(TazAdventurer -> Handler Text) :<|>
-(TazAdventurer -> Handler Text) :<|> (TazAdventurer -> (Stat -> Handler Int))`. The difference is
-that the first is a function from `TazAdventurer` to three handlers that don't take `TazAdventurer`
-arguments, while the second is three functions from `TazAdventurer` to handlers. To understand why,
-let's back up a step.
+(TazAdventurer -> Handler Text) :<|> (TazAdventurer -> (Stat -> Handler Int))`.
 
 As mentioned earlier, `Server` is a type family that, given the type of an API, produces the type of
 the server required to handle that API. The types of the handler functions produced include any
-inputs, such as captures or the request body, as function arguments. Furthermore, the return value
-of each handler function matches the type of the response in the API. Any static elements in the API
-are discarded, as they are known at compile time and therefore not needed as arguments to the
-ahandler functions. _This_ is why `Server TazApiDup` isn't equal to `Server TazApi` - the former
-expects three functions that each take a `TazAdventurer` as an argument, while the latter has
-factored out the common capture and expects a function from `TazAdventurer` to three handler
-functions that don't take the common `TazAdventurer` argument.
+inputs, such as captures or the request body, as function arguments. _This_ is why `Server
+TazApiDup` isn't equal to `Server TazApi` - the former expects three functions that each take a
+`TazAdventurer` as an argument, while the latter has factored out the common capture and expects a
+function from `TazAdventurer` to the handlers for the remaining parts of the routes.
 
 Knowing all this, the solution hopefully makes sense: we need to provide a server definition that
 matches the generated type. That is, a server that takes the `TazAdventurer` as an argument, and
 then distributes it over each sub-route so that the type of each partially applied function matches
-the type.
+the type of the server.
 
 \begin{code}
 tazApiServer
