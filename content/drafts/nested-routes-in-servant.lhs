@@ -24,8 +24,7 @@ fire up `ghci` and oad the file.
 
 <h3>Setup</h3>
 
-We'll start by importing what we need from `servant` and enabling the language extensions that
-`servant` needs.
+We'll start by importing what we need from servant and enabling some language extensions.
 
 \begin{code}
 {-# LANGUAGE DataKinds         #-}
@@ -33,7 +32,7 @@ We'll start by importing what we need from `servant` and enabling the language e
 {-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE TypeOperators     #-}
 
-import Control.Monad.Error.Class (throwError)
+import           Control.Monad.Error.Class (throwError)
 import qualified Data.Map as M
 import           Data.Proxy               (Proxy (Proxy))
 import           Data.Text                (Text)
@@ -116,13 +115,14 @@ runApiWithoutDuplication =
   run 8081 . serve (Proxy :: Proxy ApiWithoutDuplication) $ apiWithDuplicationServer
 \end{code}
 
-All we had to do in this case was factor out the common prefix of each route by only specifying it
-once, and then joining that to the combined sub-routes with the common prefix.
+Now our API only specifies the common part of the routes once, followed by the sub-routes.
 
 Notice that our server definition hasn't changed. That's because the type of our server hasn't
 changed. `Server` is a type family (think function at the type level) that, given our two different
 API types, produces the same type. That is to say that `Server ApiWithDuplication` is equal to
-`Server ApiWithoutDuplication` in the same way that `3 - 1 == 1 + 1`.
+`Server ApiWithoutDuplication` in the same way that `3 - 1 == 4 - 2`. The intuition is that the
+common part of our routes is static, and doesn't impact the type of the functions used to handle
+those requests. As a result, we end up with a chain of handler functions with an identical type.
 
 To prove that I'm not lying about the types, let's ask our good friend `ghci`.
 
@@ -136,17 +136,12 @@ apiWithoutDuplicationServer
   :: Handler [Char] :<|> (Handler [Char] :<|> Handler [Char])
 ```
 
-In turning our API type into the type of the handler, we have arrived at the same type. The
-intuition is that the common part of our routes is static, and doesn't impact the type of the
-ifunctions used to handle those requests. As a result, we end up with a chain of handler functions
-with an identical type.
-
 If you still don't believe me, scroll up and look carefully at `runApiWithoutDuplication`. We're not
 even using the second server we defined, we're using the original: `apiWithDuplicationServer`.
 
 <h3>Something variable this way comes</h3>
 
-You might now be asking what happens if I have nested routes where the common elements contain
+You might now be asking what happens if we have nested routes where the common elements contain
 variables that our handlers need to capture. At least, I hope you are, because if not this next
 section is really going to disappoint you.
 
@@ -221,7 +216,7 @@ runTazApiDup =
   run 8081 . serve (Proxy :: Proxy TazApiDup) $ tazApiDupServer
 \end{code}
 
-There's some obvious duplication here, so let's factor it out again.
+There's some obvious duplication here, so let's factor it out.
 
 \begin{code}
 type TazApi =
@@ -251,12 +246,11 @@ Couldn't match type ‘(Adventurer -> Handler Text)
 -}
 ```
 
-Our friendly compiler who is our friend has told us we've made an error. Specifically, it's telling
-us that `Server TazApi` is a synonym for `Adventurer -> Handler Text :<|> Handler Text`, but we've
-provided a definition with type `(Adventurer -> Handler Text) :<|> (Adventurer -> Handler Text)`.
-pThe difference is the first is a function from `Adventurer` to a two `Handler Text`, while the
-second is two functions from `Adventurer` to `Handler Text`. To understand why, let's back up a
-step.
+Our friendly compiler has told us we've made an error. Specifically, it's telling us that `Server
+TazApi` is a synonym for `Adventurer -> Handler Text :<|> Handler Text`, but we've provided a
+definition with type `(Adventurer -> Handler Text) :<|> (Adventurer -> Handler Text)`. pThe
+difference is the first is a function from `Adventurer` to a two `Handler Text`, while the second is
+two functions from `Adventurer` to `Handler Text`. To understand why, let's back up a step.
 
 As mentioned earlier, `Server` is a type family that, given the type of an API, produces the type of
 the server required to handle that API. The types of the handler functions produced include any
