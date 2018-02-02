@@ -1,6 +1,6 @@
 ---
 title: Nested routes in servant
-date: 2018-02-01
+date: 2018-02-02
 authors: ajmccluskey
 ---
 
@@ -19,8 +19,8 @@ tthen come back.
 This post is literate haskell, so feel free to grab [the
 code](https://github.com/qfpl/blog/tree/master/content/posts/nested-routes-in-servant.lhs) and play
 along at home. If you're running nix you can use `nix-shell -p 'haskellPackages.ghcWithPackages (hp:
- [hp.servant-server])'` to get a shell with everything you need. From there you can fire up `ghci` and load
-the file.
+[hp.servant-client hp.servant-server])'` to get a shell with everything you need. From there you can
+fire up `ghci` and oad the file.
 
 <h3>Setup</h3>
 
@@ -30,18 +30,26 @@ We'll start by importing what we need from `servant` and enabling the language e
 \begin{code}
 {-# LANGUAGE DataKinds         #-}
 {-# LANGUAGE DeriveGeneric     #-}
+{-# LANGUAGE LambdaCase        #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE TypeOperators     #-}
 
+import Control.Monad.Error.Class (throwError)
+import qualified Data.Map as M
 import           Data.Proxy               (Proxy (Proxy))
 import           Data.Text                (Text, pack)
 import           GHC.Generics             (Generic)
 import           Network.Wai.Handler.Warp (run)
+import           Network.HTTP.Client      (defaultManagerSettings, newManager)
 import           Servant                  ((:<|>) ((:<|>)), (:>), Capture,
                                            FromHttpApiData (parseUrlPiece), Get,
-                                           Handler, PlainText, Server,
-                                           ToHttpApiData (toUrlPiece), serve)
-import           Servant.Client           (client)
+                                           Handler, JSON, PlainText, Server,
+                                           ToHttpApiData (toUrlPiece), err404, serve)
+import           Servant.Client           (BaseUrl (BaseUrl), Client,
+                                           ClientEnv (ClientEnv), ClientM, Scheme (Http), ServantError,
+                                           client, runClientM)
+import           Web.HttpApiData          (parseBoundedTextData, showTextData)
 \end{code}
 
 <h3>A small server</h3>
@@ -52,8 +60,8 @@ from there.
 \begin{code}
 type ApiWithDuplication =
        "first-bit" :> "second-bit" :> Get '[PlainText] Text
-  :<|> "first-bit" :> "second-bit" :> "life" :> Get '[PlainText] Text
-  :<|> "first-bit" :> "second-bit" :> "random" :> Get '[PlainText] Text
+  :<|> "first-bit" :> "second-bit" :> "life" :> Get '[JSON] Int
+  :<|> "first-bit" :> "second-bit" :> "random" :> Get '[JSON] Int
 
 apiWithDuplicationServer
   :: Server ApiWithDuplication
@@ -68,22 +76,15 @@ secondBit =
   return "I'm the root of second-bit"
 
 life
-  :: Handler Text
+  :: Handler Int
 life =
-  renderShowable 42
+  return 42
 
 random
-  :: Handler Text
+  :: Handler Int
 random =
   -- chosen by fair dice roll
-  renderShowable 4
-
-renderShowable
-  :: Show a
-  => a
-  -> Handler Text
-renderShowable =
-  return . pack . show
+  return 4
 
 runApiWithDuplication :: IO ()
 runApiWithDuplication =
@@ -102,8 +103,8 @@ Now, let's remove some duplication.
 type ApiWithoutDuplication =
   "first-bit" :> "second-bit" :>
   (    Get '[PlainText] Text
-  :<|> "life" :> Get '[PlainText] Text
-  :<|> "random" :> Get '[PlainText] Text
+  :<|> "life" :> Get '[JSON] Int
+  :<|> "random" :> Get '[JSON] Int
   )
 
 apiWithoutDuplicationServer
@@ -159,41 +160,64 @@ data Adventurer =
   Adventurer
   { adventurerKlass :: Text
   , adventurerActor :: Text
-  } deriving (Show)
+  , adventurerStats :: M.Map Stat Int
+  } deriving Show
 
-dm, magnus, merle, taako :: Adventurer
+data TazAdventurer
+  = Magnus
+  | Merle
+  | Taako
+  deriving (Bounded, Enum, Read, Show)
 
-dm     = Adventurer "DM"             "Griffin"
-magnus = Adventurer "Human Fighter"  "Travis"
-merle  = Adventurer "Dwarven Cleric" "Clint"
-taako  = Adventurer "Elven Wizard"   "Justin"
+data Stat
+  = HP
+  | AC
+  deriving (Bounded, Enum, Eq, Ord, Read, Show)
 
-instance FromHttpApiData Adventurer where
-  parseUrlPiece a =
-    case a of
-      "dm"     -> Right dm
-      "magnus" -> Right magnus
-      "merle"  -> Right merle
-      "taako"  -> Right taako
-      _        -> Left "Unknown adventurer"
+instance FromHttpApiData TazAdventurer where
+  parseUrlPiece = parseBoundedTextData
+
+instance FromHttpApiData Stat where
+  parseUrlPiece = parseBoundedTextData
+
+fromTaz
+  :: TazAdventurer
+  -> Adventurer
+fromTaz ta =
+  case ta of
+    Magnus -> Adventurer "Human Fighter"  "Travis" (M.fromList [(HP, 112), (AC, 19)])
+    Merle  -> Adventurer "Dwarven Cleric" "Clint"  (M.fromList [(HP, 65), (AC, 14)])
+    Taako  -> Adventurer "Elven Wizard"   "Justin" (M.fromList [(HP, 56), (AC, 13)])
 
 type TazApiDup =
-       "adventurer" :> Capture "adventurer" Adventurer :>
+       "adventurer" :> Capture "tazAdventurer" TazAdventurer :>
          "class" :> Get '[PlainText] Text
-  :<|> "adventurer" :> Capture "adventurer" Adventurer :>
+  :<|> "adventurer" :> Capture "tazAdventurer" TazAdventurer :>
          "actor" :> Get '[PlainText] Text
+  :<|> "adventurer" :> Capture "tazAdventurer" TazAdventurer :>
+         "stats" :> Capture "stat" Stat :> Get '[JSON] Int
 
 tazApiDupServer
   :: Server TazApiDup
 tazApiDupServer =
-  klass :<|> actor
+  klass :<|> actor :<|> stat
 
 klass, actor
-  :: Adventurer
+  :: TazAdventurer
   -> Handler Text
 
-klass = return . adventurerKlass
-actor = return . adventurerActor
+klass = return . adventurerKlass . fromTaz
+actor = return . adventurerActor . fromTaz
+
+stat
+  :: TazAdventurer
+  -> Stat
+  -> Handler Int
+stat ta s =
+  let
+    ms = M.lookup s . adventurerStats . fromTaz $ ta
+  in
+    maybe (throwError err404) return ms
 
 runTazApiDup :: IO ()
 runTazApiDup =
@@ -204,9 +228,10 @@ There's some obvious duplication here, so let's factor it out again.
 
 \begin{code}
 type TazApi =
-  "adventurer" :> Capture "adventurer" Adventurer :>
+  "adventurer" :> Capture "tazAdventurer" TazAdventurer :>
   (    "class" :> Get '[PlainText] Text
   :<|> "actor" :> Get '[PlainText] Text
+  :<|> "stats" :> Capture "stat" Stat :> Get '[JSON] Int
   )
 \end{code}
 
@@ -255,7 +280,7 @@ type.
 tazApiServer
   :: Server TazApi
 tazApiServer a =
-  klass a :<|> actor a
+  klass a :<|> actor a :<|> stat a
 
 runTazApi
   :: IO ()
@@ -270,11 +295,87 @@ that type to produce both servers and clients for the API. So what happens if we
 nested API? Let's start by creating a client for `TazApiDup` to see how clients are made.
 
 \begin{code}
--- We need an instance of ToHttpApiData for Adventurer now because our client needs to put values of
--- that type into the URL.
-instance ToHttpApiData Adventurer where
-  toUrlPiece a =
-    case a of
-      
-classClient :<|> classActor = client (Proxy :: Proxy TazApiDup)
+instance ToHttpApiData TazAdventurer where
+  toUrlPiece = showTextData
+
+instance ToHttpApiData Stat where
+  toUrlPiece = showTextData
+
+classClient :<|> actorlClient = client (Proxy :: Proxy TazApiDup)
 \end{code}
+
+The first thing we needed to do is define an instance of ToHttpApiData for `TazAdventurer`. The
+reason being that our client needs to put values of that type into the URL. After that, all we need
+to do is call `client` on our existing API and pattern match out the client functions.
+
+If we try to do the same thing with the nested API, we run into a problem similar to the one we
+encountered when defining our server - the type of the nested API no longer lines up with our
+pattern match on the client functions. Once again, this becomes clearer when we look at the types of
+each generated client in ghci.
+
+```
+λ> :t client (Proxy :: Proxy TazApiDup)
+client (Proxy :: Proxy TazApiDup)
+  :: (TazAdventurer -> Servant.Common.Req.ClientM Text)
+     :<|> (TazAdventurer -> Servant.Common.Req.ClientM Text)
+λ> :t client (Proxy :: Proxy TazApi)
+client (Proxy :: Proxy TazApi)
+  :: TazAdventurer
+     -> Servant.Common.Req.ClientM Text
+        :<|> Servant.Common.Req.ClientM Text
+```
+
+As we can see, `client (Proxy :: Proxy TazApi)` returns a function from `TazAdventurer` to our two
+client functions. We can't pattern match out all of the possible client functions (two for each
+`TazAdventurer`), but we _can_ use the returned function to define a helper that gives us client
+functions for each adventurer. To make things easier on our users, especially when we have more
+deeply nested APIs, we can put our client functions in a record. We'll use the `RecordWildcards`
+extension to save ourselves some boilerplate too.
+
+\begin{code}
+data TazApiClient
+  = TazApiClient
+  { tazClientClass :: ClientM Text
+  , tazClientActor :: ClientM Text
+  , tazClientStat  :: Stat -> ClientM Int
+  }
+
+mkTazApiClient
+  :: TazAdventurer
+  -> TazApiClient
+mkTazApiClient ta =
+  let
+    tazClientClass
+      :<|> tazClientActor
+      :<|> tazClientStat
+      = client (Proxy :: Proxy TazApi) ta
+  in
+    TazApiClient{..}
+
+clientEnv
+  :: IO ClientEnv
+clientEnv = do
+  let
+    baseUrl = BaseUrl Http "localhost" 8081 ""
+  manager <- newManager defaultManagerSettings
+  pure $ ClientEnv manager baseUrl
+
+runTazClient
+  :: ClientM a
+  -> IO (Either ServantError a)
+runTazClient =
+  (clientEnv >>=) . runClientM
+
+tazAdventurerStat
+  :: TazAdventurer
+  -> Stat
+  -> IO (Either ServantError Int)
+tazAdventurerStat ta s = do
+    runTazClient . ($ s) . tazClientStat . mkTazApiClient $ ta
+\end{code}
+
+<h3>References</h3>
+
+[Servant docs](https://haskell-servant.readthedocs.io/en/stable/index.html)
+[Source of clients in a record](https://github.com/haskell-servant/servant/issues/335#issuecomment-172300487)
+
