@@ -237,20 +237,25 @@ tazApiServer =
   klass :<|> actor :<|> stat
 
 {-
-Couldn't match type ‘(Adventurer -> Handler Text)
-                           :<|> (Adventurer -> Handler Text)’
-                     with ‘Adventurer -> Handler Text :<|> Handler Text’
+Couldn't match type ‘(TazAdventurer -> Handler Text)
+                           :<|> ((TazAdventurer -> Handler Text)
+                                 :<|> (TazAdventurer -> Stat -> Handler Int))’
+                     with ‘TazAdventurer
+                           -> Handler Text :<|> (Handler Text :<|> (Stat -> Handler Int))’
       Expected type: Server TazApi
-        Actual type: (Adventurer -> Handler Text)
-                     :<|> (Adventurer -> Handler Text)
+        Actual type: (TazAdventurer -> Handler Text)
+                     :<|> ((TazAdventurer -> Handler Text)
+                           :<|> (TazAdventurer -> Stat -> Handler Int))
 -}
 ```
 
 Our friendly compiler has told us we've made an error. Specifically, it's telling us that `Server
-TazApi` is a synonym for `Adventurer -> Handler Text :<|> Handler Text`, but we've provided a
-definition with type `(Adventurer -> Handler Text) :<|> (Adventurer -> Handler Text)`. pThe
-difference is the first is a function from `Adventurer` to a two `Handler Text`, while the second is
-two functions from `Adventurer` to `Handler Text`. To understand why, let's back up a step.
+TazApi` is a synonym for `TazAdventurer -> Handler Text :<|> Handler Text :<|> (Stat -> Handler
+Int)`, but we've provided a definition with type `(TazAdventurer -> Handler Text) :<|>
+(TazAdventurer -> Handler Text) :<|> (TazAdventurer -> (Stat -> Handler Int))`. The difference is
+that the first is a function from `TazAdventurer` to three handlers that don't take `TazAdventurer`
+arguments, while the second is three functions from `TazAdventurer` to handlers. To understand why,
+let's back up a step.
 
 As mentioned earlier, `Server` is a type family that, given the type of an API, produces the type of
 the server required to handle that API. The types of the handler functions produced include any
@@ -258,14 +263,14 @@ inputs, such as captures or the request body, as function arguments. Furthermore
 of each handler function matches the type of the response in the API. Any static elements in the API
 are discarded, as they are known at compile time and therefore not needed as arguments to the
 ahandler functions. _This_ is why `Server TazApiDup` isn't equal to `Server TazApi` - the former
-expects two functions that each take the `Adventurer` as an argument, while the latter has factored
-out the common capture and expects a function from `Adventurer` to two handler functions that don't
-take the common `Adventurer` argument.
+expects three functions that each take a `TazAdventurer` as an argument, while the latter has
+factored out the common capture and expects a function from `TazAdventurer` to three handler
+functions that don't take the common `TazAdventurer` argument.
 
 Knowing all this, the solution hopefully makes sense: we need to provide a server definition that
-matches the generated type. That is, a server that takes the `Adventurer` as an argument, and then
-distributes it over each sub-route so that the type of each partially applied function matches the
-type.
+matches the generated type. That is, a server that takes the `TazAdventurer` as an argument, and
+then distributes it over each sub-route so that the type of each partially applied function matches
+the type.
 
 \begin{code}
 tazApiServer
@@ -281,7 +286,7 @@ runTazApi =
 
 <h3>The client side</h3>
 
-One of the great things about `servant` is that because it represents an API as a type, it can use
+One of the great things about servant is that because it represents an API as a type, it can use
 that type to produce both servers and clients for the API. So what happens if we want a client for a
 nested API? Let's start by creating a client for `TazApiDup` to see how clients are made.
 
@@ -308,21 +313,21 @@ each generated client in ghci.
 ```
 λ> :t client (Proxy :: Proxy TazApiDup)
 client (Proxy :: Proxy TazApiDup)
-  :: (TazAdventurer -> Servant.Common.Req.ClientM Text)
-     :<|> (TazAdventurer -> Servant.Common.Req.ClientM Text)
+  :: (TazAdventurer -> ClientM Text)
+     :<|> ((TazAdventurer -> ClientM Text)
+           :<|> (TazAdventurer -> Stat -> ClientM Int))
 λ> :t client (Proxy :: Proxy TazApi)
 client (Proxy :: Proxy TazApi)
   :: TazAdventurer
-     -> Servant.Common.Req.ClientM Text
-        :<|> Servant.Common.Req.ClientM Text
+     -> ClientM Text :<|> (ClientM Text :<|> (Stat -> ClientM Int))
 ```
 
-As we can see, `client (Proxy :: Proxy TazApi)` returns a function from `TazAdventurer` to our two
-client functions. We can't pattern match out all of the possible client functions (two for each
-`TazAdventurer`), but we _can_ use the returned function to define a helper that gives us client
-functions for each adventurer. To make things easier on our users, especially when we have more
-deeply nested APIs, we can put our client functions in a record. We'll use the `RecordWildcards`
-extension to save ourselves some boilerplate too.
+As we can see, `client (Proxy :: Proxy TazApi)` returns a function from `TazAdventurer` to our three
+client functions. We can't pattern match out all of the possible client functions (three for each
+`TazAdventurer`), but we _can_ use the returned function to define a helper function that gives us a
+set of client functions when given a `TazAdventurer`. To make things easier on our users, especially
+when we have more deeply nested APIs, we can put our client functions in a record. We'll use the
+`RecordWildcards` extension to save ourselves some boilerplate too.
 
 \begin{code}
 data TazApiClient
