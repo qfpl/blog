@@ -29,8 +29,6 @@ We'll start by importing what we need from `servant` and enabling the language e
 
 \begin{code}
 {-# LANGUAGE DataKinds         #-}
-{-# LANGUAGE DeriveGeneric     #-}
-{-# LANGUAGE LambdaCase        #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE TypeOperators     #-}
@@ -370,12 +368,12 @@ tazAdventurerStat
   :: TazAdventurer
   -> Stat
   -> IO (Either ServantError Int)
-tazAdventurerStat ta s = do
+tazAdventurerStat ta s =
     runTazClient . ($ s) . tazClientStat . mkTazApiClient $ ta
 \end{code}
 
 <h3>References</h3>
 
-[Servant docs](https://haskell-servant.readthedocs.io/en/stable/index.html)
-[Source of clients in a record](https://github.com/haskell-servant/servant/issues/335#issuecomment-172300487)
+- [Servant docs](https://haskell-servant.readthedocs.io/en/stable/index.html)
+- [Source of clients in a record](https://github.com/haskell-servant/servant/issues/335#issuecomment-172300487)
 
