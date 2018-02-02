@@ -295,9 +295,9 @@ classClient :<|> actorlClient :<|> statClient =
   client (Proxy :: Proxy TazApiDup)
 \end{code}
 
-The first thing we needed to do is define an instance of ToHttpApiData for `TazAdventurer`. The
-reason being that our client needs to put values of that type into the URL. After that, all we need
-to do is call `client` on our existing API and pattern match out the client functions.
+Other than defining a couple of instances that allow servant to turn our `TazAdventurer` arguments
+into parts of a URL, all we need to do is call `client` on our existing API and pattern match out
+the client functions.
 
 If we try to do the same thing with the nested API, we run into a problem similar to the one we
 encountered when defining our server - the type of the nested API no longer lines up with our
@@ -317,11 +317,10 @@ client (Proxy :: Proxy TazApi)
 ```
 
 As we can see, `client (Proxy :: Proxy TazApi)` returns a function from `TazAdventurer` to our three
-client functions. We can't pattern match out all of the possible client functions (three for each
-`TazAdventurer`), but we _can_ use the returned function to define a helper function that gives us a
-set of client functions when given a `TazAdventurer`. To make things easier on our users, especially
-when we have more deeply nested APIs, we can put our client functions in a record. We'll use the
-`RecordWildcards` extension to save ourselves some boilerplate too.
+client functions. We can't pattern match on each route now, but we _can_ apply this function to a
+`TazAdventurer` to get the client functions for that adventurer. To make things easier on our users,
+especially when we have more deeply nested APIs, we can put our client functions in a record. We'll
+use the `RecordWildcards` extension to save ourselves some boilerplate too.
 
 \begin{code}
 data TazApiClient
