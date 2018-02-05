@@ -1,6 +1,6 @@
 ---
 title: Nested routes in servant
-date: 2018-02-02
+date: 2018-02-05
 authors: ajmccluskey
 ---
 
