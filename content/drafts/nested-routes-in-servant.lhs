@@ -300,7 +300,7 @@ into parts of a URL, all we need to do is call `client` on our existing API and 
 the client functions.
 
 If we try to do the same thing with the nested API, we run into a problem similar to the one we
-encountered when defining our server - the type of the nested API no longer lines up with our
+encountered when defining our server &mdash; the type of the nested API no longer lines up with our
 pattern match on the client functions. Once again, this becomes clearer when we look at the types of
 each generated client in ghci.
 
