@@ -67,9 +67,9 @@ main = do
 
     postRules pandocMathCompilerFns
 
-    match "index.md" $ do
-        route $ setExtension "html"
-        compile $ do
+    match "index.html" $ do
+      route $ setExtension "html"
+      compile $ do
             posts <- fmap (take 5) . recentFirst =<< loadAll "posts/**"
             let indexCtx =
                     constField "home-active" ""              `mappend`
@@ -79,7 +79,6 @@ main = do
 
             getResourceBody
                 >>= applyAsTemplate indexCtx
-                >>= renderPandocMath
                 >>= loadAndApplyTemplate "templates/default.html" indexCtx
                 >>= relativizeUrls
                 >>= removeIndexHtml

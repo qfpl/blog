@@ -19,19 +19,19 @@ code {
   font-weight: 500;
   font-style: normal; }
 
-body {
-  font-family: "Open sans", sans-serif;
-}
+/* body { */
+/*   font-family: "Open sans", sans-serif; */
+/* } */
 
-a {
-    color: #2FB787;
-    font-family: UnitRounded, sans-serif;
-}
+/* a { */
+/*     color: #2FB787; */
+/*     font-family: UnitRounded, sans-serif; */
+/* } */
 
-h1, h2, h3, h4, h5, h6 {
-  color: #1D2021;
-  font-family: UnitRounded, sans-serif;
-}
+/* h1, h2, h3, h4, h5, h6 { */
+/*   color: #1D2021; */
+/*   font-family: UnitRounded, sans-serif; */
+/* } */
 
 @media (max-width: 768px) {
   #advance-qld-logo {
@@ -49,4 +49,11 @@ h1, h2, h3, h4, h5, h6 {
   #advance-qld-logo {
     margin-top: 2.5em;
   }
+}
+
+.qfpl-name-header {
+  font-size: 3.2rem;
+}
+.page-header {
+  margin-top: 1em;
 }
