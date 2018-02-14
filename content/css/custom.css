@@ -1,6 +1,63 @@
+.data61-green {
+  background-color: rgb(48, 184, 136) !important;
+  /* background-color: #2FB787 !important; */
+  /* background-color: #299d74 !important; */
+}
+
+.data61-green-text {
+  color: rgb(48, 184, 136) !important;
+  /* color: #2FB787 !important; */
+}
+
+.card .card-action a {
+  color: rgb(48, 184, 136) !important;
+  /* color: #2FB787 !important; */
+}
+
+.nav-logo {
+  /* Minimum height for this logo from Data61 guidelines */
+  height: 100px;
+}
+.nav-wrapper .row {
+  padding-top: 1.25em;
+}
+.nav-wrapper .row .brand-logo {
+  top: 0;
+}
+
+.side-nav-logo {
+  height: 120px;
+}
+
+.advance-qld-logo img {
+  width: 344.4px;
+  height: 67.2px;
+  margin-top: 2.3em;
+}
+
+@media (max-width: 768px) {
+  .advance-qld-logo img {
+      margin-left: -1.6em;
+  }
+}
+
+.data61-logo {
+  text-align: right;
+}
+
 code {
     color: #007A53;
     background-color: #F5F5F5;
+}
+
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
 }
 
 @font-face {
@@ -19,21 +76,28 @@ code {
   font-weight: 500;
   font-style: normal; }
 
-/* body { */
-/*   font-family: "Open sans", sans-serif; */
-/* } */
+body {
+  font-family: "Open sans", sans-serif;
+}
 
-/* a { */
-/*     color: #2FB787; */
-/*     font-family: UnitRounded, sans-serif; */
-/* } */
+header nav {
+  min-height: 100px;
+}
+.qfpl-nav-text {
+  
+}
 
-/* h1, h2, h3, h4, h5, h6 { */
-/*   color: #1D2021; */
-/*   font-family: UnitRounded, sans-serif; */
-/* } */
+a {
+    color: #2FB787;
+    font-family: UnitRounded, sans-serif;
+}
 
-@media (max-width: 768px) {
+h1, h2, h3, h4, h5, h6 {
+  color: #1D2021;
+  font-family: UnitRounded, sans-serif;
+}
+
+/* @media (max-width: 768px) {
   #advance-qld-logo {
       transform: scale(0.75);
       transform-origin: top left;
@@ -49,11 +113,8 @@ code {
   #advance-qld-logo {
     margin-top: 2.5em;
   }
-}
+} */
 
-.qfpl-name-header {
-  font-size: 3.2rem;
-}
 .page-header {
   margin-top: 1em;
 }

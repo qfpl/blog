@@ -3,12 +3,12 @@ import           Data.Monoid (mappend)
 
 import           Hakyll
 
-import Posts
-import People
-import Projects
-import Talks
-import Util.Pandoc
-import Util.Index
+import           People
+import           Posts
+import           Projects
+import           Talks
+import           Util.Index
+import           Util.Pandoc
 
 main :: IO ()
 main = do
@@ -49,12 +49,12 @@ main = do
             >>= relativizeUrls
             >>= removeIndexHtml
 
-    match "contact.md" $ do
+    match "contact.html" $ do
         route niceRoute
         compile $ do
           let contactCtx =
                 constField "contact-active" "true" `mappend` defaultContext
-          pandocMathCompiler
+          getResourceBody
             >>= loadAndApplyTemplate "templates/default.html" contactCtx
             >>= relativizeUrls
             >>= removeIndexHtml
@@ -70,7 +70,7 @@ main = do
     match "index.html" $ do
       route $ setExtension "html"
       compile $ do
-            posts <- fmap (take 5) . recentFirst =<< loadAll "posts/**"
+            posts <- fmap (take 6) . recentFirst =<< loadAll "posts/**"
             let indexCtx =
                     constField "home-active" ""              `mappend`
                     listField "posts" postCtx (return posts) `mappend`
