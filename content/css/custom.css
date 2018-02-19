@@ -98,10 +98,31 @@ img.location-image  {
   height: 600px;
   width: 800px;
 }
+
 .location-carousel .indicators {
   background-color: rgb(48, 184, 136);
 }
+
 .location-carousel .carousel-item p {
   margin: 0;
   padding: 15px 0 15px 0;
+}
+
+code {
+  padding: 0.2em;
+}
+
+pre code {
+  border: 1px solid #999;
+  display: block;
+  padding: 1em;
+  overflow-y: overlay;
+}
+
+.revert-ul ul:not(.browser-default) {
+  padding-left: 40px;
+  list-style-type: initial;
+}
+.revert-ul ul:not(.browser-default)>li {
+  list-style-type: initial;
 }

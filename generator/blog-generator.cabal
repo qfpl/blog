@@ -25,6 +25,7 @@ executable site
   build-depends:    base == 4.*
                   , hakyll == 4.9.*
                   , pandoc
+                  , pandoc-types
                   , latex-formulae-image
                   , latex-formulae-pandoc
                   , latex-formulae-hakyll
