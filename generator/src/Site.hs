@@ -39,12 +39,13 @@ main = do
         route   idRoute
         compile copyFileCompiler
 
-    match "location.md" $ do
+    match "location.html" $ do
         route niceRoute
         compile $ do
           let locationCtx =
                 constField "location-active" "" `mappend` defaultContext
-          pandocMathCompiler
+        --   pandocMathCompiler
+          getResourceBody
             >>= loadAndApplyTemplate "templates/default.html" locationCtx
             >>= relativizeUrls
             >>= removeIndexHtml

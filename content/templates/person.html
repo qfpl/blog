@@ -1,12 +1,25 @@
-<h1>$title$</h1>
-$body$
+<div class="container">
+  <div class="section">
+    <h3>$title$</h3>
 
-$if(talks)$
-<h3>Talks</h3>
-$partial("templates/talk-list.html")$
-$endif$
+    $body$
 
-$if(posts)$
-<h3>Blog posts</h3>
-$partial("templates/post-list.html")$
-$endif$
+  </div>
+  <div class="section">
+    $if(talks)$
+    <div class="divider"></div>
+    <h4>Talks</h4>
+    $partial("templates/talk-list.html")$
+    $endif$
+
+  </div>
+
+  <div class="section">
+
+    $if(posts)$
+    <div class="divider"></div>
+    <h4>Blog posts</h4>
+    $partial("templates/post-list.html")$
+    $endif$
+  </div>
+</div>

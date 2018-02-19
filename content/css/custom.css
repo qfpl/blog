@@ -1,17 +1,13 @@
 .data61-green {
   background-color: rgb(48, 184, 136) !important;
-  /* background-color: #2FB787 !important; */
-  /* background-color: #299d74 !important; */
 }
 
 .data61-green-text {
   color: rgb(48, 184, 136) !important;
-  /* color: #2FB787 !important; */
 }
 
 .card .card-action a {
   color: rgb(48, 184, 136) !important;
-  /* color: #2FB787 !important; */
 }
 
 .nav-logo {
@@ -83,9 +79,6 @@ body {
 header nav {
   min-height: 100px;
 }
-.qfpl-nav-text {
-  
-}
 
 a {
     color: #2FB787;
@@ -97,24 +90,18 @@ h1, h2, h3, h4, h5, h6 {
   font-family: UnitRounded, sans-serif;
 }
 
-/* @media (max-width: 768px) {
-  #advance-qld-logo {
-      transform: scale(0.75);
-      transform-origin: top left;
-  }
-  .data61-logo-fp {
-    float: none;
-  }
+.inner-h2-adjust h2 {
+  font-size: 2em;
 }
-@media (min-width: 769px) {
-  .data61-logo-fp {
-    float: right;
-  }
-  #advance-qld-logo {
-    margin-top: 2.5em;
-  }
-} */
 
-.page-header {
-  margin-top: 1em;
+img.location-image  {
+  height: 600px;
+  width: 800px;
+}
+.location-carousel .indicators {
+  background-color: rgb(48, 184, 136);
+}
+.location-carousel .carousel-item p {
+  margin: 0;
+  padding: 15px 0 15px 0;
 }
