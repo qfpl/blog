@@ -71,7 +71,7 @@ main = do
     match "index.html" $ do
       route $ setExtension "html"
       compile $ do
-            posts <- fmap (take 6) . recentFirst =<< loadAll "posts/**"
+            posts <- fmap (take 4) . recentFirst =<< loadAll "posts/**"
             let indexCtx =
                     constField "home-active" ""              `mappend`
                     listField "posts" postCtx (return posts) `mappend`

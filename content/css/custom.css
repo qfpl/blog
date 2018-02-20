@@ -33,7 +33,7 @@
 
 @media (max-width: 768px) {
   .advance-qld-logo img {
-      margin-left: -1.6em;
+    margin-left: -1.6em;
   }
 }
 
@@ -42,8 +42,8 @@
 }
 
 code {
-    color: #007A53;
-    background-color: #F5F5F5;
+  color: #007A53;
+  background-color: #F5F5F5;
 }
 
 body {
@@ -60,17 +60,20 @@ main {
   font-family: UnitRounded;
   src: url("https://www.csiro.au/themes/default/font/UnitRoundedWeb-Black.woff") format("woff");
   font-weight: 900;
-  font-style: normal; }
+  font-style: normal; 
+}
 @font-face {
   font-family: UnitRounded;
   src: url("https://www.csiro.au/themes/default/font/UnitRoundedWeb-Bold.woff") format("woff");
   font-weight: bold;
-  font-style: normal; }
+  font-style: normal; 
+}
 @font-face {
   font-family: UnitRounded;
   src: url("https://www.csiro.au/themes/default/font/UnitRoundedWeb-Medium.woff") format("woff");
   font-weight: 500;
-  font-style: normal; }
+  font-style: normal; 
+}
 
 body {
   font-family: "Open sans", sans-serif;
@@ -81,8 +84,8 @@ header nav {
 }
 
 a {
-    color: #2FB787;
-    font-family: UnitRounded, sans-serif;
+  color: #2FB787;
+  font-family: UnitRounded, sans-serif;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -96,7 +99,11 @@ h1, h2, h3, h4, h5, h6 {
 
 img.location-image  {
   height: 600px;
-  width: 800px;
+}
+@media only screen and (max-width: 768px) {
+  img.location-image  {
+    height: 300px;
+  }
 }
 
 .location-carousel .indicators {
