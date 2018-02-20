@@ -1,13 +1,35 @@
-<div class="row">
-$for(posts)$
-<div class="col s12 m4">
-  <a href="$url$">
-    <div class="card-panel hoverable data61-green lighten-1">
-      <span class="white-text">
-        $title$
-      </span>
+<ul class="collection">
+  $for(posts)$
+
+  <li class="collection-item">
+    <a href="$url$">$title$</a>
+    <span class="right">
+      $date$
+    </span>
+  </li>
+
+  $endfor$
+</ul>
+
+<!-- <div class="row">
+  $for(posts)$
+  <div class="col s12 m6">
+    <a href="$url$">
+
+
+    <div class="card hoverable post-card">
+      <div class="card-content">
+        
+          <p class="post-card-title black-text">$title$</p>
+          <div class="divider"></div>
+          <div class="card-action">
+              <span class="right">$date$</span>
+          </div>
+          
+
+      </div>
     </div>
   </a>
-</div>
-$endfor$
-</div>
+  </div>
+  $endfor$
+</div class="row"> -->

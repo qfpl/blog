@@ -126,3 +126,10 @@ pre code {
 .revert-ul ul:not(.browser-default)>li {
   list-style-type: initial;
 }
+
+.post-card {
+  min-height: 9rem;
+}
+.post-card .card-content {
+  padding-top: 32px;
+}
