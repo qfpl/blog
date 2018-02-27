@@ -2,16 +2,20 @@
 title: Functional Programming courses
 ---
 
+<<<<<<< HEAD
 We don't have a predetermined calendar for our courses, we organise them based on demand. So <a href="/contact">let us know that you're interested!</a> We're also able to arrange to run a course for your staff on-site, ask us about it.
+=======
+We don't have a predetermined calendar for our courses, we organise them based on demand. So <a href="/contact">let us know that you're interested!</a> We're also able to arrange to run a course for your staff on-site. Ask us about it.
+>>>>>>> 01106a18ef52881a2485c4866babf605ad4bd7c6
 
 ### Introduction to Functional Programming
 
 The main course that we run is the [Introduction to Functional Programming course](https://github.com/data61/fp-course).
 
-The course aims to introduce functional programming to people who already have some exposure to programming.
+The course aims to introduce Functional Programming to people who already have some exposure to programming.
 
 Many people from around the world have worked through it on their own and found it to be valuable.
-The course is self-contained but has been designed with personal guidance in mind - we recommend coming along to experience it that way if you have the chance.
+The course is self-contained but has been designed with personal guidance in mind &mdash; we recommend coming along to experience it that way if you have the chance.
 
 ### Applied Functional Programming
 
