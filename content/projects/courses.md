@@ -19,7 +19,7 @@ The course is self-contained but has been designed with personal guidance in min
 
 As a follow up to the Introductory FP course, we run the [Applied Functional Programming course](https://github.com/qfpl/applied-fp-course).
 
-This is new course material that is targeted toward programmers who have become proficient with navigating Functional Programming concepts, and in particular, Haskell data structures. This course material involves writing a simple REST application with a database backend.
+This is new course material that is targeted toward programmers who have become proficient with navigating Functional Programming concepts and would like to progress to building a complete application. This course material involves writing a REST application with a database backend.
 
 Topics covered include:
 
