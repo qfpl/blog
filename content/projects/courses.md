@@ -2,9 +2,7 @@
 title: Functional Programming courses
 ---
 
-We'll post information here about when and where we are running that course, along with information about other upcoming courses.
-
-If there is nothing posted here but you're interested in attending one of the courses that we run in the future, send an email to <a href="mailto:contact@qfpl.io">contact@qfpl.io</a>.
+We don't have a predetermined calendar for our courses, we organise them based on demand. So <a href="/contact">let us know that you're interested!</a>. We're also able to arrange to run a course for your staff on-site, ask us about it.
 
 ### Introduction to Functional Programming
 
