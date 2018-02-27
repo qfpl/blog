@@ -140,3 +140,12 @@ pre code {
 .post-card .card-content {
   padding-top: 32px;
 }
+.card.small-fp-card {
+  height: 220px;
+}
+.data61-bottom-line {
+  border-bottom: #007A53 solid 2px;
+}
+.small-fp-card p {
+  padding-top: 1rem;
+}

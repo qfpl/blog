@@ -62,7 +62,7 @@ bumpHeaderLevels =
     sectionDiv e =
       Div (mempty, ["section"], mempty) [e]
 
-    f h@(Header l a i)
+    f (Header l a i)
       | l == 2 || l == 1 = sectionDiv $ Header 3 a i
       | otherwise        = sectionDiv $ Header (l + 1) a i
     f b = b
@@ -77,7 +77,6 @@ setupPandocMathCompiler pmcc = do
       renderFormulae .
       pandocFormulaOptionsWithPkgs .
       pmccPackages $ pmcc
-
 
     -- is this the same as getResourceBody >>= renderFn
     compiler =
