@@ -2,7 +2,7 @@
 title: Functional Programming courses
 ---
 
-We don't have a predetermined calendar for our courses, we organise them based on demand. So <a href="/contact">let us know that you're interested!</a>. We're also able to arrange to run a course for your staff on-site, ask us about it.
+We don't have a predetermined calendar for our courses, we organise them based on demand. So <a href="/contact">let us know that you're interested!</a> We're also able to arrange to run a course for your staff on-site, ask us about it.
 
 ### Introduction to Functional Programming
 
