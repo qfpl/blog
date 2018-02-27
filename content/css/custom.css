@@ -154,6 +154,6 @@ pre code {
   float: right;
   margin: 0.3rem;
   border: #007A53 solid 2px;
-  max-height: 150px;
-  max-width: 150px;
+  height: 200px;
+  width: 200px;
 }
