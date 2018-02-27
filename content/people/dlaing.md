@@ -1,10 +1,9 @@
 ---
 title: Dave Laing
+portrait: /images/people/dlaing.png
 ---
 
 Dave is a programmer working at the Queensland Functional Programming Lab.
-
-<img src="/images/people/dlaing.png" alt="Dave Laing" />
 
 He has been programming since high school, and has used x86 assembler, C++, Java, Python, Javascript, Scala and Haskell professionally.
 There have been forays into Coq and Idris, but so far Haskell is his favourite.

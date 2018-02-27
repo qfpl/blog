@@ -1,8 +1,13 @@
-<div class="container">
   <div class="section">
     <h3>$title$</h3>
-
-    $body$
+    
+    <div class="person-content">
+      $if(portrait)$
+        <img class="person-portrait" src="$portrait$" alt="$title$">
+      $endif$
+      
+      $body$
+    </div>
 
   </div>
   <div class="section">
@@ -22,4 +27,3 @@
     $partial("templates/post-list.html")$
     $endif$
   </div>
-</div>

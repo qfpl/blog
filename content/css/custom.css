@@ -149,3 +149,11 @@ pre code {
 .small-fp-card p {
   padding-top: 1rem;
 }
+
+.person-portrait {
+  float: right;
+  margin: 0.3rem;
+  border: #007A53 solid 2px;
+  max-height: 150px;
+  max-width: 150px;
+}
