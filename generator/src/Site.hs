@@ -14,9 +14,6 @@ main :: IO ()
 main = do
   -- TODO possibly load config from a file?
   pandocMathCompilerFns <- setupPandocMathCompiler $ PandocMathCompilerConfig 1000 ["prftree"]
-  let
-    pandocMathCompiler = pmcfCompiler pandocMathCompilerFns
-    renderPandocMath = pmcfRenderPandoc pandocMathCompilerFns
 
   hakyll $ do
     match "images/**" $ do
