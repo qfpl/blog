@@ -1,8 +1,12 @@
-<ul>
-$for(posts)$
-<li>
-  <div><a href="$url$">$title$</a></div>
-  <div>Published on $date$</div>
-</li>
-$endfor$
+<ul class="collection">
+  $for(posts)$
+
+  <li class="collection-item">
+    <a href="$url$">$title$</a>
+    <span class="right">
+      $date$
+    </span>
+  </li>
+
+  $endfor$
 </ul>
