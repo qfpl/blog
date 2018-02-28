@@ -1,6 +1,9 @@
 ---
-title: Functional Programming Courses
+title: Functional programming courses
 order: 2
 ---
 
-We have courses to help people learn about, and use, functional programming. All of our course material is open-source and available on Github.
+We run courses to help people get into functional programming.
+
+The course material is open-source and available at
+[https://github.com/data61/fp-course](https://github.com/data61/fp-course)

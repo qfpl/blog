@@ -1,85 +1,9 @@
-<div class="col s12 m6">
-  <div class="card">
-    <div class="card-content">
-
-      <span class="card-title black-text">
-        $if(slides-url)$
-          <a class="black-text" href="$slides-url$">$title$</a>
-        $else$
-          $title$
-        $endif$
-      </span>
-
-      <p>
-        <a href="/people/$author$">
-          $author-name$
-        </a>
-
-        $if(venue)$
-
-          $if(venue-link)$
-            <a class="right" href="$venue-link$">$venue$</a>
-          $else$
-            <span class="right">$venue$</span>
-          $endif$
-      $endif$        
-      </p>
-
-      <p class="right">$date$</p>
-      
-    </div>
-
-    <div class="card-action">
-
-      $if(slides-url)$
-        <a href="$slides-url$">
-          Slides
-          <span class="fa-stack fa-1x">
-            <i class="fa fa-circle fa-stack-2x"></i>
-            <i class="fa fa-table fa-stack-1x fa-inverse"></i>
-          </span>        
-        </a>
-      $endif$
-
-      $if(video-url)$
-        <a href="$video-url$">
-          Video
-          <span class="fa-stack fa-1x">
-            <i class="fa fa-circle fa-stack-2x"></i>
-            <i class="fa fa-film fa-stack-1x fa-inverse"></i>
-          </span>        
-        </a>
-      $endif$
-
-      $if(code-url)$
-        <a href="$code-url$">
-          Code
-          <span class="fa-stack fa-1x">
-            <i class="fa fa-circle fa-stack-2x"></i>
-            <i class="fa fa-code fa-stack-1x fa-inverse"></i>
-          </span>        
-        </a>
-      $endif$
-    
-      $if(project-name)$
-        <span class="right">
-        $if(project)$
-          <a href="/project/$project$">$project-name$</a>
-        $else$
-          $project-name$
-        $endif$
-        </span>
-      $endif$
-  
-    </div>
-  </div>
-</div>
-<!-- <div>
+<div>
   $if(talks-page)$
     $if(slides-url)$
-      <h4><a href="$slides-url$">$title$</a></h4>
+      <h2><a href="$slides-url$">$title$</a></h2>
     $else$
-      <h4>$title$</h4>
+      <h2>$title$</h2>
     $endif$
   $else$
     $if(slides-url)$
@@ -116,4 +40,4 @@ $if(code-url)$
  Take a look at the code <a href="$code-url$">here</a>.
 $endif$
 </div>
- -->
+

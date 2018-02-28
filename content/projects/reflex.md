@@ -15,7 +15,7 @@ This project has two main goals:
 - working to improve the documentation and educational materials for using `reflex`
 - working on code that applies `reflex` in areas where it is likely to have a significant impact
 
-#### The basics of `reflex`
+## The basics of `reflex`
 
 If you're new to FRP or to `reflex`, we're working on a series of posts to help get you started:
 

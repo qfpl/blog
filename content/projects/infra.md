@@ -2,13 +2,15 @@
 title: The QFPL infrastructure work
 ---
 
-This is the main page for all things related to how we at QFPL are setting up our infrastructure. Including this blog, and the Nix / Hydra / Hail tooling that builds it.
+This is the main page for all things related to how we at QFPL are setting up our infrastructure.
 
-### Hydra & Hail
+This includes this blog, and the Nix / Hydra / Hail tooling that builds it.
+
+## Hydra & Hail
 
 QFPL projects are built using [Hydra for continuous integration](http://hydra.qfpl.io/) and deployed using [Hail](https://github.com/TaktInc/hail).
 
-### Hakyll
+## Hakyll
 
 The blog is written using [Hakyll](https://jaspervdj.be/hakyll/) - a static site generator written in Haskell - and is managed with [Nix](http://nixos.org/nix/).
 
@@ -16,7 +18,7 @@ If you're a team member, you probably want to read about [writing for the FP blo
 
 You may also be interested in browsing around the [git repository](https://github.com/qfpl/blog) to see what we've done with Hakyll.
 
-### Nix
+## Nix
 
 Nix is a package manager based on the ideas from pure functional programming.
 

@@ -4,11 +4,10 @@ module Util.Pandoc (
   , setupPandocMathCompiler
   ) where
 
-import qualified Data.Set                  as S
+import qualified Data.Set as S
 import           Image.LaTeX.Render
 
 import           Text.Pandoc
-import           Text.Pandoc.Walk          (walk)
 
 import           Image.LaTeX.Render.Pandoc
 
@@ -47,27 +46,14 @@ pandocFormulaOptionsWithPkgs pkgs =
 data PandocMathCompilerConfig =
   PandocMathCompilerConfig {
     pmccCacheSize :: Integer
-  , pmccPackages  :: [String]
+  , pmccPackages :: [String]
   }
 
 data PandocMathCompilerFunctions =
   PandocMathCompilerFunctions {
-    pmcfCompiler     :: Compiler (Item String)
+    pmcfCompiler :: Compiler (Item String)
   , pmcfRenderPandoc :: Item String -> Compiler (Item String)
   }
-
-bumpHeaderLevels :: Pandoc -> Pandoc
-bumpHeaderLevels =
-  let
-    sectionDiv e =
-      Div (mempty, ["section"], mempty) [e]
-
-    f (Header l a i)
-      | l == 2 || l == 1 = sectionDiv $ Header 3 a i
-      | otherwise        = sectionDiv $ Header (l + 1) a i
-    f b = b
-  in
-    walk f
 
 setupPandocMathCompiler :: PandocMathCompilerConfig -> IO PandocMathCompilerFunctions
 setupPandocMathCompiler pmcc = do
@@ -76,20 +62,20 @@ setupPandocMathCompiler pmcc = do
     transform =
       renderFormulae .
       pandocFormulaOptionsWithPkgs .
-      pmccPackages $ pmcc
+      pmccPackages $
+      pmcc
 
     -- is this the same as getResourceBody >>= renderFn
     compiler =
       pandocCompilerWithTransformM
         defaultHakyllReaderOptions
         writerOptions
-        (transform . bumpHeaderLevels)
-
+        transform
     renderFn =
       renderPandocWithTransformM
         defaultHakyllReaderOptions
         writerOptions
-        (transform . bumpHeaderLevels)
+        transform
 
   return $
     PandocMathCompilerFunctions

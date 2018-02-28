@@ -3,17 +3,20 @@ import           Data.Monoid (mappend)
 
 import           Hakyll
 
-import           People
-import           Posts
-import           Projects
-import           Talks
-import           Util.Index
-import           Util.Pandoc
+import Posts
+import People
+import Projects
+import Talks
+import Util.Pandoc
+import Util.Index
 
 main :: IO ()
 main = do
   -- TODO possibly load config from a file?
   pandocMathCompilerFns <- setupPandocMathCompiler $ PandocMathCompilerConfig 1000 ["prftree"]
+  let
+    pandocMathCompiler = pmcfCompiler pandocMathCompilerFns
+    renderPandocMath = pmcfRenderPandoc pandocMathCompilerFns
 
   hakyll $ do
     match "images/**" $ do
@@ -36,23 +39,22 @@ main = do
         route   idRoute
         compile copyFileCompiler
 
-    match "location.html" $ do
+    match "location.md" $ do
         route niceRoute
         compile $ do
           let locationCtx =
                 constField "location-active" "" `mappend` defaultContext
-        --   pandocMathCompiler
-          getResourceBody
+          pandocMathCompiler
             >>= loadAndApplyTemplate "templates/default.html" locationCtx
             >>= relativizeUrls
             >>= removeIndexHtml
 
-    match "contact.html" $ do
+    match "contact.md" $ do
         route niceRoute
         compile $ do
           let contactCtx =
                 constField "contact-active" "true" `mappend` defaultContext
-          getResourceBody
+          pandocMathCompiler
             >>= loadAndApplyTemplate "templates/default.html" contactCtx
             >>= relativizeUrls
             >>= removeIndexHtml
@@ -65,10 +67,10 @@ main = do
 
     postRules pandocMathCompilerFns
 
-    match "index.html" $ do
-      route $ setExtension "html"
-      compile $ do
-            posts <- fmap (take 4) . recentFirst =<< loadAll "posts/**"
+    match "index.md" $ do
+        route $ setExtension "html"
+        compile $ do
+            posts <- fmap (take 5) . recentFirst =<< loadAll "posts/**"
             let indexCtx =
                     constField "home-active" ""              `mappend`
                     listField "posts" postCtx (return posts) `mappend`
@@ -77,6 +79,7 @@ main = do
 
             getResourceBody
                 >>= applyAsTemplate indexCtx
+                >>= renderPandocMath
                 >>= loadAndApplyTemplate "templates/default.html" indexCtx
                 >>= relativizeUrls
                 >>= removeIndexHtml
