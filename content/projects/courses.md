@@ -21,8 +21,8 @@ This is new course material that is targeted toward programmers who have become 
 
 Topics covered include:
 
-- Hackage and the general Haskell ecosystem
-- Cabal files and project structure
+- The open source Haskell package ecosystem (Hackage)
+- Haskell project structure and the cabal build tool
 - Database integration
 - Configuration
 - Monad transformers
