@@ -1,12 +1,12 @@
 ---
 title: Backpack for initial and final encodings
-date: 2018-03-14
+date: 2018-03-15
 authors: dlaing
 ---
 
 ## Introduction
 
-Imagine that we want to build a data type to describe some kind of expression, and we want to write several interpreters for those expressions.
+Imagine that we want to build a data type to describe some kind of expression, and that we want to write several interpreters for those expressions.
 
 In our case we were going to start with an expression type:
 ```haskell
@@ -19,7 +19,7 @@ and an evaluator:
 evalTerm :: Term -> Term
 ```
 
-We also want to be able to add new constructors to the data type and to be able to add new interpreters, and we want to be able to do these things while making no changes to our existing code.
+We also want to be able to add new constructors to the data type and to be able to add new interpreters, and we want to be able to add these things without having to change our existing code.
 
 The changes we are going to make in this post are to add the extra constructor:
 ```haskell
@@ -33,7 +33,7 @@ and the extra interpreter which to pretty prints our terms:
 printTerm :: Term -> String
 ```
 
-This is known as "The Expression Problem".
+This is known as ["The Expression Problem"](https://en.wikipedia.org/wiki/Expression_problem).
 
 ## The solutions
 
@@ -41,11 +41,10 @@ This is known as "The Expression Problem".
 
 One of the common solutions to this kind of problem is the [tagless-final style](http://okmij.org/ftp/tagless-final/index.html).
 
-In this style we avoid writing a data type entirely, and write a typeclass that focuses on interpreting the data type.
-This means that we don't have to write a data type for our expression, but it also means that we can't directly manipulate values of our expression type either.
-If the only thing we want to do to these expression values is interpret them in some way, then tagless final style is fine.
+In this style we avoid writing a data type entirely, and instead write a typeclass that does the interpretation directly.
+The tradeoff is that we don't have values of the data type which we can manipulate, but if the only thing we want to do to with these values is interpret them in some way then tagless final style is fine.
 
-For the base case we want to be able to produce "things" from integer literals and from pairs of "things", so we write:
+For the base case we want to be able to interpret integer literals and the addition of things, so we write:
 ```haskell
 class ExpBase repr where
   lit :: Int -> repr
@@ -60,7 +59,7 @@ instance ExpBase Int where
   lit = id
   add = (+)
 ```
-but we could just as easily write a pretty-printer (of dubious prettiness):
+and we could just as easily write a pretty-printer (of dubious prettiness):
 ```haskell
 instance ExpBase String where
   lit = show
@@ -72,7 +71,7 @@ We can also add constructors to our virtual data type by writing addition typecl
 class ExpMul repr where
   mul :: repr -> repr -> repr
 ```
-and then, if we want, we can extend our exisiting interpreters:
+and we can extend our exisiting interpreters:
 ```haskell
 instance ExpMul Int where
   mul = (*)
@@ -89,15 +88,19 @@ with inferred type:
 ```haskell
 testMe :: ExpBase tm => tm -> tm
 ```
-then we wouldn't even need to recompile it to be able to use it in
+then we wouldn't even need to recompile it to be able to use it in:
 ```haskell
-mul (lit 3) (testMe (lit 5))
+otherTest = mul (lit 3) (testMe (lit 5))
+```
+although now we have the inferred type:
+```haskell
+otherTest :: (ExpBase tm, ExpMul tm) => tm -> tm
 ```
 
-A slight drawback to that approach arises from the orphan instance problem.
-If we have a lot of different interpreters we're going to have a lot of different types that have instances of these typeclasses.
+There are two slight drawbacks to this version of the tagless final style.
 
-If we're not defining them in the same module as the typeclass for our interpreter then we need to define them in the same module as the data type, so that we don't end up with orphan instances.
+If we have a lot of different interpreters we're going to have a lot of different instances of these typeclasses.
+If we're not defining them in the same module as the typeclass then we need to define them in the same module as the data type, so that we don't end up with orphan instances.
 
 We end up with something like this:
 ```haskell
@@ -111,29 +114,36 @@ instance ExpBase Eval where
 instance ExpMul Eval where
   mul (Eval x) (Eval y) = Eval (x * y)
 ```
-where we may have wanted to split things up a bit more.
+and if we wanted to split things up a bit more, we are out of luck.
 
 The other slight drawback is that while we don't have to create explicit tags to mark out which types support which interpreters, we are paying the cost for the implicit tagging that we are doing.
-This happens because we are passing typeclass dictionaries all over the place, although this may not actually affect you if your code is simple and/or if you compile with optimisations turned up.
+
+This happens because we are passing typeclass dictionaries all over the place.
+If we use `testMe` in a context where an `Int` is expected, the `ExpBase Int` instance will be used to compute the result.
+This instance is -- in theory -- being passed along to `testMe` at runtime.
+You may not be effected by this if your code is simple and/or if you compile with optimisations turned up.
 
 ### Final encoding with Backpack
 
-We're now going to solve the problem again using Backpack, partly to address these problems and partly just to play around with Backpack a little.
-This isn't my idea at all -- I learned about it during a conversation with Ed Kmett about his use of this trick in `coda`.
+We're now going to solve the problem again using Backpack, partly to address these problems and partly just to play around with Backpack.
+This isn't my idea at all -- I learned about it during a conversation with Ed Kmett about his use of this trick in [`coda`](https://github.com/ekmett/coda).
 
-It's going to make some very simple uses of Backpack, but it's pretty neat.  The best source I've found for reasoning about how to make use of Backpack is [this](https://github.com/ezyang/ghc-proposals/blob/backpack/proposals/0000-backpack.rst), in case you wanted to follow along. You'll need GHC 8.2 and Cabal 2.0 or greater to play along.
+The best source I've found for learning about Backpack is [this](https://github.com/ezyang/ghc-proposals/blob/backpack/proposals/0000-backpack.rst).
+You'll need GHC 8.2 and Cabal 2.0 or later to play along. We'll also be using the `cabal new-build` functionality, which I've really been enjoying.
 
 The short description of Backpack is this: we want to be able to leave holes in modules to be filled in later.
-These holes can be data types or functions, and are defined as "signatures".
+These holes can be data types or functions, and are called "signatures".
 We want to be able to write signatures for modules, and have modules that implement those signatures, and we want to be able to mix and match those puzzle pieces pretty freely.
 
-Backpack allows you to write a signature for the types and functions you would like from a module that dealt with String-like things, and then people can write libraries in terms of those signatures, and the users of those libraries can be the ones to pick which String-like implementation should be used.
+The most common explanation I've seen is that Backpack allows you to write a signature for the types and functions you would like from a module that dealt with String-like things, and then people can write libraries in terms of those signatures, and the users of those libraries can be the ones to pick which String-like implementation should be used.
 
-We're going to use that machinery for something else.
+We're going to use that machinery for something else entirely.
 
-We first set up a signature to play the role of the typeclass variable in our tagless final version:
+Let us have a go at the tagless final style using Backpack.
+
+We first set up a signature to play the role of the typeclass parameter in our tagless final version:
 ```haskell
--- repr
+-- final-bp-repr-sig
 signature Repr where
 
 data Repr
@@ -141,17 +151,17 @@ data Repr
 
 This will allow us to write code that depends on an indefinite type `Repr`, which we can fill in with different types later on when we glue things together.
 
-We're making use of Cabal's support for multiple sub-libraries within the one Cabal file to group all of this together. I've gone a bit wild with it, leading to a lot of small sub-libraries, but I've found I don't mind that too much.
+We're making use of Cabal's support for multiple sub-libraries within the one Cabal file to group all of this together. I've gone a bit wild with it, leading to a lot of small sub-libraries, but I haven't had problems with that so far.
 
 Our first library just packages up the `Repr` signature:
 ```
-library repr
+library final-bp-repr-sig
   signatures:          Repr
 ```
 
 We now move to describing our base functionality.  Just like in the tagless final case, we want to be able to produce "things" from integer literals and from pairs of "things":
 ```haskell
--- final-bp-base
+-- final-bp-base-sig
 signature Base where
 
 import Repr
@@ -162,9 +172,9 @@ add :: Repr -> Repr -> Repr
 
 We export the `Base` signature and depend on the `Repr` signature:
 ```
-library final-bp-base
+library final-bp-base-sig
   signatures:          Base
-  build-depends:       repr
+  build-depends:       final-bp-repr-sig
 ```
 
 This can be used to create `Repr`-agnostic terms like so:
@@ -183,11 +193,11 @@ term1 = add (lit 8) (add (lit 1) (lit 2))
 ```
 library final-bp-example-base
   exposed-modules:     Example.Base
-  build-depends:       final-bp-base
+  build-depends:       final-bp-base-sig
 ```
-although we won't be able to use them until we supply an implementation for `Repr`.
+although we won't be able to use them until we depend on something that has an implementation for `Repr`.
 
-That's all well and good, but we need to be able to interpret these things.
+We still need to be able to interpret these things.
 
 Let us start with a simple evaluator.
 
@@ -204,9 +214,9 @@ library final-bp-eval
   exposed-modules:     Repr
 ```
 
-We perhaps could have gotten into fancier uses of Backpack where modules got renamed and reexported, but I have been able to get away with name punning and sub-libraries so far, and getting into explanations of those mechanics might distract from the points I want to make.
+There is now a module called `Repr` that matches the signature of `Repr`, so if we depend on `final-bp-eval` we'll be working with `type Repr = Int`, and anything else that was written in terms of the `Repr` signature will now have a type to work with.
 
-There is now a module called `Repr` that matches the signature of `Repr`, so if we depend on `final-bp-eval` we'll be working with `type Repr = Int`.
+We perhaps could have gotten into fancier uses of Backpack where modules got renamed and reexported, but I have been able to get away with name punning and sub-libraries so far, and getting into explanations of those mechanics might distract from the points I want to make.
 
 Now that we have an implementation for `Repr`, we can implement something for the `Base` signature.
 ```haskell
@@ -251,7 +261,7 @@ Example.Eval > term1
 If we then want to add multiplication in the mix, we can follow the lead of tagless final and create a new signature:
 
 ```haskell
--- final-bp-mul
+-- final-bp-mul-sig
 signature Mul where
 
 import Repr
@@ -260,9 +270,9 @@ mul :: Repr -> Repr -> Repr
 ```
 
 ```
-library final-bp-mul
+library final-bp-mul-sig
   signatures:          Mul
-  build-depends:       repr
+  build-depends:       final-bp-repr-sig
 ```
 
 and then implement the signature for our `Repr` for evaluation:
@@ -287,7 +297,7 @@ Now we _really_ have no tags, and we're breaking things up like we don't have a 
 
 ### An initial encoding that isn't extendable
 
-If we really want to be able to play with values of our term, we can write a data type for our terms:
+If we really want to be able to play with values of our expression, we can write a data type:
 ```haskell
 data Term =
     Lit !Int
@@ -322,15 +332,16 @@ evalTerm tm =
 ```
 although we'll be paying a price for building up and tearing down the value.
 
-We could just as easily write `prettyTerm :: Term -> String`.  The main point of difficulty is going to be adding new constructors in a way that means we don't have to rewrite our existing interpreter, so I'll be focusing on the evaluator from this point onwards.
+We could just as easily write `prettyTerm :: Term -> String`.  The main point of difficulty is going to be adding new constructors in a way that means we don't have to rewrite our existing interpreters, so I'll be focusing on the evaluator from this point onwards.
 
 ### Initial encoding with classy `Prism`s
 
 With the initial encoding one of the main challenges is in being extensible in the constructors that are available to our users.
 
 We're going to be using `Prism`s (and other optics) from the `lens` package to make this happen.
+I'm assuming a little bit of familiarity with `lens` here, so if you're not there yet feel free to skip ahead to the  benchmarks for the final encoding.
 
-We'll create a data type to wrap up our constructors, which will be a kind of fixed point:
+We'll create a data type to wrap up our constructors, which we are using to create a fixed-point of `f`:
 
 ```haskell
 newtype Term f = Term { unTerm :: f (Term f) }
@@ -339,8 +350,9 @@ makeWrapped ''Term
 ```
 
 The use of `makeWrapped` gives us access to an `Iso` named `_Wrapped` that allows us to wrap and unwrap this newtype.
+We'll see that in use shortly.
 
-We'll create a type for fragment of our expression that deals with literals and addition:
+Next we create a type for fragment of our expression that deals with literals and addition:
 ```haskell
 data BaseF f =
     TmLit !Int
@@ -350,9 +362,16 @@ data BaseF f =
 makePrisms ''BaseF
 ```
 
-The use of `makePrisms` gives us `_TmLit :: Prism' BaseF Int` and `_TmAdd :: Prism' BaseF (f, f)`.
+The type variable `f` is going to be filled in with a `Term g` of some sort, although we don't need to worry about that too much.
 
-We can use `review` with these prisms to build up a value of type `BaseF`:
+The use of `makePrisms` gives us 
+```haskell
+_TmLit :: Prism' BaseF Int
+_TmAdd :: Prism' BaseF (f, f)
+```
+which we can use to create values of `BaseF` and to pattern match on them.
+
+If you haven't seen `Prism`s before, all you need to know is that we can use `review` with these prisms to build up a value of type `BaseF`:
 ```
 > review _TmLit 2
 TmLit 2
@@ -367,13 +386,15 @@ Just 2
 Nothing
 ```
 
-If we now wrote `type MyTerm = Term BaseF` we'd have something we could work with, although we'll be building everything up using various optics.
+If we now wrote `type MyTerm = Term BaseF` we'd have a `Term` we could work with.
 
 We can make some of this a bit tidier using a variant on the "classy `Prism`s" approach.
 
-We write a typeclass that gives us a `Prism` from some `tm` to `BaseF`, and from that we can build `Prism`s from `Term tm` to the underlying types.
+We write a typeclass such that if we supply a `Prism` from some `tm` to `BaseF`, we can produce `Prism`s for our constructors that work in the world of `Term`s.
 
-An example might help:
+An example might help.
+
+We can write:
 ```haskell
 class HasBaseF tm where
   _BaseF :: Prism' (tm f) (BaseF f)
@@ -386,6 +407,9 @@ class HasBaseF tm where
   _Add = _Wrapped . _BaseF . _TmAdd
   {-# INLINE _Add #-}
 ```
+so that we only have to supply an implementation of `_BaseF` in order to make use of `_Lit` and `_Add`.
+
+We have `INLINE` pragmas here to keep the cost of using the typeclass down.  It seems to be standard for classy `Prissm`s approaches, and we'll see what that does for us when we start benchmarking this code.
 
 The simplest instance is for the case where `tm` _is_ `BaseF`, which is what we need to work with the `MyTerm` type specified above:
 ```haskell
@@ -406,6 +430,8 @@ add tm1 tm2 = review _Add (tm1, tm2)
 This can be used to build up value of type `Term tm` whenever we have a `HasBaseF` instance for `tm`.
 
 ```haskell
+> :t add (lit 2) (lit 3)
+HasBaseF tm => Term tm
 > add (lit 2) (lit 3) :: MyTerm
 Term (TmAdd (Term (TmLit 2)) (Term (TmLit 3)))
 ```
@@ -467,12 +493,15 @@ newtype EvalRule tm =
 ```
 which takes the evaluation function and a term and, if the rule applies, will return the evaluation of that term.
 
-We also have a type for rules in continuation-passing style:
+This is a rule for evaluation using big-step semantics.
+Our rules fully evaluate terms, and they have access to the final evaluation function -- which we are building out of these rules -- in order to evaluate subterms when that is required.
+
+We have a different version of this type which is in continuation-passing style:
 ```haskell
 newtype EvalRuleK tm =
   EvalRuleK (forall r. (tm -> tm) -> (tm -> r) -> (tm -> r) -> tm -> r)
 ```
-which will allow for us to combine rules with much better performance.
+which will help us get a performance boost.
 
 The constructor takes an evaluator function, a function to run if the rule applies, a function to run if the rule does not apply, and a term.  If the rule matches the first function will be called with the evaluated term, otherwise the second function will be called with the input term.  We'll see the effect of that shortly.
 
@@ -543,7 +572,7 @@ We can combine these rules if we are using both of those pieces at the same time
 ```haskell
 -- Combined.Eval
 import qualified Base.Eval as B
-import qualified Mul.Eval as M
+import qualified Mul.Eval  as M
 
 evalRules :: (HasBaseF tm, HasMulF tm) => EvalRuleK (Term f)
 evalRules =
@@ -556,6 +585,7 @@ and if we had more fragments that we wanted to combine we would add them in here
 There is an alternate approach which is worth mentioning.
 
 If we are happy to lose the convenience of intermediate data types likes `BaseF`, we can have typeclasses that expose `Prism`s to the constructors that we are interested in directly.
+This will mean we have fewer structures in our data to walk over, which can be handy for performance.
 
 In our case this leads to the classes:
 ```haskell
@@ -683,7 +713,7 @@ library initial-bp-example-term-base
   build-depends:   lens
 ```
 
-We can build up the same machine for the fragment which deals with multiplication:
+We can build up the same machinery for the fragment which deals with multiplication:
 ```haskell
 -- initial-bp-mul-sig
 signature Mul.Type where
@@ -792,6 +822,9 @@ library initial-bp-base-eval
 
 ## Benchmarking the code
 
+We have a few solutions to the same problem, so the natural question is: how do they differ?
+Aside from the various trade-offs that have been mentioned already, the most exciting of these differences will come from the relative performance.
+
 The code was benchmarked using `criterion`.
 There were a number of benchmarks that were used, but I'll be focusing on this one:
 ```haskell
@@ -859,7 +892,7 @@ evalAddMulBig
       I# (+# (*# (+# x 3#) (+# x 5#)) (*# (+# x 7#) (+# x 11#)))
       }
 ```
-and is the same as for the final encoding on a newtype around an Int with the exception of a few coercions:
+and is the same as for the final encoding on a newtype around an Int with the exception of a few casts:
 ```
 evalAddMulBig1 :: Eval -> Int
 evalAddMulBig1
@@ -877,6 +910,16 @@ What we're looking at here is code that breaks open the usual `Int` type to get 
 ### Initial encoding
 
 #### Benchmark results
+
+We wrote the vanilla initial encoding:
+```haskell
+data Term =
+    Lit !Int
+  | Add !Term !Term
+  | Mul !Term !Term
+  deriving (Eq, Ord, Show) 
+```
+and its `evalTerm` function so that we had a non-extensible solution to make comparisons against.
 
 The vanilla initial encoding was slower that the final encodings
 ```
@@ -896,7 +939,7 @@ mean                 63.38 ns   (62.37 ns .. 64.48 ns)
 std dev              3.693 ns   (2.988 ns .. 4.670 ns)
 variance introduced by outliers: 77% (severely inflated)
 ```
-and Backpack
+was a touch slower than the vanilla version, and the version using Backpack
 ```
 time                 55.35 ns   (54.95 ns .. 55.79 ns)
                      1.000 R²   (0.999 R² .. 1.000 R²)
@@ -904,7 +947,7 @@ mean                 55.59 ns   (55.17 ns .. 56.07 ns)
 std dev              1.567 ns   (1.184 ns .. 1.932 ns)
 variance introduced by outliers: 44% (moderately inflated)
 ```
-were similar to the vanilla version.
+was faster!
 
 The version using classy `Prism`s via the convenience types for the various pieces:
 ```haskell
@@ -920,6 +963,7 @@ mean                 80.61 ns   (80.09 ns .. 81.36 ns)
 std dev              2.083 ns   (1.624 ns .. 2.820 ns)
 variance introduced by outliers: 39% (moderately inflated)
 ```
+which we assumed was due to the extra data structures that had to be built up and traversed.
 
 #### Looking at the generated Core
 
@@ -986,9 +1030,9 @@ evalTerm
       }
 end Rec }
 ```
-are identical.
+are identical, which I was not expecting.
 
-The version using classy `Prism`s and no intermediate data structures is more or less the same except for the casts and coercions:
+The version using classy `Prism`s and no intermediate data structures is more or less the same except for the casts:
 ```
 Rec {
 evalTerm :: Term TermF -> Term TermF
@@ -1068,8 +1112,7 @@ evalTerm
       }
 end Rec }
 ```
-
-That goes part of the way to explaining the benchmark results.
+which helps explain why it is slower than the other approaches.
 
 In order to dig further into the differences in the benchmarks, we have to look at how `evalTerm` is used.
 
@@ -1100,7 +1143,7 @@ evalAddMulBig
 
 The Core for the Backpack solution is interesting. It is mostly the same as the vanilla initial encoding.
 
-Instead of `evalTerm (Add x y)` we have `evalAddBig_$evalTerm x y`, where `evalAddBig_$evalTerm` is a partial unfolding of the rule for dealing with addition.  This is likely why this version is slightly faster than the vanilla initial encoding.
+Instead of `evalTerm (Add x y)` we have `evalAddBig_$evalTerm x y`, where `evalAddBig_$evalTerm` is a partial unfolding of the rule for dealing with addition.  This explains why this version is slightly faster than the vanilla initial encoding.
 
 ```
 evalAddBig2 :: Term
@@ -1137,7 +1180,7 @@ evalAddMulBig
       }
 ```
 
-The same is true for the version using classy `Prism`s, although it has a number of casts and coercions mixed through it:
+The same is true for the version using classy `Prism`s, although it has a number of casts mixed through it:
 ```
 evalAddMulBig4 :: TermF (Term TermF)
 evalAddMulBig4 = BMLit 3#
@@ -1189,7 +1232,7 @@ evalAddMulBig
       }
 ```
 
-The version using the intermediate data structures has to do the work, both when creating and when walking through those data structures:
+The version using the intermediate data structures had to do more work, both when creating and when walking through those data structures:
 ```
 evalAddBig4 :: BaseF (Term TermF)
 evalAddBig4 = TmLit 3#
@@ -1269,18 +1312,21 @@ evalAddMulBig
 
 I learned a few things from this.
 
-Final encodings can be blazingly fast, and Backpack lets us decompose final encodings a little more than we can with the usual approach.  I think I'd heard this before, but running some benchmarks and dumping the generated Core really hammered that home for me.
+Final encodings can be blazingly fast.
+I think I'd heard this before, but running some benchmarks and dumping the generated Core really hammered that home for me.
+Backpack lets us decompose final encodings a little more than we can with the usual approach, although we are partly trading off newtype wrapping for sub-libraries.
+I still really like the usage of it.
 
-Classy `Prism`s (or the Backpack equivalent) lets us write extensible code with performance that is competitive with the equivalent code that wasn't written to be extended.  I wasn't expecting that at all.  
+Classy `Prism`s (or the Backpack equivalent) let us write extensible code with performance that is competitive -- or better than -- the equivalent non-extensible code.  I wasn't expecting that at all.
 
-I have a few different bodies of code where I use classy `Prism`s and open-recursion rules systems to build up little languages from these pieces, so I'm keen to roll out the continuation-based rules systems in the next version of that project and see how it performs.  The rules system could present a simpler API to the people using them, so that's something I'll probably work on at the same time.
+I have a few projects where I use classy `Prism`s and open-recursion rules systems to build up little languages from these pieces, so I'm keen to roll out the continuation-based rules systems in the next version of that project and see how they perform.  The rules system could present a simpler API to the people using them, so that's something I'll work on at the same time.
 
 Mostly, I wrote this because I liked the look of the Backpack version of the tagless final style that Ed showed me,
 and I wanted to see if I could do similar cool things with Backpack.
 
 It seems like there is much more to explore.
 
-We could try to build something like [Trees that grow (PDF)](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/11/trees-that-grow.pdf):
+We could try to build something like [Trees that grow (PDF)](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/11/trees-that-grow.pdf), with this being a rough sketch of how it might go:
 ```
 signature AddPiece where
 
@@ -1298,7 +1344,7 @@ _AddAnn = _Add' . _1
 _Add    :: Prism' Term (Term, Term)
 _Add    = _Add' . _2
 ```
-where we could fill in the `Prism`s and leave the `AddAnnotation` to be filled in later.
+We could fill in the `Prism`s and leave the `AddAnnotation` to be filled in later, and there is probably all sorts of other fun to be had in that space.
 
 In other areas, Ed has also done something interesting [here](https://github.com/ekmett/coda/blob/master/lib/coda-set/Elem.hsig) and [here](https://github.com/ekmett/coda/blob/master/lib/coda-set/Set/Internal.hs#L248).
 
