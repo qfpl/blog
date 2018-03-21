@@ -1,4 +1,16 @@
-
-$for(talks)$
-  $body$
-$endfor$
+<div class="container">
+  <div class="row">
+    <div class="col my-2">
+      <div class="section-header">
+        <h2>Talks & Presentations</h2>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    $for(talks)$
+    <div class="col-6">
+      $body$
+    </div>
+    $endfor$
+  </div>
+</div>

@@ -1,12 +1,36 @@
-<h1>$title$</h1>
-$body$
+<div class="container">
 
-$if(talks)$
-<h3>Talks</h3>
-$partial("templates/talk-list.html")$
-$endif$
+  <div class="row">
+    <div class="col my-2">
+      <h2>$title$</h2>
 
-$if(posts)$
-<h3>Blog posts</h3>
-$partial("templates/post-list.html")$
-$endif$
+      <div class="person-content">
+        $if(portrait)$
+        <img class="person-portrait m-1" src="$portrait$" alt="$title$">
+        $endif$
+
+        $body$
+      </div>
+
+    </div>
+  </div>
+
+  $if(talks)$
+  <div class="row">
+    <div class="col my-2">
+      <h4 class="data61-bottom-line">Talks</h4>
+      $partial("templates/talk-list.html")$
+    </div>
+  </div>
+  $endif$
+
+  $if(posts)$
+  <div class="row">
+    <div class="col my-2">
+      <h4 class="data61-bottom-line">Blog posts</h4>
+      $partial("templates/post-list.html")$
+    </div>
+  </div>
+  $endif$
+
+</div>

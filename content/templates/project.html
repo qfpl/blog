@@ -1,15 +1,32 @@
-<header class="page-header">
-  <h1>$title$</h1>
-</header>
+<div class="container">
+  <div class="row">
+    <div class="col my-2">
+      <h2 class="data61-bottom-line">$title$</h2>
+    </div>
+  </div>
 
-$body$
+  <div class="row">
+    <div class="col my-2">
+      $body$
+    </div>
+  </div>
 
-$if(talks)$
-<h3>Talks</h3>
-$partial("templates/talk-list.html")$
-$endif$
+  $if(talks)$
+  <div class="row">
+    <div class="col my-2">
+      <h3>Talks</h3>
+      $partial("templates/talk-list.html")$
+    </div>
+  </div>
+  $endif$
 
-$if(posts)$
-<h3>Blog posts</h3>
-$partial("templates/post-list.html")$
-$endif$
+  $if(posts)$
+  <div class="row">
+    <div class="col my-2">
+      <h3>Blog posts</h3>
+      $partial("templates/post-list.html")$
+    </div>
+  </div>
+  $endif$
+
+</div>

@@ -1,6 +1,51 @@
+.data61-green {
+  background-color: rgb(48, 184, 136) !important;
+}
+
+.data61-green-text {
+  color: rgb(48, 184, 136) !important;
+}
+.data61-border {
+  border-color: rgb(48, 184, 136) !important;
+}
+
+.advance-qld-logo img {
+  width: 344.4px;
+  height: 67.2px;
+  margin-top: 2.3em;
+}
+
+@media (max-width: 768px) {
+  .advance-qld-logo img {
+    margin-left: -1.6em;
+  }
+}
+
+.page-footer {
+  padding: 1rem;
+}
+
 code {
-    color: #007A53;
-    background-color: #F5F5F5;
+  color: #007A53;
+  background-color: #F5F5F5;
+}
+
+pre.sourceCode {
+  padding: 1rem;
+  border: rgb(48, 184, 136) 2px solid;
+  border-radius: 0.25rem;
+  background-color: #F5F5F5;
+}
+
+
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+main {
+  flex: 1; 
 }
 
 @font-face {
@@ -33,20 +78,23 @@ h1, h2, h3, h4, h5, h6 {
   font-family: UnitRounded, sans-serif;
 }
 
-@media (max-width: 768px) {
-  #advance-qld-logo {
-      transform: scale(0.75);
-      transform-origin: top left;
-  }
-  .data61-logo-fp {
-    float: none;
+img.location-image  {
+  height: 500px;
+}
+
+@media only screen and (max-width: 768px) {
+  img.location-image  {
+    height: 300px;
   }
 }
-@media (min-width: 769px) {
-  .data61-logo-fp {
-    float: right;
-  }
-  #advance-qld-logo {
-    margin-top: 2.5em;
-  }
+
+.data61-bottom-line {
+  border-bottom: #007A53 solid 2px;
+}
+
+.person-portrait {
+  float: right;
+  border: #007A53 solid 2px;
+  height: 200px;
+  max-width: 200px;
 }

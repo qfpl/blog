@@ -4,7 +4,7 @@ module Util.Pandoc (
   , setupPandocMathCompiler
   ) where
 
-import qualified Data.Set as S
+import qualified Data.Set                  as S
 import           Image.LaTeX.Render
 
 import           Text.Pandoc
@@ -46,12 +46,12 @@ pandocFormulaOptionsWithPkgs pkgs =
 data PandocMathCompilerConfig =
   PandocMathCompilerConfig {
     pmccCacheSize :: Integer
-  , pmccPackages :: [String]
+  , pmccPackages  :: [String]
   }
 
 data PandocMathCompilerFunctions =
   PandocMathCompilerFunctions {
-    pmcfCompiler :: Compiler (Item String)
+    pmcfCompiler     :: Compiler (Item String)
   , pmcfRenderPandoc :: Item String -> Compiler (Item String)
   }
 

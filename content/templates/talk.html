@@ -1,43 +1,74 @@
-<div>
-  $if(talks-page)$
-    $if(slides-url)$
-      <h2><a href="$slides-url$">$title$</a></h2>
-    $else$
-      <h2>$title$</h2>
-    $endif$
-  $else$
-    $if(slides-url)$
-      <a href="$slides-url$">$title$</a>
-    $else$
-      $title$
-    $endif$
-  $endif$
-</div>
-<div>
-  Presented by <a href="/people/$author$">$author-name$</a> on $date$
-$if(venue)$
-at
-$if(venue-link)$
-<a href="$venue-link$">$venue$</a>
-$else$
-$venue$
-$endif$
-$endif$
-$if(project-name)$
-as part of the
-  $if(project)$
-    <a href="/projects/$project$">$project-name$</a>
-  $else$
-    $project-name$
-  $endif$
-project
-$endif$
-.
-$if(video-url)$
- Watch it <a href="$video-url$">here</a>.
-$endif$
-$if(code-url)$
- Take a look at the code <a href="$code-url$">here</a>.
-$endif$
-</div>
+<div class="card my-2 data61-border">
+  <div class="card-body">
 
+    <span class="card-title">
+      <h4>
+        $if(slides-url)$
+          <a class="text-dark" href="$slides-url$">$title$</a>
+        $else$
+          $title$
+        $endif$
+      </h4>
+    </span>
+
+    <p>
+      <a href="/people/$author$">
+        $author-name$
+      </a>
+
+      $if(venue)$
+      <span class="float-right">
+        $if(venue-link)$
+          <a href="$venue-link$">$venue$</a>
+        $else$
+          $venue$
+        $endif$
+      </span>
+    $endif$
+    </p>
+
+    <p class="text-right m-0">$date$</p>
+
+  </div>
+    <div class="card-footer">
+      $if(slides-url)$
+        <a href="$slides-url$">
+        Slides
+        <span class="fa-stack fa-1x">
+          <i class="fa fa-circle fa-stack-2x"></i>
+          <i class="fa fa-table fa-stack-1x fa-inverse"></i>
+        </span>
+      </a>
+      $endif$
+
+      $if(video-url)$
+      <a href="$video-url$">
+        Video
+        <span class="fa-stack fa-1x">
+          <i class="fa fa-circle fa-stack-2x"></i>
+          <i class="fa fa-film fa-stack-1x fa-inverse"></i>
+        </span>
+      </a>
+      $endif$
+
+      $if(code-url)$
+      <a href="$code-url$">
+        Code
+        <span class="fa-stack fa-1x">
+          <i class="fa fa-circle fa-stack-2x"></i>
+          <i class="fa fa-code fa-stack-1x fa-inverse"></i>
+        </span>
+      </a>
+      $endif$
+
+      $if(project-name)$
+        <span class="float-right align-middle">
+        $if(project)$
+          <a href="/project/$project$">$project-name$</a>
+        $else$
+          $project-name$
+        $endif$
+        </span>
+      $endif$
+    </div>
+</div>
