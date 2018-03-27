@@ -21,17 +21,17 @@ Anyone who is interested in Functional Programming (FP) is encouraged to registe
 
 * **Date:** Monday 30 April 2018 – Wednesday 02 May 2018
 * **Time:** 0900 – 1700 *(UTC+8)*
-* **Location:** Bankwest Place, 300 Murray St Perth WA 6000 (podium level)
+* **Location:** Bankwest Place, 300 Murray St Perth WA 6000 (podium level) [map](http://www.openstreetmap.org/?mlat=-31.95138&mlon=115.85784#map=18/-31.95138/115.85784)
 * **Cost:** Free.
 * *morning and afternoon tea are provided*
 
 # Requirements for participation
 
-Participants will be required to bring a suitable development machine (e.g. portable laptop) for working through the exercises. You will also need to install the Glasgow Haskell Compiler (http://www.haskell.org/ghc/) version 7.10 or higher on that machine.
+Participants will be required to bring a suitable development machine (e.g. portable laptop) for working through the exercises. You will also need to install the Glasgow Haskell Compiler ([http://www.haskell.org/ghc/](http://www.haskell.org/ghc/)) version 7.10 or higher on that machine.
 
 You will require a copy of the course material github repository on your development machine:
 
-* https://github.com/data61/fp-course/
+* [https://github.com/data61/fp-course/](https://github.com/data61/fp-course/)
 
 There are no other primary requirements. However, reading up on Haskell syntax prior to the introductory material will be beneficial to progress.
 
@@ -41,9 +41,9 @@ If there are any questions or concerns regarding the setup, please email fp-cour
 
 # Expression of Interest
 
-Please email your expression of interest to fp-course@qfpl.io by 23 April 2018.
+Please email your expression of interest to [fp-course@qfpl.io](mailto:fp-course@qfpl.io) by 23 April 2018.
 
-In your EOI, please address the questions below. These questions are used to ensure that your expectations are compatible with the courses.
+In your EOI, please address the questions below. These questions are used to ensure that your expectations are compatible with the course.
 
 1. How would you rate your level of understanding of Functional Programming?
 2. What would you hope to get out of the session?
