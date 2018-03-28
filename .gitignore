@@ -1,4 +1,4 @@
-dist
-_site
-_cache
-result
+/dist
+/_site
+/_cache
+/result
