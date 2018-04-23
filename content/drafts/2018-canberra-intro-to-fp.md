@@ -1,10 +1,10 @@
 ---
-title: Introduction to Functional Programming. Canberra, ACT. 30 April-02 May 2018
+title: Introduction to Functional Programming. Canberra, ACT. 18-20 July 2018
 date: 2018-03-27
 authors: tmorris schalmers
 ---
 
-Queensland Functional Programming Lab, a Data61/CSIRO and Queensland Government initiative, are running two free 3-day Functional Programming courses in Canberra, 30 April to 02 May 2018. These workshops are: 
+Queensland Functional Programming Lab, a Data61/CSIRO and Queensland Government initiative, are running two free 3-day Functional Programming courses in Canberra, 18th to 20th July 2018. These workshops are: 
 
 The well-known **Introduction to Functional Programming** course that has been run by Data61 for over 5 years. This course is targeted toward people who have some amount of programming experience, but little or no exposure to Functional Programming. 
 
@@ -19,6 +19,7 @@ The Introductory course:
 The Applied course:
 
 * Anyone that has completed the Introductory course, or consider themselves proficient and  comfortable with ``Applicative``, and are looking to use these skills to develop a larger application.
+* If you can write the function with a type of: ``Applicative f => [f a] -> f [a]``.
 
 Each session will be instructed by team members of the QFPL and you will be using the Haskell programming language to help you along your path of FP discovery.
 
@@ -32,7 +33,7 @@ Each session will be instructed by team members of the QFPL and you will be usin
 ### Program Details
 
 * **Date:** Wednesday 18 July 2018 – Friday 20 July 2018
-* **Time:** 0900 – 1700 *(UTC+8)*
+* **Time:** 0900 – 1700 *(UTC+10)*
 * **Location:** Synergy Building (Building 801), Dickson Way, Black Mountain ACT 2601 [map](https://www.openstreetmap.org/#map=18/-35.27301/149.11379)
 * **Cost:** Free.
 * *morning and afternoon tea are provided*
@@ -59,7 +60,10 @@ If there are any questions or concerns regarding the setup, please email fp-cour
 
 ### Expression of Interest
 
-Please email your expression of interest to [fp-course@qfpl.io](mailto:fp-course@qfpl.io) by 23 April 2018.
+Please register your expression of interest using either:
+
+* The form located [here](https://eoi.yscb.qfpl.io/).
+* Or via email to [fp-course@qfpl.io](mailto:fp-course@qfpl.io).
 
 In your EOI, please address the questions below. These questions are used to ensure that your expectations are compatible with the course.
 
