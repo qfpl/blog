@@ -19,7 +19,7 @@ The Introductory course:
 The Applied course:
 
 * Anyone that has completed the Introductory course, or consider themselves proficient and comfortable with ``Applicative``, and is looking to use these skills to develop a larger application.
-* If you can write the canonical function with a type of: ``Applicative f => [f a] -> f [a]``.
+* If you can write the canonical function of type: ``Applicative f => [f a] -> f [a]``.
 
 Each session will be instructed by team members of the QFPL and you will be using the Haskell programming language to help you along your path of FP discovery.
 
@@ -36,7 +36,7 @@ Each session will be instructed by team members of the QFPL and you will be usin
 * **Time:** 0900 – 1700 *(UTC+10)*
 * **Location:** Synergy Building (Building 801), Dickson Way, Black Mountain ACT 2601 [map](https://osm.org/go/uNlRkzwr?m=)
 * **Cost:** Free.
-* *morning and afternoon tea are provided*
+* *lunch is provided*
 
 ### Requirements for participation
 
@@ -60,7 +60,7 @@ If there are any questions or concerns regarding the setup, please email [contac
 
 ### Expression of Interest
 
-Please register your expression of interest using the form at [https://eoi.yscb.qfpl.io/](https://eoi.yscb.qfpl.io/).
+Please register your expression of interest using the Google Form at [http://eoi.yscb.qfpl.io/](http://eoi.yscb.qfpl.io/).
 
 In your EOI, please address the questions below. These questions are used to ensure that your expectations are compatible with the course.
 
