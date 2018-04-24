@@ -62,7 +62,7 @@ If there are any questions or concerns regarding the setup, please email fp-cour
 
 Please register your expression of interest using either:
 
-* The online form at https://eoi.yscb.qfpl.io/.
+* The online form at [https://eoi.yscb.qfpl.io/](https://eoi.yscb.qfpl.io/).
 * Or via email to [fp-course@qfpl.io](mailto:fp-course@qfpl.io).
 
 In your EOI, please address the questions below. These questions are used to ensure that your expectations are compatible with the course.
