@@ -1,6 +1,6 @@
 ---
 title: Introduction to Functional Programming. Canberra, ACT. 18-20 July 2018
-date: 2018-03-27
+date: 2018-04-26
 authors: tmorris schalmers
 ---
 
