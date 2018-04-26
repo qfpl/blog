@@ -34,7 +34,7 @@ Each session will be instructed by team members of the QFPL and you will be usin
 
 * **Date:** Wednesday 18 July 2018 – Friday 20 July 2018
 * **Time:** 0900 – 1700 *(UTC+10)*
-* **Location:** Synergy Building (Building 801), Dickson Way, Black Mountain ACT 2601 [map](https://osm.org/go/uNlRkzwr?m=)
+* **Location:** Synergy Building (Building 801), Dickson Way, Black Mountain ACT 2601 [(map link)](https://osm.org/go/uNlRkzwr?m=)
 * **Cost:** Free.
 * *lunch is provided*
 
@@ -51,8 +51,8 @@ For the Introductory Course:
 
 For the Applied Course:
 
-* [https://github.com/qfpl/applied-fp-course/](https://github.com/qfpl/applied-fp-course/)
-* Working install of SQLite.
+* [https://github.com/qfpl/applied-fp-course/](https://github.com/qfpl/applied-fp-course/).
+* Working install of SQLite ([https://www.sqlite.org/quickstart.html](https://www.sqlite.org/quickstart.html)). 
 
 If there are any questions or concerns regarding the setup, please email [contact@qfpl.io](mailto:contact@qfpl.io) with the details.
 
@@ -60,7 +60,9 @@ If there are any questions or concerns regarding the setup, please email [contac
 
 ### Expression of Interest
 
-Please register your expression of interest using the Google Form at [http://eoi.yscb.qfpl.io/](http://eoi.yscb.qfpl.io/).
+Please register your expression of interest using the this Google form:
+
+- [https://docs.google.com/forms/d/e/1FAIpQLSfCUylEUej6Ok1tLFC18kAV-zZSaqPNZfPsO12z_YdMVlSDLQ/viewform](https://docs.google.com/forms/d/e/1FAIpQLSfCUylEUej6Ok1tLFC18kAV-zZSaqPNZfPsO12z_YdMVlSDLQ/viewform)
 
 In your EOI, please address the questions below. These questions are used to ensure that your expectations are compatible with the course.
 
