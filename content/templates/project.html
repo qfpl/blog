@@ -14,7 +14,7 @@
   $if(talks)$
   <div class="row">
     <div class="col my-2">
-      <h3>Talks</h3>
+      <h3 class="data61-bottom-line">Talks</h3>
       $partial("templates/talk-list.html")$
     </div>
   </div>
@@ -23,10 +23,20 @@
   $if(posts)$
   <div class="row">
     <div class="col my-2">
-      <h3>Blog posts</h3>
+      <h3 class="data61-bottom-line">Blog posts</h3>
       $partial("templates/post-list.html")$
     </div>
   </div>
   $endif$
+
+  $if(links)$
+  <div class="row">
+    <div class="col my-2">
+      <h3 class="data61-bottom-line">Links</h3>
+      $partial("templates/link-list.html")$
+    </div>
+  </div>
+  $endif$
+
 
 </div>

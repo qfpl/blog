@@ -1,5 +1,5 @@
 ---
-title: Functional programming courses
+title: Functional Programming Courses
 ---
 
-We run courses to help people get into functional programming.
+Courses to kickstart or further your knowledge of functional programming.

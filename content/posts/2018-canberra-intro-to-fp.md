@@ -2,11 +2,12 @@
 title: Introduction to Functional Programming. Canberra, ACT. 18-20 July 2018
 date: 2018-04-26
 authors: tmorris schalmers
+project: courses
 ---
 
-Queensland Functional Programming Lab, a Data61/CSIRO and Queensland Government initiative, are running two free 3-day Functional Programming courses in Canberra, 18th to 20th July 2018: 
+Queensland Functional Programming Lab, a Data61/CSIRO and Queensland Government initiative, are running two free 3-day Functional Programming courses in Canberra, 18th to 20th July 2018:
 
-* The well-known **Introduction to Functional Programming** course that has been run by Data61 for over 5 years. This course is targeted toward people who have some amount of programming experience, but little or no exposure to Functional Programming. 
+* The well-known **Introduction to Functional Programming** course that has been run by Data61 for over 5 years. This course is targeted toward people who have some amount of programming experience, but little or no exposure to Functional Programming.
 
 * The other is the **Applied Functional Programming** course. This is new course material that is targeted toward programmers who have become proficient with navigating Functional Programming concepts and would like to progress to building a complete application.
 
@@ -14,7 +15,7 @@ Queensland Functional Programming Lab, a Data61/CSIRO and Queensland Government 
 
 The Introductory course:
 
-* Anyone who is interested in Functional Programming (FP) is encouraged to register. This course requires no prior experience with Functional Programming. However, general familiarity with the programming workflow (text editor, command line use, revision control) is important. 
+* Anyone who is interested in Functional Programming (FP) is encouraged to register. This course requires no prior experience with Functional Programming. However, general familiarity with the programming workflow (text editor, command line use, revision control) is important.
 
 The Applied course:
 
@@ -52,7 +53,7 @@ For the Introductory Course:
 For the Applied Course:
 
 * [https://github.com/qfpl/applied-fp-course/](https://github.com/qfpl/applied-fp-course/).
-* Working install of SQLite ([https://www.sqlite.org/quickstart.html](https://www.sqlite.org/quickstart.html)). 
+* Working install of SQLite ([https://www.sqlite.org/quickstart.html](https://www.sqlite.org/quickstart.html)).
 
 If there are any questions or concerns regarding the setup, please email [contact@qfpl.io](mailto:contact@qfpl.io) with the details.
 

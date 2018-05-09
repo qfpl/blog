@@ -23,6 +23,9 @@ getProjectItems = getItems (fmap (fmap Identity). lookupProject)
 getProjectPosts :: String -> Compiler [Item String]
 getProjectPosts = getProjectItems (loadAll "posts/**")
 
+getProjectLinks :: String -> Compiler [Item String]
+getProjectLinks = getProjectItems (loadAll "links/**")
+
 getProjectTalks :: String -> Compiler [Item String]
 getProjectTalks = getProjectItems (loadAll $ "talks/*" .&&. hasVersion "snippets")
 
@@ -74,7 +77,12 @@ projectRules pmcf = do
         projectTalks <- maybe (pure []) getProjectTalks mIdent
         projectPosts <- maybe (pure []) getProjectPosts mIdent
 
+        projectLinks <- fmap (take 3) . recentFirst =<<
+          maybe (pure []) getProjectLinks mIdent
+
         let
+          projectLinkCtx =
+            if null projectLinks then mempty else listField "links" postCtx (pure projectLinks)
           projectTalkCtx =
             if null projectTalks then mempty else listField "talks" postCtx (pure projectTalks)
           projectPostCtx =
@@ -83,6 +91,7 @@ projectRules pmcf = do
             constField "projects-active" "" `mappend`
             projectTalkCtx                  `mappend`
             projectPostCtx                  `mappend`
+            projectLinkCtx                  `mappend`
             defaultContext
 
         pandocMathCompiler

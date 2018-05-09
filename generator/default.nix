@@ -1,13 +1,18 @@
+{ compiler ? "default"
+, nixpkgs ? import <nixpkgs> {}
+}:
 let
-  pkgs = import <nixpkgs> {};
+  haskellPackages = if compiler == "default"
+             then nixpkgs.haskellPackages
+             else nixpkgs.haskell.packages.${compiler};
 
-  modifiedHaskellPackages = pkgs.haskellPackages.override {
+  modifiedHaskellPackages = haskellPackages.override {
     overrides = self: super: {
-      latex-formulae-image = pkgs.haskell.lib.doJailbreak super.latex-formulae-image;
-      latex-formulae-pandoc = pkgs.haskell.lib.doJailbreak super.latex-formulae-pandoc;
-      latex-formulae-hakyll = pkgs.haskell.lib.doJailbreak super.latex-formulae-hakyll;
-      foundation = pkgs.haskell.lib.dontCheck super.foundation;
-      skylighting = pkgs.haskell.lib.dontCheck super.skylighting;
+      latex-formulae-image = nixpkgs.haskell.lib.doJailbreak super.latex-formulae-image;
+      latex-formulae-pandoc = nixpkgs.haskell.lib.doJailbreak super.latex-formulae-pandoc;
+      latex-formulae-hakyll = nixpkgs.haskell.lib.doJailbreak super.latex-formulae-hakyll;
+      foundation = nixpkgs.haskell.lib.dontCheck super.foundation;
+      skylighting = nixpkgs.haskell.lib.dontCheck super.skylighting;
     };
   };
 
