@@ -353,7 +353,7 @@ instance FromJSVal NotifyPerm where
     permStr <- valToStr v
 
     -- Unpack the 'JSString' to a boring Haskell 'String' so we can use a 'case':
-    pure $ case unpack $ strToText permS of
+    pure $ case unpack $ strToText permStr of
 
       -- Pattern match on the string values
       "default" -> Just Default
