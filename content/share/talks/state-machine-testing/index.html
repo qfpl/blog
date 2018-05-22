@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Andrew McCluskey">
+  <meta name="dcterms.date" content="2018-05-22">
+  <title>Property based state machine testing</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="reveal.js/css/reveal.css">
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="reveal.js/css/theme/black.css" id="theme">
+<link rel="stylesheet" href="css/monokai-sublime.css" />
+<link rel="stylesheet" href="css/tweaks.css">
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src="reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div id="grid-setup"></div>
+  <div class="reveal">
+    <div class="slides">
+
+<section>
+  <h1 class="title">Property based state machine testing</h1>
+  <p class="author">Andrew McCluskey</p>
+  <p class="date">2018-05-22</p>
+<img src="images/data61-logo.png" alt="data61" style="height: 200px; background-color: inherit; margin-top: 25px;">
+</section>
+
+<section><section id="what-and-why" class="title-slide slide level1"><h1>What and why?</h1></section><section id="section" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>-- Reverse is involutive
+propReverse :: Property
+propReverse =
+  property $ do
+    xs &lt;- forAll $ Gen.list (Range.linear 0 100) Gen.alpha
+    reverse (reverse xs) === xs</code></pre>
+</section><section id="section-1" class="slide level2">
+<h2></h2>
+<p>What about testing the properties of a whole system?</p>
+<ul>
+<li class="fragment">Retrieved data matches submitted data.</li>
+<li class="fragment">Uniqueness constraints.</li>
+<li class="fragment">Users only see what they’re supposed to.</li>
+</ul>
+</section><section id="state-machine-testing" class="slide level2">
+<h2>State machine testing!</h2>
+</section><section id="the-plan" class="slide level2">
+<h2>The Plan</h2>
+<ul>
+<li class="fragment">State machines</li>
+<li class="fragment">Property based testing <em>for</em> state machines</li>
+<li class="fragment">Examples</li>
+</ul>
+</section></section>
+<section><section id="state-machines" class="title-slide slide level1"><h1>State machines</h1></section><section id="section-2" class="slide level2" data-background-image="images/turnstile.png" data-background-color="white" data-background-size="80%" data-background-transition="none">
+<h2></h2>
+</section><section id="section-3" class="slide level2" data-background-image="images/turnstile-states.png" data-background-color="white" data-background-size="80%" data-background-transition="none">
+<h2></h2>
+</section><section id="section-4" class="slide level2" data-background-image="images/turnstile-initial.png" data-background-color="white" data-background-size="80%" data-background-transition="none">
+<h2></h2>
+</section><section id="section-5" class="slide level2" data-background-image="images/turnstile-transitions.png" data-background-color="white" data-background-size="80%" data-background-transition="none">
+<h2></h2>
+</section><section id="section-6" class="slide level2">
+<h2></h2>
+<!-- TODO: if you have time, have a slide per example with a state machine diagram -->
+<p>What else can be modelled as a state machine?</p>
+<ul>
+<li class="fragment">Games</li>
+<li class="fragment">Routing</li>
+<li class="fragment">Web applications</li>
+</ul>
+</section><section id="web-app-state-machine" class="slide level2">
+<h2>Web app state machine</h2>
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>States</strong></td>
+<td style="text-align: left;">Database + in-memory</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Inputs</strong></td>
+<td style="text-align: left;">HTTP requests</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Initial state</strong></td>
+<td style="text-align: left;">App before any requests</td>
+</tr>
+</tbody>
+</table>
+</section></section>
+<section><section id="leaderboard" class="title-slide slide level1"><h1>Leaderboard</h1></section><section id="section-7" class="slide level2">
+<h2></h2>
+<p>Keeps track of game scores and player ratings.</p>
+</section><section id="api" class="slide level2">
+<h2>API</h2>
+<aside class="notes">
+<p>These correspond roughly to our actions. We’ll see later we can have multiple actions/transitions per endpoint.</p>
+<p>Have tried to strike a balance between “real world” and “will coherently fit in a 25 minute talk”</p>
+</aside>
+<div class="no-bullets">
+<ul>
+<li class="fragment"><code>/player/register-first</code></li>
+<li class="fragment"><code>/player/register</code></li>
+<li class="fragment"><code>/player/me</code></li>
+<li class="fragment"><code>/player/player-count</code></li>
+</ul>
+</div>
+</section><section id="properties" class="slide level2">
+<h2>Properties</h2>
+<ul>
+<li class="fragment">Can only <code>register-first</code> once</li>
+<li class="fragment">Player count matches number of successful registrations</li>
+<li class="fragment">Retrieving a player matches what was <code>POST</code>ed</li>
+</ul>
+</section></section>
+<section><section id="state-machine-testing-1" class="title-slide slide level1"><h1>State machine testing</h1></section><section id="big-picture" class="slide level2">
+<h2>Big picture</h2>
+<ul>
+<li class="fragment">Use a state machine to model an app.</li>
+<li class="fragment">Randomly generate inputs.</li>
+<li class="fragment">Execute inputs against the app.</li>
+<li class="fragment">Update the model.</li>
+<li class="fragment">Check that the model agrees with reality.</li>
+</ul>
+</section><section id="section-8" class="slide level2" data-background-image="images/enter-the-hedgehog.jpg">
+<h2></h2>
+</section><section id="state" class="slide level2">
+<h2>State</h2>
+<pre class="haskell"><code>data LeaderboardState (v :: * -&gt; *) =
+  LeaderboardState Bool</code></pre>
+</section><section id="inputs" class="slide level2">
+<h2>Inputs</h2>
+<pre class="haskell"><code>data PlayerCount (v :: * -&gt; *) =
+  PlayerCount
+  
+data RegisterFirst (v :: * -&gt; *) =
+  RegisterFirst Registration
+
+data Register (v :: * -&gt; *) =
+  Register AdminToken Registration</code></pre>
+<aside class="notes">
+<ul>
+<li>Recommend one type per input/expected output pair</li>
+<li>Often correspond to endpoints in web app</li>
+<li>No restrictions on inputs
+<ul>
+<li>Multiple inputs for the one endpoint</li>
+<li>Don’t have to correspond to an endpoint</li>
+</ul></li>
+</ul>
+</aside>
+</section><section id="initial-state" class="slide level2">
+<h2>Initial state</h2>
+<pre class="haskell"><code>initialState :: LeaderboardState v
+initialState = LeaderboardState False</code></pre>
+</section><section id="section-9" class="slide level2" data-background-image="images/phases.png" data-background-color="white" data-background-size="80%" data-background-transition="none">
+<h2></h2>
+<aside class="notes">
+<p>We have a model, but we need a way to use that model to do our testing - Generation of inputs - Execution of inputs - Callbacks used by hedgehog</p>
+</aside>
+</section><section id="something-to-consider" class="slide level2">
+<h2>Something to consider</h2>
+</section><section id="section-10" class="slide level2">
+<h2></h2>
+<p>All inputs are generated before execution.</p>
+<pre class="haskell"><code>
+
+</code></pre>
+</section><section id="section-11" class="slide level2">
+<h2></h2>
+<p>All inputs are generated before execution.</p>
+<pre class="haskell"><code>token1 &lt;- RegisterFirst registration1
+
+</code></pre>
+</section><section id="section-12" class="slide level2">
+<h2></h2>
+<p>All inputs are generated before execution.</p>
+<pre class="haskell"><code>token1 &lt;- RegisterFirst registration1
+token2 &lt;- Register token1 registration2</code></pre>
+<!--
+##
+
+Validity of inputs depends on state.
+
+```haskell
+
+
+
+```
+
+##
+
+Validity of inputs depends on state.
+
+```haskell
+put "count" $ PlayerCount
+put "token1" $ Register (get "???") registration2
+```
+
+##
+
+Shrinking might break dependencies.
+
+```haskell
+put "token1" $ RegisterFirst registration1
+put "token2" $ Register (get "token1") registration2
+put "count" $ PlayerCount
+put "token3" $ Register (get "token1") registration3
+put "token4" $ Register (get "token2") registration4
+```
+
+##
+
+Shrinking might break dependencies.
+
+```haskell
+put "token1" $ RegisterFirst registration1
+-- put "token2" $ Register (get "token1") registration2
+put "count" $ PlayerCount
+put "token3" $ Register (get "token1") registration3
+put "token4" $ Register (get "token2") registration4
+```
+
+##
+
+Shrinking might break dependencies.
+
+```haskell
+
+-- put "token2" $ Register (get "token1") registration2
+
+
+put "token4" $ Register (get "token2") registration4
+```
+
+-->
+</section><section id="solution" class="slide level2">
+<h2>Solution</h2>
+<pre class="haskell"><code>data Var a v
+
+
+
+
+
+
+</code></pre>
+</section><section id="solution-1" class="slide level2">
+<h2>Solution</h2>
+<pre class="haskell"><code>data Var a v
+
+Var a Symbolic
+Var a Concrete
+
+
+
+</code></pre>
+</section><section id="solution-2" class="slide level2">
+<h2>Solution</h2>
+<pre class="haskell"><code>data Var a v
+
+Var a Symbolic
+Var a Concrete
+
+Symbolic :: * -&gt; *
+Concrete :: * -&gt; *</code></pre>
+</section><section id="commands" class="slide level2">
+<h2>Commands</h2>
+<p>Bundle together:</p>
+<ul>
+<li class="fragment">Generation of an input.</li>
+<li class="fragment">Execution of an input.</li>
+<li class="fragment">Preconditions.</li>
+<li class="fragment">State updates.</li>
+<li class="fragment">Postconditions / assertions.</li>
+</ul>
+</section><section id="section-13" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>data Command n m state =
+  forall input output.
+  Command {
+
+
+
+
+
+
+
+
+  }</code></pre>
+</section><section id="section-14" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>data Command n m state =
+  forall input output.
+  Command {
+    commandGen ::
+      state Symbolic -&gt; Maybe (n (input Symbolic))
+
+
+
+
+
+
+  }</code></pre>
+<aside class="notes">
+<p>In all our code, <code>n</code> is an instance of <code>MonadGen</code> <code>m</code> is the monad in which our tests are run and output generated</p>
+</aside>
+</section><section id="section-15" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>data Command n m state =
+  forall input output.
+  Command {
+    commandGen ::
+      state Symbolic -&gt; Maybe (n (input Symbolic))
+
+  , commandExecute ::
+      input Concrete -&gt; m output
+
+
+
+  }</code></pre>
+</section><section id="section-16" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>data Command n m state =
+  forall input output.
+  Command {
+    commandGen ::
+      state Symbolic -&gt; Maybe (n (input Symbolic))
+
+  , commandExecute ::
+      input Concrete -&gt; m output
+
+  , commandCallbacks ::
+      [Callback input output state]
+  }</code></pre>
+</section><section id="section-17" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>data Callback input output state =
+    Require ( state Symbolic
+              -&gt; input Symbolic
+              -&gt; Bool)
+
+
+
+
+
+
+
+
+
+
+</code></pre>
+<aside class="notes">
+<p>Check that we’re still in a state that allows us to run a command.</p>
+</aside>
+</section><section id="section-18" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>data Callback input output state =
+    Require ( state Symbolic
+              -&gt; input Symbolic
+              -&gt; Bool)
+  | Update ( forall v. Ord1 v
+             =&gt; state v
+             -&gt; input v
+             -&gt; Var output v
+             -&gt; state v)
+
+
+
+
+
+</code></pre>
+</section><section id="section-19" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>data Callback input output state =
+    Require ( state Symbolic
+              -&gt; input Symbolic
+              -&gt; Bool)
+  | Update ( forall v. Ord1 v
+             =&gt; state v
+             -&gt; input v
+             -&gt; Var output v
+             -&gt; state v)
+  | Ensure ( state Concrete
+             -&gt; state Concrete
+             -&gt; input Concrete
+             -&gt; output
+             -&gt; Test ())</code></pre>
+</section><section id="htraversable" class="slide level2">
+<h2>HTraversable</h2>
+<pre class="haskell"><code>class HTraversable t where
+  htraverse
+    :: Applicative f
+    =&gt; (forall a. g a -&gt; f (h a)) -&gt; t g -&gt; f (t h)</code></pre>
+<aside class="notes">
+<p>Docs describe it as “higher order traversable functors”</p>
+</aside>
+</section><section id="section-20" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>(            a -&gt; f b    ) -&gt; t a -&gt; f (t b)
+
+(forall a. g a -&gt; f (h a)) -&gt; t g -&gt; f (t h)</code></pre>
+</section><section id="section-21" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>htraverse
+  :: (forall a. Symbolic a -&gt; Either e (Concrete a))
+  -&gt; t Symbolic
+  -&gt; Either e (t Concrete)</code></pre>
+</section><section id="section-22" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>data PlayerCount (v :: * -&gt; *) =
+  PlayerCount
+  
+data RegisterFirst (v :: * -&gt; *) =
+  RegisterFirst Registration
+
+data Register (v :: * -&gt; *) =
+  Register AdminToken Registration</code></pre>
+</section></section>
+<section><section id="example1-register-first" class="title-slide slide level1"><h1>Example1: register-first</h1></section><section id="property" class="slide level2">
+<h2>Property:</h2>
+<p>Registering our first player only succeeds once</p>
+</section><section id="state-1" class="slide level2">
+<h2>State</h2>
+<pre class="haskell"><code>newtype SimpleState (v :: * -&gt; *) =
+  SimpleState Bool</code></pre>
+</section><section id="inputs-1" class="slide level2">
+<h2>Inputs</h2>
+<pre class="haskell"><code>newtype RegFirst (v :: * -&gt; *) =
+    RegFirst RegisterPlayer
+  deriving (Eq, Show)
+
+
+
+
+</code></pre>
+</section><section id="inputs-2" class="slide level2">
+<h2>Inputs</h2>
+<pre class="haskell"><code>newtype RegFirst (v :: * -&gt; *) =
+    RegFirst RegisterPlayer
+  deriving (Eq, Show)
+
+newtype RegFirstForbidden (v :: * -&gt; *) =
+  RegFirstForbidden RegisterPlayer
+  deriving (Eq, Show)</code></pre>
+</section><section id="cregisterfirst" class="slide level2">
+<h2><code>cRegisterFirst</code></h2>
+<pre class="haskell"><code>cRegisterFirst
+  :: ( MonadGen n
+     , MonadIO m
+     , MonadTest m
+     )
+  =&gt; ClientEnv
+  -&gt; Command n m SimpleState
+cRegisterFirst env =
+  Command cRegisterFirstGen
+          (cRegisterFirstExe env)
+          cRegisterFirstCallbacks</code></pre>
+</section><section id="section-23" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cRegisterFirstGen
+  :: MonadGen n
+  =&gt; SimpleState Symbolic
+  -&gt; Maybe (n (RegFirst Symbolic))
+
+
+
+
+</code></pre>
+</section><section id="section-24" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cRegisterFirstGen
+  :: MonadGen n
+  =&gt; SimpleState Symbolic
+  -&gt; Maybe (n (RegFirst Symbolic))
+cRegisterFirstGen (SimpleState registeredFirst) =
+  if registeredFirst
+  then Nothing
+  else Just (RegFirst &lt;$&gt; genRegPlayerRandomAdmin)</code></pre>
+</section><section id="section-25" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cRegisterFirstExe
+  :: ( MonadIO m
+     , MonadTest m
+     )
+  =&gt; ClientEnv
+  -&gt; RegFirst Concrete
+  -&gt; m ResponsePlayer
+
+
+</code></pre>
+</section><section id="section-26" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cRegisterFirstExe
+  :: ( MonadIO m
+     , MonadTest m
+     )
+  =&gt; ClientEnv
+  -&gt; RegFirst Concrete
+  -&gt; m ResponsePlayer
+cRegisterFirstExe env (RegFirst rp) =
+  evalEither =&lt;&lt; successClient env (registerFirst rp)</code></pre>
+</section><section id="section-27" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>successClient
+  :: MonadIO m
+  =&gt; ClientEnv -&gt; ClientM a -&gt; m (Either ServantError a)
+
+evalEither
+  :: (MonadTest m, Show x, HasCallStack)
+  =&gt; Either x a -&gt; m a
+
+  evalEither =&lt;&lt; successClient env (registerFirst rp)</code></pre>
+</section><section id="section-28" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cRegisterFirstCallbacks
+  :: [Callback RegFirst ResponsePlayer SimpleState]
+
+
+
+
+
+
+
+
+
+
+
+</code></pre>
+</section><section id="section-29" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cRegisterFirstCallbacks
+  :: [Callback RegFirst ResponsePlayer SimpleState]
+cRegisterFirstCallbacks =
+  [ Require $ \(SimpleState registeredFirst) _i -&gt;
+      not registeredFirst
+
+
+
+
+
+
+
+  ]</code></pre>
+</section><section id="section-30" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cRegisterFirstCallbacks
+  :: [Callback RegFirst ResponsePlayer SimpleState]
+cRegisterFirstCallbacks =
+  [ Require $ \(SimpleState registeredFirst) _i -&gt;
+      not registeredFirst
+  , Update $ \_sOld _i _o -&gt; SimpleState True
+
+
+
+
+
+
+  ]</code></pre>
+</section><section id="section-31" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cRegisterFirstCallbacks
+  :: [Callback RegFirst ResponsePlayer SimpleState]
+cRegisterFirstCallbacks =
+  [ Require $ \(SimpleState registeredFirst) _i -&gt;
+      not registeredFirst
+  , Update $ \_sOld _i _o -&gt; SimpleState True
+  , Ensure $ \_sOld _sNew _input out -&gt;
+      case out of
+        (ResponsePlayer (LS.PlayerId (Auto mId))
+                        (Token token)) -&gt; do
+          assert $ not (BS.null t)
+          assert $ maybe False (&gt;= 0) mId
+  ]</code></pre>
+</section><section id="cregisterfirstforbidden" class="slide level2">
+<h2><code>cRegisterFirstForbidden</code></h2>
+</section><section id="section-32" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cRegisterFirstForbiddenGen
+  :: MonadGen n
+  =&gt; SimpleState Symbolic
+  -&gt; Maybe (n (RegFirstForbidden Symbolic))
+
+
+
+
+</code></pre>
+</section><section id="section-33" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cRegisterFirstForbiddenGen
+  :: MonadGen n
+  =&gt; SimpleState Symbolic
+  -&gt; Maybe (n (RegFirstForbidden Symbolic))
+cRegisterFirstForbiddenGen (SimpleState registeredFirst) =
+  if registeredFirst
+  then Just (RegFirstForbidden &lt;$&gt; genRegPlayerRandomAdmin)
+  else Nothing</code></pre>
+</section><section id="section-34" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cRegisterFirstForbiddenExe
+  :: ( MonadIO m
+     , MonadTest m
+     )
+  =&gt; ClientEnv
+  -&gt; RegFirstForbidden Concrete
+  -&gt; m ServantError
+
+
+</code></pre>
+</section><section id="section-35" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cRegisterFirstForbiddenExe
+  :: ( MonadIO m
+     , MonadTest m
+     )
+  =&gt; ClientEnv
+  -&gt; RegFirstForbidden Concrete
+  -&gt; m ServantError
+cRegisterFirstForbiddenExe env (RegFirstForbidden rp) =
+  evalEither =&lt;&lt; failureClient env (registerFirst rp)</code></pre>
+</section><section id="section-36" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cRegisterFirstForbiddenCallbacks
+  :: [Callback RegFirstForbidden ServantError SimpleState]
+
+
+
+
+
+
+
+
+
+</code></pre>
+</section><section id="section-37" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cRegisterFirstForbiddenCallbacks
+  :: [Callback RegFirstForbidden ServantError SimpleState]
+cRegisterFirstForbiddenCallbacks = [
+    Require $ \(SimpleState registeredFirst) _input -&gt;
+      registeredFirst
+
+
+
+
+
+  ]</code></pre>
+</section><section id="section-38" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cRegisterFirstForbiddenCallbacks
+  :: [Callback RegFirstForbidden ServantError SimpleState]
+cRegisterFirstForbiddenCallbacks = [
+    Require $ \(SimpleState registeredFirst) _input -&gt;
+      registeredFirst
+  , Ensure $ \_sOld _sNew _input se -&gt;
+      case se of
+        FailureResponse{..} -&gt;
+          responseStatus === forbidden403
+        _ -&gt; failure
+  ]</code></pre>
+</section><section id="propregisterfirst" class="slide level2">
+<h2><code>propRegisterFirst</code></h2>
+</section><section id="section-39" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>propRegisterFirst :: ClientEnv -&gt; IO () -&gt; TestTree
+propRegisterFirst env reset =
+
+
+
+
+
+
+
+
+
+
+</code></pre>
+</section><section id="section-40" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>propRegisterFirst :: ClientEnv -&gt; IO () -&gt; TestTree
+propRegisterFirst env reset =
+  testProperty &quot;register-first&quot; . property $ do
+    let
+      initialState = SimpleState False
+
+
+
+
+
+
+
+</code></pre>
+</section><section id="section-41" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>propRegisterFirst :: ClientEnv -&gt; IO () -&gt; TestTree
+propRegisterFirst env reset =
+  testProperty &quot;register-first&quot; . property $ do
+    let
+      initialState = SimpleState False
+      cs = [ cRegisterFirst env
+           , cRegisterFirstForbidden env]
+
+
+
+
+
+</code></pre>
+</section><section id="section-42" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>propRegisterFirst :: ClientEnv -&gt; IO () -&gt; TestTree
+propRegisterFirst env reset =
+  testProperty &quot;register-first&quot; . property $ do
+    let
+      initialState = SimpleState False
+      cs = [ cRegisterFirst env
+           , cRegisterFirstForbidden env]
+    actions &lt;- forAll $
+      Gen.sequential (Range.linear 1 100) initialState cs
+
+
+
+</code></pre>
+</section><section id="section-43" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>propRegisterFirst :: ClientEnv -&gt; IO () -&gt; TestTree
+propRegisterFirst env reset =
+  testProperty &quot;register-first&quot; . property $ do
+    let
+      initialState = SimpleState False
+      cs = [ cRegisterFirst env
+           , cRegisterFirstForbidden env]
+    actions &lt;- forAll $
+      Gen.sequential (Range.linear 1 100) initialState cs
+
+    liftIO reset
+    executeSequential initialState actions</code></pre>
+</section><section id="test-setup" class="slide level2">
+<h2>Test setup</h2>
+<ul>
+<li class="fragment">Start a temporary database instance</li>
+<li class="fragment">Fork a thread to run our server (starting with DB migration)</li>
+<li class="fragment">Run properties with <code>ClientEnv</code></li>
+</ul>
+</section><section id="section-44" class="slide level2" data-background-image="images/hedgehog-running.gif" data-background-transition="none">
+<h2></h2>
+</section><section id="section-45" class="slide level2" data-background-image="images/register-first-success.png" data-background-size="80%">
+<h2></h2>
+</section><section id="section-46" class="slide level2" data-background-image="images/hedgehog-failing.gif" data-background-transition="none">
+<h2></h2>
+</section><section id="section-47" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cRegisterFirstGen (SimpleState registeredFirst) =
+  if registeredFirst
+  then Nothing
+  else Just (RegFirst &lt;$&gt; genRegPlayerRandomAdmin)</code></pre>
+</section><section id="section-48" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cRegisterFirstGen (SimpleState registeredFirst) =
+  Just (RegFirst &lt;$&gt; genRegPlayerRandomAdmin)
+
+
+</code></pre>
+</section><section id="section-49" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cRegisterFirstCallbacks =
+  [ Require $ \(SimpleState registeredFirst) _i -&gt;
+      not registeredFirst
+  , Update $ \_sOld _i _o -&gt; SimpleState True
+  , Ensure $ \_sOld _sNew _input out -&gt;
+      case out of
+        (ResponsePlayer (LS.PlayerId (Auto mId))
+                        (Token token)) -&gt; do
+          assert $ not (BS.null t)
+          assert $ maybe False (&gt;= 0) mId
+  ]</code></pre>
+</section><section id="section-50" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cRegisterFirstCallbacks =
+  [ 
+    
+    Update $ \_sOld _i _o -&gt; SimpleState True
+  , Ensure $ \_sOld _sNew _input out -&gt;
+      case out of
+        (ResponsePlayer (LS.PlayerId (Auto mId))
+                        (Token token)) -&gt; do
+          assert $ not (BS.null t)
+          assert $ maybe False (&gt;= 0) mId
+  ]</code></pre>
+</section><section id="section-51" class="slide level2" data-background-image="images/reg-first-error.png" data-background-size="80%">
+<h2></h2>
+</section><section id="section-52" class="slide level2" data-background-image="images/reg-first-error-cmds.png" data-background-size="80%">
+<h2></h2>
+</section></section>
+<section><section id="example-2-player-count" class="title-slide slide level1"><h1>Example 2: Player count</h1></section><section id="property-1" class="slide level2">
+<h2>Property</h2>
+<p>Successfully registering a player increments the player count.</p>
+</section><section id="section-53" class="slide level2" data-background-image="images/user-count.svg" data-background-color="white" data-background-size="80%" data-background-transition="none">
+<h2></h2>
+</section><section id="state-2" class="slide level2">
+<h2>State</h2>
+<pre class="haskell"><code>data LeaderboardState (v :: * -&gt; *) =
+  LeaderboardState
+  { _players :: M.Map Text (PlayerWithRsp v)
+  , _admins  :: S.Set Text
+  }
+deriving instance Show1 v =&gt; Show (LeaderboardState v)
+deriving instance Eq1 v =&gt; Eq (LeaderboardState v)</code></pre>
+</section><section id="section-54" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>data PlayerWithRsp v =
+  PlayerWithRsp
+  { _pwrRsp      :: Var ResponsePlayer v
+
+
+
+
+  }
+  deriving (Eq, Show)</code></pre>
+</section><section id="section-55" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>data PlayerWithRsp v =
+  PlayerWithRsp
+  { _pwrRsp      :: Var ResponsePlayer v
+  , _pwrEmail    :: Text
+  , _pwrUsername :: Text
+  , _pwrPassword :: Text
+  , _pwrIsAdmin  :: Maybe Bool
+  }
+  deriving (Eq, Show)</code></pre>
+</section><section id="commands-1" class="slide level2">
+<h2>Commands</h2>
+</section><section id="cregfirst" class="slide level2">
+<h2><code>cRegFirst</code></h2>
+</section><section id="section-56" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>Update $
+  \_ (RegFirst lbr@LeaderboardRegistration{..}) rsp -&gt;
+
+
+
+
+
+
+</code></pre>
+</section><section id="section-57" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>Update $
+  \_ (RegFirst lbr@LeaderboardRegistration{..}) rsp -&gt;
+     let
+       player = mkPlayerWithRsp lbr rsp
+
+
+
+
+</code></pre>
+</section><section id="section-58" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>Update $
+  \_ (RegFirst lbr@LeaderboardRegistration{..}) rsp -&gt;
+     let
+       player = mkPlayerWithRsp lbr rsp
+       players = M.singleton _lbrEmail player
+
+
+
+</code></pre>
+</section><section id="section-59" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>Update $
+  \_ (RegFirst lbr@LeaderboardRegistration{..}) rsp -&gt;
+     let
+       player = mkPlayerWithRsp lbr rsp
+       players = M.singleton _lbrEmail player
+       admins = S.singleton _lbrEmail
+
+
+</code></pre>
+</section><section id="section-60" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>Update $
+  \_ (RegFirst lbr@LeaderboardRegistration{..}) rsp -&gt;
+     let
+       player = mkPlayerWithRsp lbr rsp
+       players = M.singleton _lbrEmail player
+       admins = S.singleton _lbrEmail
+     in
+       LeaderboardState players admins</code></pre>
+</section><section id="cgetplayercount" class="slide level2">
+<h2><code>cGetPlayerCount</code></h2>
+</section><section id="section-61" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>data GetPlayerCount (v :: * -&gt; *) =
+    GetPlayerCount
+  deriving (Eq, Show)</code></pre>
+</section><section id="section-62" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>Ensure $ \(LeaderboardState ps as) _sNew _i c -&gt; do
+  length ps === fromIntegral c
+  assert $ length ps &gt;= length as</code></pre>
+</section><section id="cregister" class="slide level2">
+<h2><code>cRegister</code></h2>
+</section><section id="section-63" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>data Register (v :: * -&gt; *) =
+  Register RegisterPlayer (PlayerWithRsp v)
+  deriving (Eq, Show)</code></pre>
+</section><section id="section-64" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cRegisterGen rs@(LeaderboardState ps as) =
+  if null as
+  then Nothing
+
+
+
+
+
+
+
+
+</code></pre>
+</section><section id="section-65" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cRegisterGen rs@(LeaderboardState ps as) =
+  if null as
+  then Nothing
+  else
+    let
+      maybeGenAdmin :: Maybe (n (PlayerWithRsp v))
+      maybeGenAdmin =
+        pure $ (M.!) ps &lt;$&gt; (Gen.element . S.toList $ as)
+
+
+
+</code></pre>
+</section><section id="section-66" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cRegisterGen rs@(LeaderboardState ps as) =
+  if null as
+  then Nothing
+  else
+    let
+      maybeGenAdmin :: Maybe (n (PlayerWithRsp v))
+      maybeGenAdmin =
+        pure $ (M.!) ps &lt;$&gt; (Gen.element . S.toList $ as)
+    in
+      (Register &lt;$&gt; genRegPlayerRandomAdmin ps &lt;*&gt;)
+        &lt;$&gt; maybeGenAdmin</code></pre>
+</section><section id="section-67" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cRegisterExecute
+  :: ( MonadIO m
+     , MonadTest m
+     )
+  =&gt; ClientEnv
+  -&gt; Register Concrete
+  -&gt; m ResponsePlayer
+cRegisterExecute env (Register rp p) =
+  let
+    t = clientToken p
+  in
+    evalEither =&lt;&lt; successClient env (register t rp)</code></pre>
+</section><section id="section-68" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>Require $ \(LeaderboardState _ as) (Register _ p) -&gt;
+  S.member (_pwrEmail p) as</code></pre>
+</section><section id="section-69" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>Update $
+  \(LeaderboardState ps as)
+   (Register rp@LeaderboardRegistration{..} _)
+   rsp -&gt;
+
+
+
+
+
+
+
+
+
+</code></pre>
+</section><section id="section-70" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>Update $
+  \(LeaderboardState ps as)
+   (Register rp@LeaderboardRegistration{..} _)
+   rsp -&gt;
+     let
+       newPlayers =
+         M.insert _lbrEmail (mkPlayerWithRsp rp rsp) ps
+
+
+
+
+
+
+</code></pre>
+</section><section id="section-71" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>Update $
+  \(LeaderboardState ps as)
+   (Register rp@LeaderboardRegistration{..} _)
+   rsp -&gt;
+     let
+       newPlayers =
+         M.insert _lbrEmail (mkPlayerWithRsp rp rsp) ps
+       newAdmins =
+         case _lbrIsAdmin of
+           Just True -&gt; S.insert _lbrEmail as
+           _         -&gt; as
+
+
+</code></pre>
+</section><section id="section-72" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>Update $
+  \(LeaderboardState ps as)
+   (Register rp@LeaderboardRegistration{..} _)
+   rsp -&gt;
+     let
+       newPlayers =
+         M.insert _lbrEmail (mkPlayerWithRsp rp rsp) ps
+       newAdmins =
+         case _lbrIsAdmin of
+           Just True -&gt; S.insert _lbrEmail as
+           _         -&gt; as
+     in
+       LeaderboardState newPlayers newAdmins</code></pre>
+</section><section id="section-73" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>propRegisterCount env reset =
+  testProperty &quot;register-counts&quot; . property $ do
+
+
+
+
+
+
+
+
+
+</code></pre>
+</section><section id="section-74" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>propRegisterCount env reset =
+  testProperty &quot;register-counts&quot; . property $ do
+  let
+    initialState = LeaderboardState M.empty S.empty
+
+
+
+
+
+
+
+</code></pre>
+</section><section id="section-75" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>propRegisterCount env reset =
+  testProperty &quot;register-counts&quot; . property $ do
+  let
+    initialState = LeaderboardState M.empty S.empty
+    commands = [
+        cRegisterFirst env
+      , cRegisterFirstForbidden env
+      , cRegister env
+      , cGetPlayerCount env
+      ]
+  -- rest is the same as register-first</code></pre>
+</section><section id="section-76" class="slide level2" data-background-image="images/hedgehog-running.gif" data-background-transition="none">
+<h2></h2>
+</section><section id="section-77" class="slide level2" data-background-image="images/register-counts-success.png" data-background-size="80%">
+<h2></h2>
+</section></section>
+<section><section id="example-3-round-trip" class="title-slide slide level1"><h1>Example 3: round trip</h1></section><section id="property-2" class="slide level2">
+<h2>Property</h2>
+<p>Data retrieved for a player matches data entered</p>
+</section><section id="cme" class="slide level2">
+<h2><code>cMe</code></h2>
+<pre class="haskell"><code>cMe
+  :: ( MonadGen n
+     , MonadTest m
+     , MonadIO m
+     )
+  =&gt; ClientEnv
+  -&gt; Command n m LeaderboardState
+cMe env =
+    Command cMeGen (cMeExecute env) cMeCallbacks</code></pre>
+</section><section id="section-78" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cMeGen
+  :: MonadGen n
+  =&gt; LeaderboardState Symbolic
+  -&gt; Maybe (n (Me Symbolic))
+cMeGen (LeaderboardState ps _) =
+  (fmap . fmap) Me (genPlayerWithRsp ps)</code></pre>
+</section><section id="section-79" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cMeExecute
+  :: ( MonadIO m
+     , MonadTest m
+     )
+  =&gt; ClientEnv
+  -&gt; Me Concrete
+  -&gt; m Player
+cMeExecute env (Me pwr) =
+  evalEither =&lt;&lt; successClient env (me (clientToken pwr))</code></pre>
+</section><section id="section-80" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cMeCallbacks =
+  [ Require $ \(LeaderboardState ps _) (Me p) -&gt;
+      M.member (_pwrEmail p) ps
+
+
+
+
+
+
+
+
+
+  ]</code></pre>
+</section><section id="section-81" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cMeCallbacks =
+  [ Require $ \(LeaderboardState ps _) (Me p) -&gt;
+      M.member (_pwrEmail p) ps
+  , Ensure $
+    \(LeaderboardState ps _) _ _ Player{..} -&gt; do
+      PlayerWithRsp{..} &lt;- eval (ps M.! _playerEmail)
+
+
+
+
+
+
+  ]</code></pre>
+</section><section id="section-82" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cMeCallbacks =
+  [ Require $ \(LeaderboardState ps _) (Me p) -&gt;
+      M.member (_pwrEmail p) ps
+  , Ensure $
+    \(LeaderboardState ps _) _ _ Player{..} -&gt; do
+      PlayerWithRsp{..} &lt;- eval (ps M.! _playerEmail)
+      let
+        pwrAdmin = fromMaybe True _pwrIsAdmin
+
+
+
+
+  ]</code></pre>
+</section><section id="section-83" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cMeCallbacks =
+  [ Require $ \(LeaderboardState ps _) (Me p) -&gt;
+      M.member (_pwrEmail p) ps
+  , Ensure $
+    \(LeaderboardState ps _) _ _ Player{..} -&gt; do
+      PlayerWithRsp{..} &lt;- eval (ps M.! _playerEmail)
+      let
+        pwrAdmin = fromMaybe True _pwrIsAdmin
+      _rspId (concrete _pwrRsp) === LS.PlayerId _playerId
+      _pwrUsername === _playerUsername
+      _pwrEmail === _playerEmail
+      pwrAdmin === _playerIsAdmin
+  ]</code></pre>
+</section><section id="section-84" class="slide level2" data-background-image="images/hedgehog-failing.gif" data-background-transition="none">
+<h2></h2>
+</section><section id="section-85" class="slide level2" data-background-image="images/reg-me-fail.png" data-background-size="80%" data-background-transition="none">
+<h2></h2>
+</section><section id="section-86" class="slide level2" data-background-image="images/reg-me-fail-cmds.png" data-background-size="contain" data-background-transition="none">
+<h2></h2>
+</section><section id="section-87" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cMeCallbacks =
+  [ Require $ \(LeaderboardState ps _) (Me p) -&gt;
+      M.member (_pwrEmail p) ps
+  , Ensure $
+    \(LeaderboardState ps _) _ _ p@Player{..} -&gt; do
+      pwr@PlayerWithRsp{..} &lt;- eval (ps M.! _playerEmail)
+      let
+        pwrAdmin = fromMaybe True _pwrIsAdmin
+      _rspId (concrete _pwrRsp) === LS.PlayerId _playerId
+      _pwrUsername === _playerUsername
+      _pwrEmail === _playerEmail
+      pwrAdmin === _playerIsAdmin
+  ]</code></pre>
+</section><section id="section-88" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cMeCallbacks =
+  [
+
+
+
+
+
+        pwrAdmin = fromMaybe True _pwrIsAdmin
+
+
+
+
+  ]</code></pre>
+</section><section id="section-89" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cMeCallbacks =
+  [
+
+
+
+
+
+        pwrAdmin = fromMaybe False _pwrIsAdmin
+
+
+
+
+  ]</code></pre>
+</section><section id="section-90" class="slide level2" data-background-image="images/hedgehog-running.gif" data-background-transition="none">
+<h2></h2>
+</section><section id="section-91" class="slide level2" data-background-image="images/reg-me-success.png" data-background-size="80%" data-background-transition="none">
+<h2></h2>
+</section></section>
+<section><section id="references" class="title-slide slide level1"><h1>References</h1></section><section id="this-talk" class="slide level2">
+<h2>This talk</h2>
+<div class="left-align">
+<p>Slides<br />
+<a href="https://github.com/qfpl/state-machine-testing" class="uri">https://github.com/qfpl/state-machine-testing</a></p>
+<p>Leaderboard:<br />
+<a href="https://github.com/qfpl/leaderboard" class="uri">https://github.com/qfpl/leaderboard</a></p>
+</div>
+</section><section id="sources" class="slide level2">
+<h2>Sources</h2>
+<div class="left-align">
+<p>Hedgehog on GitHub<br />
+<a href="https://github.com/hedgehogqa/haskell-hedgehog" class="uri">https://github.com/hedgehogqa/haskell-hedgehog</a></p>
+<p>Tim Humphries’ blog post<br />
+<a href="https://teh.id.au/posts/2017/07/15/state-machine-testing/index.html" class="uri">https://teh.id.au/posts/2017/07/15/state-machine-testing/index.html</a></p>
+</div>
+</section><section id="images" class="slide level2">
+<h2>Images</h2>
+<div class="left-align">
+<p>Turnstile state machine<br />
+<a href="https://en.wikipedia.org/wiki/Finite-state_machine" class="uri">https://en.wikipedia.org/wiki/Finite-state_machine</a></p>
+<p>Running hedgehog<br />
+<a href="https://www.buzzfeed.com/tomphillips/this-running-hedgehog-is-basically-a-real-life-sonic" class="uri">https://www.buzzfeed.com/tomphillips/this-running-hedgehog-is-basically-a-real-life-sonic</a></p>
+<p>Failing hedgehog<br />
+<a href="https://gifrific.com/hedgehog-running-on-wheel-fail/" class="uri">https://gifrific.com/hedgehog-running-on-wheel-fail/</a></p>
+<p>Enter the hedgehog__ <a href="https://deanoinamerica.wordpress.com/2011/06/26/from-basketball-to-the-way-of-the-dragon-nevermind/" class="uri">https://deanoinamerica.wordpress.com/2011/06/26/from-basketball-to-the-way-of-the-dragon-nevermind/</a></p>
+</div>
+</section></section>
+    </div>
+  </div>
+
+  <script src="reveal.js/lib/js/head.min.js"></script>
+  <script src="reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Transition style
+        transition: 'none', // none/fade/slide/convex/concave/zoom
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+              { src: 'reveal.js/plugin/notes/notes.js', async: true },
+		      { src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+        ]
+      });
+    </script>
+    </body>
+</html>
