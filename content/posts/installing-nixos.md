@@ -333,7 +333,16 @@ Once you're happy with your configuration, we can pull the trigger on an install
 Go get a coffee while everything installs, and hopefully you'll reboot to your new system. 
 
 If something has gone wrong, don't worry. You can always boot back into the installation media,
-mount your partitions again, change your configuration, and install again.
+mount your partitions, update the configuration, and install again. To mount existing partitions,
+you'll need to decrypt the LVM partition and then activate its volume group.
+
+```
+# cryptsetup luksOpen $LVM_PARTITION nixos-enc
+# lvscan
+# vgchange -ay
+# mount /dev/nixos-vg/root /mnt
+# ...
+```
 
 Assuming your system has booted to a login screen, you're going to want to set your user's password
 so you don't login to your graphical environment as `root`. To do this, press `Ctrl-Alt-F1` to open
