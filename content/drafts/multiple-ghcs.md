@@ -1,0 +1,127 @@
+---
+title: Multiple GHCs
+date: 2018-07-09
+project: infra
+authors: gwilson
+---
+
+## Installing and Running Multiple GHC Versions
+
+In my roles both as a
+library author and as a Hackage Trustee, I find myself needing to run builds
+against multiple versions of GHC on a daily basis. I thought it would be worth
+putting together a post on how I manage my installations of the Glasgow
+Haskell Compiler and associated tools like cabal-install.
+
+### Why?
+
+I don't know which GHC version you're building your software with. Many people
+are using many different versions. I want to libraries I write to support the
+GHC versions users are using. The way to achieve this is to support many GHC
+versions.
+How many? A rule of thumb has been to support the three most recent GHC
+versions. If folks are keeping their operating system packages up to date,
+they will probably be running one of these three versions even on fairly
+slowly-moving operating systems.
+Although perhaps it is time to rethink this figure since GHC has adpopted a
+[much faster release schedule](https://ghc.haskell.org/trac/ghc/blog/2017-release-schedule).
+
+### Ubuntu
+
+The easiest distribution on which to run multiple GHC versions is Ubuntu.
+I have an Ubuntu virtual machine on a server, onto which I offload some slow
+builds so as not to tie up my local work machine. Herbert Valerio Riedel has
+set up an [Ubuntu PPA](https://launchpad.net/~hvr/+archive/ubuntu/ghc)
+from which one can install multiple GHC, cabal, happy, and alex versions.
+These will happily sit side-by-side, and the PPA page offers documentation
+on switching which one the `ghc` symlink points to.
+
+After adding the PPA to my repositories by following the instructions, I
+installed the software I needed with a command something like the following:
+
+```
+sudo apt install ghc-8.4.3 ghc-8.2.2 ghc-8.0.2 ghc-7.10.3 ghc-7.8.4 ghc-7.6.3 ghc-7.4.2 ghc-7.2.2 ghc-7.0.4 alex-3.1.7 cabal-install-2.2 happy-1.19.5
+```
+
+### NixOS
+
+On our work stations, my team and I run [NixOS](https://nixos.org/), a Linux
+distribution managed using the functional programming langauge Nix.
+In my `configuration.nix` file, I have two pinned snapshots of nixpkgs -
+one for providing rather old GHC versions, and one for providing bleeding-edge
+GHC versions.
+
+The following is an excerpt of my `configuration.nix` file:
+```nix
+{ config, pkgs, ... }:
+
+let
+  oldghcs = import (fetchTarball https://github.com/NixOS/nixpkgs/archive/83b35508c6491103cd16a796758e07417a28698b.tar.gz) {
+    config = config // { allowBroken = true; };
+  };
+  newghcs = import (fetchTarball https://github.com/NixOS/nixpkgs/archive/f682ff93a2778f101d93b68c97278f902523758a.tar.gz) {
+    config = config // { allowBroken = true; };
+  };
+in {
+  environment.systemPackages = with pkgs; [
+    oldghcs.haskell.compiler.ghc704
+    oldghcs.haskell.compiler.ghc722
+    oldghcs.haskell.compiler.ghc742
+    oldghcs.haskell.compiler.ghc763
+    oldghcs.haskell.compiler.ghc784
+    haskell.compiler.ghc7103
+    haskell.compiler.ghc802
+    haskell.compiler.ghc822
+    newghcs.haskell.compiler.ghc843
+    newghcs.haskell.compiler.ghc861
+
+    # other entries...
+  ];
+
+  # other configuration...
+}
+```
+
+This setup gives me every major compiler version back to GHC 7.0.
+`newghcs` was simply the most recent commit in nixpkgs when I set it up, and that is where I get GHC 8.4.3 and GHC 8.6 alpha.
+`oldghcs` is a carefully chosen commit, as the following commit dropped
+GHC 7.2.2 from nixpkgs, and I wanted to have the latest release in the GHC 7.2
+series installed.
+nixos-18.03 gives me the `7.10.3`, `8.0.2`, and `8.2.2`
+
+### Using these GHC versions
+
+Using either of the above methods, we will find our ghc versions on the `PATH`.
+To run GHC version 7.10.3, we run `ghc-7.10.3`, and the same pattern works for
+other versions.
+
+When I want to build one of my projects using a particular GHC version, I use
+the `-w` cabal flag (or its long form `--with-compiler`). I use cabal's
+nix-style local builds for all my Haskelling
+(also known as the cabal new-build workflow), so my invocations look like
+this example:
+
+```
+cabal new-build -w ghc-8.2.2
+```
+
+This works with at least `new-configure`, `new-build`, and `new-test`. This
+way, I can install all my GHCs side-by-side, and choose whichever I need to
+for what I want to build.
+
+A ghc version can also be fixed on a per-project basis using a `cabal.project`
+file. For example, if we want to use `ghc-8.0.2` for our project, we can use
+this `cabal.project` file:
+
+```nix
+packages: ./
+with-compiler: ghc-8.0.2
+```
+
+and cabal will use `ghc-8.0.2` without us needing to specify via `-w`.
+
+### Conclusion
+
+That's how I install and run multiple different GHC versions on my systems.
+
+Happy Haskell Hacking!
