@@ -13,28 +13,15 @@ against multiple versions of GHC on a daily basis. I thought it would be worth
 putting together a post on how I manage my installations of the Glasgow
 Haskell Compiler and associated tools like cabal-install.
 
-### Why?
-
-I don't know which GHC version you're building your software with. Many people
-are using many different versions. I want to libraries I write to support the
-GHC versions users are using. The way to achieve this is to support many GHC
-versions.
-How many? A rule of thumb has been to support the three most recent GHC
-versions. If folks are keeping their operating system packages up to date,
-they will probably be running one of these three versions even on fairly
-slowly-moving operating systems.
-Although perhaps it is time to rethink this figure since GHC has adpopted a
-[much faster release schedule](https://ghc.haskell.org/trac/ghc/blog/2017-release-schedule).
-
 ### Ubuntu
 
-The easiest distribution on which to run multiple GHC versions is Ubuntu.
+The easiest distribution on which to install multiple GHC versions is Ubuntu.
 I have an Ubuntu virtual machine on a server, onto which I offload some slow
 builds so as not to tie up my local work machine. Herbert Valerio Riedel has
 set up an [Ubuntu PPA](https://launchpad.net/~hvr/+archive/ubuntu/ghc)
 from which one can install multiple GHC, cabal, happy, and alex versions.
 These will happily sit side-by-side, and the PPA page offers documentation
-on switching which one the `ghc` symlink points to.
+on switching what the `ghc` symlink points to.
 
 After adding the PPA to my repositories by following the instructions, I
 installed the software I needed with a command something like the following:
@@ -83,11 +70,13 @@ in {
 ```
 
 This setup gives me every major compiler version back to GHC 7.0.
-`newghcs` was simply the most recent commit in nixpkgs when I set it up, and that is where I get GHC 8.4.3 and GHC 8.6 alpha.
-`oldghcs` is a carefully chosen commit, as the following commit dropped
-GHC 7.2.2 from nixpkgs, and I wanted to have the latest release in the GHC 7.2
-series installed.
-nixos-18.03 gives me the `7.10.3`, `8.0.2`, and `8.2.2`
+`newghcs` was simply the most recent commit in nixpkgs when I set it up, and
+that is where I get GHC 8.4.3 and GHC 8.6 alpha, since they are not in my main
+nixpkgs, which is nixos-18.03.
+`oldghcs` is a commit carefully chosen from history, as the following commit
+dropped GHC 7.2.2 from nixpkgs, and I wanted to have the latest release in the
+GHC 7.2 series installed.
+nixos-18.03 gives me `7.10.3`, `8.0.2`, and `8.2.2`
 
 ### Using these GHC versions
 
@@ -95,22 +84,25 @@ Using either of the above methods, we will find our ghc versions on the `PATH`.
 To run GHC version 7.10.3, we run `ghc-7.10.3`, and the same pattern works for
 other versions.
 
-When I want to build one of my projects using a particular GHC version, I use
-the `-w` cabal flag (or its long form `--with-compiler`). I use cabal's
-nix-style local builds for all my Haskelling
+When I want to build one of my projects using a particular GHC version, I
+configure cabal using the the `-w` flag (or its long form `--with-compiler`).
+I use cabal's nix-style local builds for all my Haskelling
 (also known as the cabal new-build workflow), so my invocations look like
-this example:
+this:
 
 ```
-cabal new-build -w ghc-8.2.2
+cabal new-configure -w ghc-8.2.2
 ```
 
-This works with at least `new-configure`, `new-build`, and `new-test`. This
-way, I can install all my GHCs side-by-side, and choose whichever I need to
-for what I want to build.
+This writes a `cabal.project.local` file, so subsequent calls to `cabal new-build`,
+`cabal new-test` and so on will use the configured GHC version. To change to
+another GHC version, we can run `cabal new-configure` again with a different
+ghc version specified.
+This way, I can install all my GHCs side-by-side, and choose whichever I need
+to for what I want to build.
 
 A ghc version can also be fixed on a per-project basis using a `cabal.project`
-file. For example, if we want to use `ghc-8.0.2` for our project, we can use
+file. For example, if we want to use `ghc-8.0.2` for our project, we can include
 this `cabal.project` file:
 
 ```nix
