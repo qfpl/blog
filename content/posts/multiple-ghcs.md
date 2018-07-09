@@ -7,9 +7,9 @@ authors: gwilson
 
 In my roles both as a
 library author and as a Hackage Trustee, I find myself needing to run builds
-against multiple versions of GHC on a daily basis. I thought it would be worth
-putting together a post on how I manage my installations of the Glasgow
-Haskell Compiler and associated tools like cabal-install.
+against multiple versions of the Glasgow Haskell Compiler on a daily basis.
+I thought it would be worth putting together a post on how I manage my
+installations of GHC and associated tools like cabal-install.
 
 ### Ubuntu
 
@@ -31,7 +31,7 @@ sudo apt install ghc-8.4.3 ghc-8.2.2 ghc-8.0.2 ghc-7.10.3 ghc-7.8.4 ghc-7.6.3 gh
 ### NixOS
 
 On our work stations, my team and I run [NixOS](https://nixos.org/), a Linux
-distribution managed using the functional programming langauge Nix.
+distribution managed using the functional programming language Nix.
 In my `configuration.nix` file, I have two pinned snapshots of nixpkgs -
 one for providing rather old GHC versions, and one for providing bleeding-edge
 GHC versions.
@@ -78,7 +78,7 @@ nixos-18.03 gives me `7.10.3`, `8.0.2`, and `8.2.2`
 
 ### Using these GHC versions
 
-Using either of the above methods, we will find our ghc versions on the `PATH`.
+Using either of the above methods, we will find our GHC versions on the `PATH`.
 To run GHC version 7.10.3, we run `ghc-7.10.3`, and the same pattern works for
 other versions.
 
@@ -97,11 +97,11 @@ cabal new-configure -w ghc-8.2.2
 This writes a `cabal.project.local` file, so subsequent calls to `cabal new-build`,
 `cabal new-test` and so on will use the configured GHC version. To change to
 another GHC version, we can run `cabal new-configure` again with a different
-ghc version specified.
+GHC version specified.
 This way, I can install all my GHCs side-by-side, and choose whichever I need
 to for what I want to build.
 
-A ghc version can also be fixed on a per-project basis using a `cabal.project`
+A GHC version can also be fixed on a per-project basis using a `cabal.project`
 file. For example, if we want to use `ghc-8.0.2` for our project, we can include
 this `cabal.project` file:
 
