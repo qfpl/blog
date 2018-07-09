@@ -1,11 +1,9 @@
 ---
-title: Multiple GHCs
+title: Installing and Running Multiple GHC Versions
 date: 2018-07-09
 project: infra
 authors: gwilson
 ---
-
-## Installing and Running Multiple GHC Versions
 
 In my roles both as a
 library author and as a Hackage Trustee, I find myself needing to run builds
