@@ -85,10 +85,12 @@ To run GHC version 7.10.3, we run `ghc-7.10.3`, and the same pattern works for
 other versions.
 
 When I want to build one of my projects using a particular GHC version, I
-configure cabal using the the `-w` flag (or its long form `--with-compiler`).
-I use cabal's nix-style local builds for all my Haskelling
-(also known as the cabal new-build workflow), so my invocations look like
-this:
+configure cabal using the the
+[`-w` flag](https://cabal.readthedocs.io/en/latest/installing-packages.html?highlight=--with-compiler#cmdoption-setup-configure-with-compiler)
+(or its long form `--with-compiler`).
+I use cabal's nix-style local builds for all my Haskelling. This is also known
+as the cabal new-build workflow, and it was added in cabal 1.24.
+My invocations look like this:
 
 ```
 cabal new-configure -w ghc-8.2.2
