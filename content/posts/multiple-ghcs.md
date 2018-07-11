@@ -28,6 +28,8 @@ installed the software I needed with a command something like the following:
 sudo apt install ghc-8.4.3 ghc-8.2.2 ghc-8.0.2 ghc-7.10.3 ghc-7.8.4 ghc-7.6.3 ghc-7.4.2 ghc-7.2.2 ghc-7.0.4 alex-3.1.7 cabal-install-2.2 happy-1.19.5
 ```
 
+**Update (2018-07-11)** Herbert has informed me that he also has a [repository for Debian](https://downloads.haskell.org/debian/).
+
 ### NixOS
 
 On our work stations, my team and I run [NixOS](https://nixos.org/), a Linux
