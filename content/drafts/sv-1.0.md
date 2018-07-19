@@ -99,6 +99,6 @@ on these features and performance concerns.
 
 `svfactor`'s parser still has performance problems, so it should be altered or
 rewritten.
-When I get around to this, I inted to blog about it. I also intend to blog
+When I get around to this, I intend to blog about it. I also intend to blog
 about benchmarking `sv` soon.
 
