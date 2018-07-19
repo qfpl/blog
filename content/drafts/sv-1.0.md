@@ -5,14 +5,15 @@ authors: gwilson
 project: sv
 ---
 
-`sv`, a CSV library for Haskell by QFPL, was released over four months ago.
+`sv`, a CSV library for Haskell by the Queensland Functional Programming
+Lab, was released over four months ago.
 Since then, we've had feedback on what potential users want from the library,
 and we have altered the design to the point where we are now releasing a new
 version: `sv 1.0`
 
 ## The Story Thus Far
 
-With `sv`, we wanted a library that could parse a CSV file and build a data
+With `sv`, QFPL wanted a library that could parse a CSV file and build a data
 structure which preserved all syntactic information about the input document.
 This allowed users to manipulate the document using lenses and output a
 new file that was minimally different from the input. With this, a user could
@@ -43,7 +44,7 @@ whole thing in memory at once. This appeared very difficult to integrate into
 
 ## The Times They Are a-Changin'
 
-At YOW! Lambda Jam 2018 in Sydney, I gave a talk about the design of `sv`. This
+At YOW! Lambda Jam 2018 in Sydney, I (George Wilson) gave a talk about the design of `sv`. This
 prompted many useful conversations about `sv` throughout and following the rest
 of the conference. The key insight was this: `sv`'s two broad goals were
 at odds with each other. From a decoding library, users demand speed and
@@ -53,7 +54,8 @@ building custom linting and sanitisation tools, but it is much harder to provide
 decoding users the speed they crave. I have decided that a sensible way forward
 is to split up `sv` into a handful of libraries. The decoding will be paired
 with a parser of much higher performance that does not keep all syntax
-information.
+information. Syntax-preserving manipulation will be available separately and
+for now will retain its performance problems.
 
 Edward Kmett suggested I speak to John Ky about John's high performance CSV parser,
 which has now been released to hackage as
