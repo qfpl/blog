@@ -28,7 +28,7 @@ could use it as a component of some larger parser. Since it used `parsers`,
 our parser was likely to work with whatever parser library the user is already
 using.
 
-`sv` was not only for writing custom liniters and sanitisation tools. It was also
+`sv` was not only for writing custom linters and sanitisation tools. It was also
 for writing decoders to extract values from CSV documents into Haskell
 programs. Importantly, `sv` did not use type classes for this, but rather an
 Applicative combinator-based approach. Users could pass around and
