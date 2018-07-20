@@ -102,3 +102,11 @@ rewritten.
 When I get around to this, I intend to blog about it. I also intend to blog
 about benchmarking `sv` soon.
 
+## Links and Further Reading
+
+* [An example](https://github.com/qfpl/sv/blob/master/examples/src/Data/Sv/Example/Species.lhs)
+  of using sv to decode a real CSV file
+* [hw-dsv](https://hackage.haskell.org/package/hw-dsv)
+* [sv](https://hackage.haskell.org/package/sv)
+* [svfactor](https://hackage.haskell.org/package/svfactor)
+* [sv-cassava](https://hackage.haskell.org/package/sv-cassava)
