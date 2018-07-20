@@ -1,6 +1,6 @@
 ---
 title: Announcing sv 1.0
-date: 2018-07-18
+date: 2018-07-20
 authors: gwilson
 project: sv
 ---
@@ -25,7 +25,7 @@ We wrote such a data structure, and gave it a parser with the
 someone to instantiate a `parsers` parser to other parsing libraries like
 `attoparsec`, `trifecta`, or `parsec`. `sv` exposed its parser so that a user
 could use it as a component of some larger parser. Since it used `parsers`,
-our parser is likely to work with whatever parser library the user is already
+our parser was likely to work with whatever parser library the user is already
 using.
 
 `sv` was not only for writing custom liniters and sanitisation tools. It was also
