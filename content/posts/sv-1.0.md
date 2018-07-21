@@ -36,7 +36,7 @@ manipulate decoders as values, and create multiple decoders of each type.
 
 All was not well. The performance of `sv`'s parser was
 [very slow](https://github.com/haskell-perf/csv/tree/25493c61733f6b2b69a4378313af2801f1cceb3b),
-mainly due to extravogent memory usage. There was also
+mainly due to extravagant memory usage. There was also
 [keen interest](https://github.com/qfpl/sv/issues/10)
 in streaming support, meaning to parse and decode a file without keeping the
 whole thing in memory at once. This appeared very difficult to integrate into
