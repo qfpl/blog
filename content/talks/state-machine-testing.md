@@ -7,5 +7,5 @@ author: ajmccluskey
 author-name: Andrew McCluskey
 code-url: https://github.com/qfpl/state-machine-testing
 slides-base: index.html
-# video-url: https://www.youtube.com/watch?v=lUibiSzIgG4
+video-url: https://www.youtube.com/watch?v=boBD1qhCQ94
 ---
