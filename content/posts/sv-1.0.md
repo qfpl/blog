@@ -44,7 +44,9 @@ whole thing in memory at once. This appeared very difficult to integrate into
 
 ## The Times They Are a-Changin'
 
-At YOW! Lambda Jam 2018 in Sydney, I (George Wilson) gave a talk about the design of `sv`. This
+At YOW! Lambda Jam 2018 in Sydney, I (George Wilson) gave
+[a talk](https://www.youtube.com/watch?v=zP-DgjIcCho)
+about the design of `sv`. This
 prompted many useful conversations about `sv` throughout and following the rest
 of the conference. The key insight was this: `sv`'s two broad goals were
 at odds with each other. From a decoding library, users demand speed and
