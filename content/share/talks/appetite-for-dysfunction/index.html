@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Andrew McCluskey McMiddlin">
+  <meta name="dcterms.date" content="2018-08-27">
+  <title>Appetite for dysfunction</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="reveal.js/css/reveal.css">
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="reveal.js/css/theme/black.css" id="theme">
+<link rel="stylesheet" href="css/monokai-sublime.css" />
+<link rel="stylesheet" href="css/tweaks.css">
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src="reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div id="grid-setup"></div>
+  <div class="reveal">
+    <div class="slides">
+
+<section>
+  <h1 class="title">Appetite for dysfunction</h1>
+  <p class="author">Andrew <del>McCluskey</del> McMiddlin</p>
+  <p class="date">2018-08-27</p>
+<img src="images/data61-logo.png" alt="data61" style="height: 200px; background-color: inherit; margin-top: 25px;">
+</section>
+
+<section><section id="intro" class="title-slide slide level1"><h1>Intro</h1></section><section id="what-and-why" class="slide level2">
+<h2>What and why?</h2>
+<aside class="notes">
+<ul>
+<li>Property based state machine testing using the Haskell library hedgehog</li>
+<li>Using the technique to test software not written in Haskell</li>
+<li>Technical talk earlier this year at Lambda Jam</li>
+<li>Question: can it test stuff not written in Haskell?</li>
+<li>Knew it could, but wanted to write the code</li>
+<li>Interested in the use case of testing big, legacy project that’s not even functional</li>
+<li>WordPress</li>
+<li>Talk has 3 related goals
+<ul>
+<li>Intro to state machine testing</li>
+<li>Show that even if you can’t write your app in Haskell, you can get value out of using it to test</li>
+<li>Show some techniques to test non-haskell/non-FP projects</li>
+</ul></li>
+</ul>
+</aside>
+</section><section id="outline" class="slide level2">
+<h2>Outline</h2>
+<ul>
+<li class="fragment">WordPress</li>
+<li class="fragment">Property based testing</li>
+<li class="fragment">State machine testing</li>
+<li class="fragment">NixOps</li>
+<li class="fragment"><code>dependent-map</code></li>
+<li class="fragment"><code>servant</code> to talk web</li>
+<li class="fragment">Putting it together</li>
+</ul>
+</section></section>
+<section><section id="wordpress" class="title-slide slide level1"><h1>WordPress</h1></section><section id="section" class="slide level2">
+<h2></h2>
+<blockquote>
+<p>31% of the web uses WordPress, from hobby blogs to the biggest news sites online.</p>
+</blockquote>
+<p>— wordpress.org</p>
+</section><section id="section-1" class="slide level2">
+<h2></h2>
+<blockquote>
+<p>Over 60 million people have chosen WordPress to power the place on the web they call “home”</p>
+</blockquote>
+<p>— wordpress.org</p>
+</section><section id="section-2" class="slide level2">
+<h2></h2>
+<ul>
+<li class="fragment">Started in 2003 as a fork of b2, which was started in 2001</li>
+<li class="fragment">Uses PHP and MySQL</li>
+<li class="fragment">REST API using JSON (under specified)</li>
+</ul>
+<aside class="notes">
+<p>As I said in the intro:</p>
+<ul>
+<li>legacy</li>
+<li>doesn’t use FP</li>
+<li>has a loose API</li>
+</ul>
+</aside>
+</section></section>
+<section><section id="property-based-testing" class="title-slide slide level1"><h1>Property based testing</h1></section><section id="section-3" class="slide level2" data-background-image="images/hedgehog.png" data-background-size="80%">
+<h2></h2>
+<aside class="notes">
+<ul>
+<li>Might have heard of QuickCheck</li>
+<li>New kid on the block</li>
+<li>Jacob Stanley released it in 2017</li>
+<li>Jacob gave a great talk on Hedgehog and why he wrote it at Lambda Jam in 2017 (link in the references)</li>
+</ul>
+</aside>
+</section><section id="section-4" class="slide level2">
+<h2></h2>
+<p>Apply functions to randomly generated inputs and ensuring that desirable properties hold.</p>
+</section><section id="example" class="slide level2">
+<h2>Example</h2>
+</section><section id="section-5" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>-- Reverse is involutive
+propReverse :: Property
+propReverse =
+  property $ do
+
+
+</code></pre>
+</section><section id="section-6" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>-- Reverse is involutive
+propReverse :: Property
+propReverse =
+  property $ do
+    xs &lt;- forAll $ Gen.list (Range.linear 0 100) Gen.alpha
+
+</code></pre>
+</section><section id="section-7" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>-- Reverse is involutive
+propReverse :: Property
+propReverse =
+  property $ do
+    xs &lt;- forAll $ Gen.list (Range.linear 0 100) Gen.alpha
+    reverse (reverse xs) === xs</code></pre>
+</section><section id="shrinking" class="slide level2">
+<h2>Shrinking</h2>
+</section><section id="section-8" class="slide level2">
+<h2></h2>
+<pre><code>[ &#39;w&#39;,&#39;K&#39;,&#39;E&#39;,&#39;y&#39;,&#39;P&#39;,&#39;z&#39;,&#39;m&#39;,&#39;o&#39;,&#39;i&#39;,&#39;N&#39;,&#39;G&#39;,&#39;I&#39;,&#39;X&#39;,&#39;X&#39;
+, &#39;v&#39;,&#39;l&#39;,&#39;q&#39;,&#39;X&#39;,&#39;n&#39;
+]</code></pre>
+</section><section id="section-9" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>[&#39;a&#39;,&#39;b&#39;]</code></pre>
+</section></section>
+<section><section id="state-machine-testing" class="title-slide slide level1"><h1>State machine testing</h1></section><section id="state-machines" class="slide level2">
+<h2>State machines</h2>
+</section><section id="section-10" class="slide level2 turnstile" data-background-image="images/turnstile.svg">
+<h2></h2>
+</section><section id="section-11" class="slide level2" data-background-image="images/turnstile.png" data-background-size="contain">
+<h2></h2>
+</section><section id="section-12" class="slide level2 turnstile" data-background-image="images/turnstile-states.svg">
+<h2></h2>
+</section><section id="section-13" class="slide level2 turnstile" data-background-image="images/turnstile-initial.svg">
+<h2></h2>
+</section><section id="section-14" class="slide level2 turnstile" data-background-image="images/turnstile-transitions.svg">
+<h2></h2>
+</section><section id="state-machine-testing-1" class="slide level2">
+<h2>State machine testing</h2>
+<ul>
+<li class="fragment">Model application as a state machine</li>
+<li class="fragment">Generate inputs to transition between states</li>
+<li class="fragment">Execute inputs against real application</li>
+<li class="fragment">Update model to reflect expected state changes</li>
+<li class="fragment">At each step, check no invariants are broken</li>
+</ul>
+</section><section id="example-1" class="slide level2">
+<h2>Example</h2>
+</section><section id="section-15" class="slide level2 state-example" data-background-image="images/state-example-01.svg">
+<h2></h2>
+</section><section id="section-16" class="slide level2 state-example" data-background-image="images/state-example-02.svg">
+<h2></h2>
+</section><section id="section-17" class="slide level2 state-example" data-background-image="images/state-example-03.svg">
+<h2></h2>
+</section><section id="section-18" class="slide level2 state-example" data-background-image="images/state-example-04.svg">
+<h2></h2>
+</section><section id="section-19" class="slide level2 state-example" data-background-image="images/state-example-05.svg">
+<h2></h2>
+</section><section id="section-20" class="slide level2 state-example" data-background-image="images/state-example-fail-01.svg">
+<h2></h2>
+</section><section id="section-21" class="slide level2 state-example" data-background-image="images/state-example-fail-02.svg">
+<h2></h2>
+</section><section id="section-22" class="slide level2 state-example" data-background-image="images/state-example-fail-03.svg">
+<h2></h2>
+</section><section id="wordpress-example" class="slide level2">
+<h2>WordPress example</h2>
+</section><section id="section-23" class="slide level2 wp-example" data-background-image="images/wp-failure-example-inputs.png">
+<h2></h2>
+<aside class="notes">
+<ul>
+<li>note number of shrinks at the top</li>
+</ul>
+</aside>
+</section><section id="section-24" class="slide level2" data-background-image="images/wp-failure-example-diff.png" data-background-size="90%">
+<h2></h2>
+</section></section>
+<section><section id="deploying-with-nixops" class="title-slide slide level1"><h1>Deploying with NixOps</h1></section><section id="nix" class="slide level2">
+<h2>Nix</h2>
+<p>Purely functional language for package management. <!-- - Specify packages as referentially transparent expressions. --> <!-- - Huge library of packages (`nixpkgs`). --> <!-- - Content-based hashing of all artifacts. --></p>
+<aside class="notes">
+<ul>
+<li>If any build inputs change, the artifact changes</li>
+<li>Content-based hashing results in reliable caching and sharing of artifacts</li>
+</ul>
+</aside>
+</section><section id="nixos" class="slide level2">
+<h2>NixOS</h2>
+<p>The purely functional Linux distribution built on top of the Nix package manager.</p>
+<aside class="notes">
+<ul>
+<li>Your OS is a referentially transparent expression</li>
+<li>Each new build has a unique identifier</li>
+<li>Immediate rollback to previous states by switching some sym links</li>
+</ul>
+</aside>
+</section><section id="nixops" class="slide level2">
+<h2>NixOps</h2>
+<p>A tool for deploying NixOS machines.</p>
+<aside class="notes">
+<ul>
+<li>An OS specified with a declarative, referentially transparent expression is really useful.</li>
+<li>Also a great way to deploy environments</li>
+</ul>
+</aside>
+</section><section id="wordpress-specification" class="slide level2">
+<h2>WordPress specification</h2>
+</section><section id="section-25" class="slide level2">
+<h2></h2>
+<pre class="nix"><code>wpPackage = pkgs.fetchFromGitHub {
+  owner = &quot;WordPress&quot;;
+  repo = &quot;WordPress&quot;;
+  rev = &quot;4.9.7&quot;;
+  sha256 = &quot;1kxwk7mqhi9n...&quot;;
+};</code></pre>
+</section><section id="section-26" class="slide level2">
+<h2></h2>
+<pre class="nix"><code>basicAuthPlugin = pkgs.stdenv.mkDerivation {
+
+
+
+
+
+
+
+
+};</code></pre>
+</section><section id="section-27" class="slide level2">
+<h2></h2>
+<pre class="nix"><code>basicAuthPlugin = pkgs.stdenv.mkDerivation {
+  name = &quot;basic-auth-plugin&quot;;
+
+
+
+
+
+
+
+};</code></pre>
+</section><section id="section-28" class="slide level2">
+<h2></h2>
+<pre class="nix"><code>basicAuthPlugin = pkgs.stdenv.mkDerivation {
+  name = &quot;basic-auth-plugin&quot;;
+  src = pkgs.fetchurl {
+    url = https://github.com/WP-API/Basic-Auth/...8.zip;
+    sha256 = &quot;b7f4fe0e6064040...&quot;;
+  };
+
+
+
+};</code></pre>
+</section><section id="section-29" class="slide level2">
+<h2></h2>
+<pre class="nix"><code>basicAuthPlugin = pkgs.stdenv.mkDerivation {
+  name = &quot;basic-auth-plugin&quot;;
+  src = pkgs.fetchurl {
+    url = https://github.com/WP-API/Basic-Auth/...8.zip;
+    sha256 = &quot;b7f4fe0e6064040...&quot;;
+  };
+
+  buildInputs = [ pkgs.unzip ];
+  installPhase = &quot;mkdir -p $out; cp -R * $out/&quot;;
+};</code></pre>
+</section><section id="section-30" class="slide level2">
+<h2></h2>
+<pre class="nix"><code>twentySeventeen = pkgs.stdenv.mkDerivation {
+  name = &quot;theme-twenty-seventeen&quot;;
+  src = pkgs.fetchurl {
+    url = https://.../twentyseventeen.1.6.zip;
+    sha256 = &quot;0cch9bvap4r0775f...&quot;;
+  };
+
+  buildInputs = [ pkgs.unzip ];
+  installPhase = &quot;mkdir -p $out; cp -R * $out/&quot;;
+};</code></pre>
+</section><section id="section-31" class="slide level2">
+<h2></h2>
+<pre class="nix"><code>services.mysql = {
+  enable = true;
+  package = pkgs.mysql;
+  initialScript = ./init.sql;
+};</code></pre>
+</section><section id="section-32" class="slide level2">
+<h2></h2>
+<pre class="nix"><code>services.httpd = {
+
+
+
+
+
+
+
+
+
+
+
+};</code></pre>
+</section><section id="section-33" class="slide level2">
+<h2></h2>
+<pre class="nix"><code>services.httpd = {
+  ...
+  virtualHosts = [{
+    hostName = &quot;wordpress&quot;;
+
+
+
+
+
+
+
+  }];
+};</code></pre>
+</section><section id="section-34" class="slide level2">
+<h2></h2>
+<pre class="nix"><code>services.httpd = {
+  ...
+  virtualHosts = [{
+    hostName = &quot;wordpress&quot;;
+    extraSubservices = [{
+      ...
+      serviceType = &quot;wordpress&quot;;
+
+
+
+    }];
+  }];
+};</code></pre>
+</section><section id="section-35" class="slide level2">
+<h2></h2>
+<pre class="nix"><code>services.httpd = {
+  ...
+  virtualHosts = [{
+    hostName = &quot;wordpress&quot;;
+    extraSubservices = [{
+      ...
+      serviceType = &quot;wordpress&quot;;
+      package = wpPackage;
+
+
+    }];
+  }];
+};</code></pre>
+</section><section id="section-36" class="slide level2">
+<h2></h2>
+<pre class="nix"><code>services.httpd = {
+  ...
+  virtualHosts = [{
+    hostName = &quot;wordpress&quot;;
+    extraSubservices = [{
+      ...
+      serviceType = &quot;wordpress&quot;;
+      package = wpPackage;
+      plugins = [ basicAuthPlugin ];
+      themes = [ twentySeventeen ];
+    }];
+  }];
+};</code></pre>
+</section><section id="section-37" class="slide level2">
+<h2></h2>
+<pre class="nix"><code># HTTP, HTTPS, MySQL
+networking.firewall.allowedTCPPorts = [ 80 443 3306 ];</code></pre>
+</section><section id="machine-specification" class="slide level2">
+<h2>Machine specification</h2>
+</section><section id="section-38" class="slide level2">
+<h2></h2>
+<pre class="nix"><code>{
+  wordpress =
+    { config, pkgs, ... }:
+
+
+
+
+
+}</code></pre>
+</section><section id="section-39" class="slide level2">
+<h2></h2>
+<pre class="nix"><code>{
+  wordpress =
+    { config, pkgs, ... }:
+    { deployment.targetEnv = &quot;virtualbox&quot;;
+
+
+
+    };
+}</code></pre>
+</section><section id="section-40" class="slide level2">
+<h2></h2>
+<pre class="nix"><code>{
+  wordpress =
+    { config, pkgs, ... }:
+    { deployment.targetEnv = &quot;virtualbox&quot;;
+      deployment.virtualbox.memorySize = 4096; # megabytes
+      deployment.virtualbox.vcpu = 4; # number of cpus
+
+    };
+}</code></pre>
+</section><section id="section-41" class="slide level2">
+<h2></h2>
+<pre class="nix"><code>{
+  wordpress =
+    { config, pkgs, ... }:
+    { deployment.targetEnv = &quot;virtualbox&quot;;
+      deployment.virtualbox.memorySize = 4096; # megabytes
+      deployment.virtualbox.vcpu = 4; # number of cpus
+      deployment.virtualbox.headless = true;
+    };
+}</code></pre>
+</section><section id="deploying" class="slide level2">
+<h2>Deploying</h2>
+</section><section id="section-42" class="slide level2">
+<h2></h2>
+<pre class="nix"><code>$ nixops create ./wp.nix ./wp-vbox.nix -d wp
+
+
+ </code></pre>
+</section><section id="section-43" class="slide level2">
+<h2></h2>
+<pre class="nix"><code>$ nixops create ./wp.nix ./wp-vbox.nix -d wp
+$ nixops deploy -d wp
+
+ </code></pre>
+</section><section id="section-44" class="slide level2">
+<h2></h2>
+<pre class="nix"><code>$ nixops create ./wp.nix ./wp-vbox.nix -d wp
+$ nixops deploy -d wp
+$ nixops info -d wp
+ </code></pre>
+</section><section id="section-45" class="slide level2">
+<h2></h2>
+<pre class="nix"><code>$ nixops create ./wp.nix ./wp-vbox.nix -d wp
+$ nixops deploy -d wp
+$ nixops info -d wp
+$ nixops ssh -d wp wordpress</code></pre>
+</section></section>
+<section><section id="dmap" class="title-slide slide level1"><h1><code>DMap</code></h1></section><section id="section-46" class="slide level2">
+<h2></h2>
+<div style="top: -20px; position: relative;">
+<pre class="json"><code>{
+  &quot;date&quot;: &quot;1900-01-01T12:00:00&quot;,
+  &quot;date_gmt&quot;: &quot;1900-01-01T12:00:00&quot;,
+  &quot;modified&quot;: &quot;1900-01-01T12:00:00&quot;,
+  &quot;modified_gmt&quot;: &quot;1900-01-01T12:00:00&quot;,
+  &quot;password&quot;: &quot;&quot;,
+  &quot;slug&quot;: &quot;a&quot;,
+  &quot;status&quot;: &quot;publish&quot;,
+  &quot;type&quot;: &quot;post&quot;,
+  &quot;link&quot;: &quot;http://192.168.56.101/1900/01/01/a/&quot;,
+  &quot;title&quot;: &quot;foo&quot;,
+  &quot;content&quot;: &quot;bar&quot;,
+  &quot;excerpt&quot;: &quot;baz&quot;,
+  &quot;author&quot;: 1,
+  &quot;featured_media&quot;: 0,
+  &quot;comment_status&quot;: &quot;open&quot;,
+  &quot;ping_status&quot;: &quot;open&quot;,
+  &quot;sticky&quot;: false,
+  &quot;template&quot;: &quot;&quot;,
+  &quot;format&quot;: &quot;standard&quot;,
+  &quot;meta&quot;: [],
+  &quot;categories&quot;: [],
+  &quot;tags&quot;: []
+}</code></pre>
+</div>
+</section><section id="section-47" class="slide level2">
+<h2></h2>
+<pre class="json"><code>{
+  &quot;title&quot;: &quot;A post&quot;
+}</code></pre>
+<aside class="notes">
+<ul>
+<li>Huge variation in how post can be specified</li>
+<li>Almost every field optional</li>
+</ul>
+</aside>
+</section><section id="maybe" class="slide level2">
+<h2><code>Maybe</code>?</h2>
+</section><section id="section-48" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>data Post =
+  Post
+  { _postDate :: Maybe LocalTime
+  , _postDateGmt :: Maybe LocalTime
+  , _postPassword :: Maybe Text
+  -- ...
+  }</code></pre>
+<aside class="notes">
+<ul>
+<li>First thought might be to use <code>Maybe</code> everywhere.</li>
+<li>Doesn’t scale.</li>
+<li>Must specify every field when we might only care about 1.</li>
+</ul>
+</aside>
+</section><section id="a-type-for-each-use" class="slide level2">
+<h2>A type for each use?</h2>
+<aside class="notes">
+<ul>
+<li>Sometimes a good solution to these problems is to have a type for each scenario.</li>
+<li>Way too many combinations.</li>
+<li>Not sure what we’ll get back from API early in process.</li>
+<li>Might be appropriate if small number of uses.</li>
+</ul>
+</aside>
+</section><section id="dmap-1" class="slide level2">
+<h2><code>DMap</code></h2>
+<aside class="notes">
+<ul>
+<li>type safe heterogenous map — type of each value may vary, and depends on the key</li>
+<li>colleagues had some success using <code>DMap</code> from the <code>dependent-map</code> package to wrangle JSON objects</li>
+<li>decided to have a go, and also had success</li>
+</ul>
+</aside>
+</section><section id="section-49" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>data Map k v</code></pre>
+<aside class="notes">
+<p>key and value types same for every element</p>
+</aside>
+</section><section id="section-50" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>data DMap (key :: v -&gt; *) (f :: k -&gt; *)</code></pre>
+<aside class="notes">
+<ul>
+<li><code>key</code> type takes a parameter that determines the type of its corresponding value</li>
+<li><code>f</code> is a type constructor that wraps each value</li>
+</ul>
+</aside>
+</section><section id="section-51" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>data PostKey a where
+  PostTitle  :: PostKey Text
+  PostStatus :: PostKey Status
+  PostAuthor :: PostKey Int
+  ...</code></pre>
+<aside class="notes">
+<ul>
+<li>Using <code>GADT</code> syntax</li>
+<li><code>PostKey</code> is the type.</li>
+<li><code>a</code> is a type level variable that tracks the type of the value corresponding to each key.</li>
+</ul>
+</aside>
+</section><section id="section-52" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>aPost :: DMap PostKey Identity
+aPost =
+  fromList [ PostTitle  :=&gt; Identity &quot;Hello Compose&quot;
+           , PostStatus :=&gt; Identity Publish
+           , PostAuthor :=&gt; Identity 1
+           ]</code></pre>
+<aside class="notes">
+<ul>
+<li>sits between a record and <code>Data.Map</code></li>
+<li>type of values changes with the key, like a record</li>
+<li>may have 0 or more key,value pairs, like a map</li>
+</ul>
+</aside>
+</section><section id="section-53" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>aPost :: Applicative f =&gt; DMap PostKey f
+aPost =
+  fromList [ PostTitle ==&gt; &quot;Hello Compose&quot;
+           , PostStatus ==&gt; Publish
+           , PostAuthor ==&gt; 1
+           ]</code></pre>
+</section><section id="section-54" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>class Eq a =&gt; Ord a where
+  compare :: a -&gt; a -&gt; Ordering
+  ...
+</code></pre>
+<aside class="notes">
+<ul>
+<li>Need a way to compare keys to be used as a map</li>
+</ul>
+</aside>
+</section><section id="section-55" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>instance Ord (PostKey a) where
+  compare :: PostKey a -&gt; PostKey a -&gt; Ordering
+  ...
+</code></pre>
+<aside class="notes">
+<ul>
+<li><code>Ord</code> instance would mean we can only compare keys with the same value type.</li>
+</ul>
+</aside>
+</section><section id="section-56" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>class GEq f =&gt; GCompare (key :: v -&gt; *) where
+  gcompare :: key a -&gt; key b -&gt; GOrdering a b </code></pre>
+<aside class="notes">
+<ul>
+<li>Notice that this compares things of type <code>key a</code> and <code>key b</code>.</li>
+<li>Constructor (i.e. set of keys) must match, but type of value can differ</li>
+</ul>
+</aside>
+</section><section id="section-57" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>deriveGEq &#39;&#39;PostKey
+deriveGCompare &#39;&#39;PostKey</code></pre>
+<!--
+##
+
+```haskell
+deriveGEq ''PostKey
+deriveGCompare ''PostKey
+deriveGShow ''PostKey
+```
+
+::: notes
+Same story with showing keys
+:::
+
+## What about values?
+
+::: notes
+- So far only have classes for keys
+- e.g. if we want to `Show` or compare a `DMap`, we need to handle its values
+:::
+
+##
+
+::: {style="width: 110%; position: relative; left: -20px;"}
+```haskell
+instance forall k (key :: k -> *) (f :: k -> *).
+         ShowTag key f
+         => Show (DMap key f)
+```
+:::
+
+::: notes
+- This is provided by `dependent-map`, but we need a `ShowTag` instance
+:::
+
+##
+
+```haskell
+instance Show1 f => ShowTag PostKey f where
+  showTaggedPrec ::
+    forall (a :: k).
+    key a -> Int -> f a -> ShowS
+ 
+```
+
+::: notes
+- Given a key, return the function required to define a `Show` instance for `f a`
+- The equation for every constructor is the same
+- Key is like a proxy --- only used to determine the type of the value we want to show
+- Seems like we should be able to write this.
+- GHC can't determine the constraint is met without a value
+:::
+
+##
+
+```haskell
+instance Show1 f => ShowTag PostKey f where
+  showTaggedPrec ::
+    forall (a :: k).
+    key a -> Int -> f a -> ShowS
+  showTaggedPrec _ = showsPrec1
+```
+
+::: notes
+- Given a key, return the function required to define a `Show` instance for `f a`
+- The equation for every constructor is the same
+- Key is like a proxy --- only used to determine the type of the value we want to show
+- Seems like we should be able to write this.
+- GHC can't determine the constraint is met without a value
+:::
+
+##
+
+```haskell
+instance ShowTag PostKey f where
+  showTaggedPrec PostTitle = showsPrec1
+  showTaggedPrec PostId = showsPrec1
+  showTaggedPrec PostAuthor = showsPrec1
+  ...
+```
+
+##
+
+::: {style="width: 125%; position: relative; left: -120px;"}
+```haskell
+deriveShowTag ::
+  Name -> DecsQ
+deriveShowTag n = do
+  keyType <- reify n
+  let
+    mkEq conName = clause [conP conName []] (normalB (varE 'showsPrec1)) []
+    mkDecl = \case
+      (GadtC [conName] _bangTypes _ty) -> mkEq conName
+      _ -> fail "Can only deriveShowTag with GADT constructors"
+    decl = case keyType of
+      TyConI (DataD _ctx _n _tyvars _kind cons _deriving) ->
+        funD 'showTaggedPrec $ fmap mkDecl cons
+      _ -> fail "Can only deriveShowTag with a type constructor"
+  f' <- varT <$> newName "f"
+  let c = cxt [appT (conT ''Show1) f']
+  pure <$> instanceD c (foldl appT (conT ''ShowTag) [conT n, f']) [decl]
+```
+:::
+
+##
+
+::: {style="width: 125%; position: relative; left: -120px;"}
+```haskell
+class GEq tag => EqTag (tag :: k -> *) (f :: k -> *) where
+  eqTagged :: forall (a :: k). tag a -> tag a -> f a -> f a -> Bool
+  
+  
+  
+  
+  
+ 
+```
+:::
+
+::: notes
+Similar to `ShowTag`, `dependent-sum` also defines `EqTag`
+:::
+
+##
+
+::: {style="width: 125%; position: relative; left: -120px;"}
+```haskell
+class GEq tag => EqTag (tag :: k -> *) (f :: k -> *) where
+  eqTagged :: forall (a :: k). tag a -> tag a -> f a -> f a -> Bool
+  
+class FromJSONViaKey k f where
+  parseJSONViaKey ::  k a -> Value -> Parser (f a)
+
+class ToJSONViaKey k f where
+  toJSONViaKey :: k a -> f a -> Value
+```
+:::
+
+::: notes
+- We'd also like Aeson instances
+:::
+
+##
+
+::: {style="width: 125%; position: relative; left: -120px;"}
+```haskell
+deriveClassForGADT ::
+  Name
+  -> Name
+  -> Name
+  -> Name
+  -> Name
+  -> DecsQ
+deriveClassForGADT klass ctx ty method f = do
+  keyType <- reify ty
+  let
+    mkEq conName = clause [conP conName []] (normalB (varE f)) []
+    mkDecl = \case
+      (GadtC [conName] _bangTypes _ty) -> mkEq conName
+      _ -> fail "Can only deriveFromJSONViaKey with GADT constructors"
+    decl = case keyType of
+      TyConI (DataD _ctx _n _tyvars _kind cons _deriving) ->
+        funD method $ fmap mkDecl cons
+      _ -> fail "Can only deriveFromJSONViaKey with a type constructor"
+  f' <- varT <$> newName "f"
+  let c = cxt [appT (conT ctx) f']
+  pure <$> instanceD c (foldl appT (conT klass) [conT ty, f']) [decl]
+```
+:::
+
+::: notes
+`EqTag` isn't quite the same shape, but our Aeson instances and `ShowTag` are all exactly the same
+shape, so we can pull out the common bits.
+:::
+
+##
+
+```haskell
+deriveFromJSONViaKey n =
+  deriveClassForGADT ''FromJSONViaKey
+                     ''FromJSON1
+                     n
+                     'parseJSONViaKey
+                     'parseJSON1
+```
+
+-->
+</section></section>
+<section><section id="servant" class="title-slide slide level1"><h1><code>servant</code></h1></section><section id="section-58" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>API -&gt; ClientFunctions</code></pre>
+<aside class="notes">
+<ul>
+<li><code>servant</code> is an excellent library for web APIs</li>
+<li>client functions speak HTTP — server doesn’t have to be in Haskell</li>
+<li>we deal in Haskell data types</li>
+</ul>
+</aside>
+</section><section id="section-59" class="slide level2">
+<h2></h2>
+<p><img src="images/wordpress-api.png" alt="wordpress REST API for posts" style="width: 70%"/></p>
+</section><section id="section-60" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>type Posts =
+  &quot;posts&quot; :&gt; (
+  List
+  :&lt;|&gt; Auth :&gt; List
+
+  :&lt;|&gt; Auth :&gt; Id :&gt; Get &#39;[JSON] PostMap
+
+  :&lt;|&gt; Auth :&gt; ReqBody &#39;[JSON] PostMap :&gt;
+       Post &#39;[JSON] PostMap
+
+  :&lt;|&gt; Auth :&gt; Id :&gt; ReqBody &#39;[JSON] PostMap :&gt;
+       Post &#39;[JSON] PostMap
+
+  :&lt;|&gt; Auth :&gt; Id :&gt; QueryParam &quot;force&quot; NoForceDelete :&gt;
+       Delete &#39;[JSON] DeletedPost
+  :&lt;|&gt; Auth :&gt; Id :&gt; QueryParam&#39; &quot;force&quot; ForceDelete :&gt;
+       Delete &#39;[JSON] DeletedPost
+  )
+
+type List = QueryParamMap ListPostsKey Identity :&gt;
+            Get &#39;[JSON] [PostMap]
+type Auth = BasicAuth &quot;wordpress&quot; ()
+type Id = Capture &quot;id&quot; Int</code></pre>
+</section><section id="section-61" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>(     listPosts
+ :&lt;|&gt; listPostsAuth
+ :&lt;|&gt; getPost
+ :&lt;|&gt; createPost
+ :&lt;|&gt; updatePost
+ :&lt;|&gt; deletePost
+ :&lt;|&gt; deletePostForce ) = client postsAPI</code></pre>
+</section><section id="query-parameters" class="slide level2">
+<h2>Query parameters</h2>
+</section><section id="section-62" class="slide level2">
+<h2></h2>
+<div class="smaller-code">
+<pre class="haskell"><code>data ListPostsKey a where
+  ListPostsContext           :: ListPostsKey Context
+  ListPostsPage              :: ListPostsKey Int
+  ListPostsPerPage           :: ListPostsKey Int
+  ListPostsSearch            :: ListPostsKey Text
+  ListPostsAfter             :: ListPostsKey LocalTime
+  ListPostsAuthor            :: ListPostsKey Author
+  ListPostsAuthorExclude     :: ListPostsKey (NonEmpty Author)
+  ListPostsBefore            :: ListPostsKey LocalTime
+  ListPostsExclude           :: ListPostsKey (NonEmpty Int)
+  ListPostsInclude           :: ListPostsKey (NonEmpty Int)
+  ListPostsOffset            :: ListPostsKey Int
+  ListPostsOrder             :: ListPostsKey Order
+  ListPostsSlug              :: ListPostsKey (NonEmpty Text)
+  ListPostsStatus            :: ListPostsKey Status
+  ListPostsCategories        :: ListPostsKey (NonEmpty Text)
+  ListPostsCategoriesExclude :: ListPostsKey (NonEmpty Text)
+  ListPostsTags              :: ListPostsKey (NonEmpty Text)
+  ListPostsTagsExclude       :: ListPostsKey (NonEmpty Text)
+  ListPostsSticky            :: ListPostsKey Sticky</code></pre>
+</div>
+<aside class="notes">
+<ul>
+<li>These are all the criteria we can specify to filter posts when listing</li>
+<li>19 constructors makes for 19 factorial combinations of parameters specified</li>
+<li><code>DMap</code> to the rescue again</li>
+</ul>
+</aside>
+</section><section id="section-63" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>type List = QueryParamMap ListPostsKey Identity :&gt;
+            Get &#39;[JSON] [PostMap]</code></pre>
+<aside class="notes">
+<ul>
+<li>Look back at part of our API.</li>
+<li>WP API requires <code>GET</code> with query parameters.</li>
+<li><code>QueryParamMap</code> allows us to specify query parameters as a <code>DMap</code>.</li>
+<li><code>QueryParamMap</code> doesn’t come with <code>servant</code>. I defined it.</li>
+<li><code>servant</code>’s query parameter handling results in a <code>Maybe</code> value for each parameter</li>
+<li><code>servant</code>’s use of type classes allow us to easily extend its capabilities.</li>
+</ul>
+</aside>
+<!--
+##
+
+```haskell
+class HasClient (api :: k) where
+
+  type family Client (api :: k) :: *
+
+  clientWithRoute ::
+    Data.Proxy.Proxy api
+    -> Servant.Common.Req.Req
+    -> Client api
+```
+
+::: notes
+- `servant` defines this class
+- Handles updating of requests for each API combinator
+:::
+
+##
+
+```haskell
+data QueryParam (sym :: Symbol) a
+
+instance (KnownSymbol sym, ToHttpApiData a, HasClient api)
+      => HasClient (QueryParam sym a :> api) where
+
+  type Client (QueryParam sym a :> api) =
+    Maybe a -> Client api
+```
+
+::: notes
+- `QueryParam` type has no constructors
+- instance definitions pattern match the combinator and the rest of the API
+- `Client` shows that each `QueryParam` results in a `Maybe` parameter
+- Without `QueryParamMap` would have to translate `DMap` to function call with
+  19 parameters.
+:::
+
+-->
+</section><section id="section-64" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>data QueryParamMap (key :: * -&gt; *) (f :: * -&gt; *)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ </code></pre>
+</section><section id="section-65" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>data QueryParamMap (key :: * -&gt; *) (f :: * -&gt; *)
+
+instance (ToQueryParamKeyValues key f, HasClient api)
+      =&gt; HasClient (QueryParamMap key f :&gt; api) where
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ </code></pre>
+</section><section id="section-66" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>data QueryParamMap (key :: * -&gt; *) (f :: * -&gt; *)
+
+instance (ToQueryParamKeyValues key f, HasClient api)
+      =&gt; HasClient (QueryParamMap key f :&gt; api) where
+
+  type Client (QueryParamMap key f :&gt; api) =
+    DMap key f -&gt; Client api
+
+
+
+
+
+
+
+
+
+
+
+
+ </code></pre>
+</section><section id="section-67" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>data QueryParamMap (key :: * -&gt; *) (f :: * -&gt; *)
+
+instance (ToQueryParamKeyValues key f, HasClient api)
+      =&gt; HasClient (QueryParamMap key f :&gt; api) where
+
+  type Client (QueryParamMap key f :&gt; api) =
+    DMap key f -&gt; Client api
+
+  clientWithRoute :: 
+    Proxy (QueryParamMap key f :&gt; api)
+    -&gt; Req
+    -&gt; Client (QueryParamMap key f :&gt; api)
+
+
+
+
+
+
+
+ </code></pre>
+</section><section id="section-68" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>data QueryParamMap (key :: * -&gt; *) (f :: * -&gt; *)
+
+instance (ToQueryParamKeyValues key f, HasClient api)
+      =&gt; HasClient (QueryParamMap key f :&gt; api) where
+
+  type Client (QueryParamMap key f :&gt; api) =
+    DMap key f -&gt; Client api
+
+  clientWithRoute :: 
+    Proxy (QueryParamMap key f :&gt; api)
+    -&gt; Req
+    -&gt; Client (QueryParamMap key f :&gt; api)
+  clientWithRoute Proxy req dm =
+    let
+      addPair (k, v) = appendToQueryString k (Just v)
+      f ka fa req&#39; =
+        foldr addPair req&#39; $ toQueryParamKeyValues ka fa
+    in
+      clientWithRoute (Proxy :: Proxy api) $
+        DM.foldrWithKey f req dm</code></pre>
+</section></section>
+<section><section id="putting-it-together" class="title-slide slide level1"><h1>Putting it together</h1></section><section id="state" class="slide level2">
+<h2>State</h2>
+</section><section id="section-69" class="slide level2">
+<h2></h2>
+<pre><code class="haskell" data-trim data-noescape>
+type Posts v = Map (Var Int v) StatePost
+
+<span class="fragment">newtype WPState (v :: * -> *) =
+  WPState
+  { _posts :: Posts v
+  }
+  deriving (Eq, Show)</span>
+</code></pre>
+<aside class="notes">
+<ul>
+<li>Start by looking at state</li>
+<li>So far only testing posts, so just a map of id to post data</li>
+</ul>
+</aside>
+</section><section id="inputs" class="slide level2">
+<h2>Inputs</h2>
+</section><section id="section-70" class="slide level2 wp-example" data-background-image="images/wp-failure-example-inputs.png">
+<h2></h2>
+</section><section id="section-71" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>newtype CreatePost (v :: * -&gt; *) =
+  CreatePost PostMap
+  deriving (Show)
+  
+  
+  
+  
+  
+
+
+
+
+
+
+ </code></pre>
+</section><section id="section-72" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>newtype CreatePost (v :: * -&gt; *) =
+  CreatePost PostMap
+  deriving (Show)
+  
+data DeletePost (v :: * -&gt; *) =
+  DeletePost (Var Int v) (Maybe Bool)
+  deriving (Show)
+  
+  
+  
+  
+  
+
+
+ </code></pre>
+</section><section id="section-73" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>newtype CreatePost (v :: * -&gt; *) =
+  CreatePost PostMap
+  deriving (Show)
+  
+data DeletePost (v :: * -&gt; *) =
+  DeletePost (Var Int v) (Maybe Bool)
+  deriving (Show)
+  
+data UpdatePost (v :: * -&gt; *) =
+  UpdatePost (Var Int v) PostMap
+  deriving (Show)
+  
+  
+  
+  </code></pre>
+</section><section id="section-74" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>newtype CreatePost (v :: * -&gt; *) =
+  CreatePost PostMap
+  deriving (Show)
+  
+data DeletePost (v :: * -&gt; *) =
+  DeletePost (Var Int v) (Maybe Bool)
+  deriving (Show)
+  
+data UpdatePost (v :: * -&gt; *) =
+  UpdatePost (Var Int v) PostMap
+  deriving (Show)
+  
+newtype GetPost (v :: * -&gt; *) =
+  GetPost (Var Int v)
+  deriving (Show)</code></pre>
+</section><section id="creating-posts" class="slide level2">
+<h2>Creating posts</h2>
+</section><section id="section-75" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cCreatePost env@Env{..} =
+  let
+
+
+
+
+
+
+
+
+  in
+
+
+
+ </code></pre>
+</section><section id="section-76" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cCreatePost env@Env{..} =
+  let
+    gen = Just . fmap CreatePost . genPost
+
+
+
+
+
+
+
+  in
+
+
+
+ </code></pre>
+</section><section id="section-77" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cCreatePost env@Env{..} =
+  let
+    gen = Just . fmap CreatePost . genPost
+    exe (CreatePost pm) = do
+      annotateShow pm
+      annotateShow $ encode pm
+
+
+
+
+  in
+
+
+
+ </code></pre>
+</section><section id="section-78" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cCreatePost env@Env{..} =
+  let
+    gen = Just . fmap CreatePost . genPost
+    exe (CreatePost pm) = do
+      annotateShow pm
+      annotateShow $ encode pm
+      let create =
+        fmap (runIdentity . (DM.! PostId))
+             (createPost (auth env) pm)
+
+  in
+
+
+
+ </code></pre>
+</section><section id="section-79" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cCreatePost env@Env{..} =
+  let
+    gen = Just . fmap CreatePost . genPost
+    exe (CreatePost pm) = do
+      annotateShow pm
+      annotateShow $ encode pm
+      let create =
+        fmap (runIdentity . (DM.! PostId))
+             (createPost (auth env) pm)
+      evalEither =&lt;&lt; liftIO (runClientM create servantClient)
+  in
+
+
+
+ </code></pre>
+</section><section id="section-80" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cCreatePost env@Env{..} =
+  let
+    gen = Just . fmap CreatePost . genPost
+    exe (CreatePost pm) = do
+      annotateShow pm
+      annotateShow $ encode pm
+      let create =
+        fmap (runIdentity . (DM.! PostId))
+             (createPost (auth env) pm)
+      evalEither =&lt;&lt; liftIO (runClientM create servantClient)
+  in
+    Command gen exe [
+      Update $ \s (CreatePost p) o -&gt;
+        posts . at o ?~ StatePost p $ s
+    ]</code></pre>
+</section><section id="updating-posts" class="slide level2">
+<h2>Updating posts</h2>
+</section><section id="section-81" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cUpdatePost env@Env{..} =
+  let
+    gen s =
+      (flip UpdatePost &lt;$&gt; genPost s &lt;*&gt;) &lt;$&gt; genId s
+    exe (UpdatePost pId pm) = do
+      annotateShow pm
+      annotateShow $ encode pm
+      let update =
+        fmap (runIdentity . (DM.! PostId))
+             (updatePost (auth env) (concrete pId) pm)
+      evalEither =&lt;&lt; liftIO (runClientM update servantClient)
+  in
+    Command gen exe [
+      Require $ \s (UpdatePost varId _) -&gt;
+        s ^. posts . at varId &amp; not . null
+    , Update $ \s (UpdatePost pId p) _ -&gt;
+        posts . at pId ?~ StatePost p $ s
+    ]</code></pre>
+</section><section id="section-82" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>
+
+
+
+
+
+
+
+
+
+
+
+
+      Require $ \s (UpdatePost varId _) -&gt;
+        s ^. posts . at varId &amp; not . null
+
+
+ </code></pre>
+</section><section id="getting-posts" class="slide level2">
+<h2>Getting posts</h2>
+</section><section id="section-83" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>cGetPost now env@Env{..} =
+  let
+    gen s =
+      (fmap . fmap) GetPost $ genId s
+    exe (GetPost varId) = do
+      let
+        get = getPost (auth env) (concrete varId)
+      evalEither =&lt;&lt; liftIO (runClientM get servantClient)
+  in
+    Command gen exe [
+      Require $ \s (GetPost varId) -&gt;
+        s ^. posts . at varId &amp; not . null
+    , Ensure $ \_so sn (GetPost varId) p -&gt; do
+        stateMap &lt;- eval $ (sn ^. posts) M.! varId
+        annotateShow stateMap
+        annotateShow p
+        postsEq now stateMap p
+    ]</code></pre>
+</section><section id="section-84" class="slide level2">
+<h2></h2>
+<pre class="haskell"><code>
+
+
+
+
+
+
+
+
+
+
+
+      Ensure $ \_so sn (GetPost varId) p -&gt; do
+        stateMap &lt;- eval $ (sn ^. posts) M.! varId
+        annotateShow stateMap
+        annotateShow p
+        postsEq now stateMap p
+     </code></pre>
+</section></section>
+<section><section id="conclusion" class="title-slide slide level1"><h1>Conclusion</h1></section><section id="state-machine-testing-2" class="slide level2">
+<h2>State machine testing</h2>
+<ul>
+<li class="fragment">Very powerful technique to test stateful systems.</li>
+<li class="fragment">App being tested doesn’t have to use Haskell or FP.</li>
+</ul>
+</section><section id="nixops-1" class="slide level2">
+<h2><code>NixOps</code></h2>
+<ul>
+<li class="fragment">Referentially transparent specification of a deployment.</li>
+<li class="fragment">Deploy in a few commands.</li>
+</ul>
+</section><section id="dmap-2" class="slide level2">
+<h2><code>DMap</code></h2>
+<ul>
+<li class="fragment">Heterogenous mapping of keys to values that preserves type safety.</li>
+<li class="fragment">Good for more “dynamic” APIs and loose specs.</li>
+</ul>
+</section><section id="servant-1" class="slide level2">
+<h2><code>servant</code></h2>
+<ul>
+<li class="fragment">Declare your API as a type and get client functions for free.</li>
+<li class="fragment">Allows us to extend it’s API language as necessary.</li>
+</ul>
+</section><section id="section-85" class="slide level2">
+<h2></h2>
+<p>Go forth and test!</p>
+</section></section>
+<section><section id="references" class="title-slide slide level1"><h1>References</h1></section><section id="code" class="slide level2">
+<h2>Code</h2>
+<div class="left">
+<p><strong>wp-tests</strong><br />
+<a href="https://github.com/qfpl/wp-tests" class="uri">https://github.com/qfpl/wp-tests</a></p>
+</div>
+</section><section id="talks" class="slide level2">
+<h2>Talks</h2>
+<div class="left">
+<p><strong>Gens N’ Roses: Appetite for Reduction</strong><br />
+<a href="https://www.youtube.com/watch?v=AIv_9T0xKEo" class="uri">https://www.youtube.com/watch?v=AIv_9T0xKEo</a></p>
+<p><strong>Property-based State Machine Testing</strong><br />
+<a href="https://www.youtube.com/watch?v=boBD1qhCQ94" class="uri">https://www.youtube.com/watch?v=boBD1qhCQ94</a></p>
+</div>
+</section><section id="nix-1" class="slide level2">
+<h2>Nix</h2>
+<div class="{.left**">
+<p><a href="https://nixos.org/" class="uri">https://nixos.org/</a></p>
+</div>
+</section><section id="dmap-3" class="slide level2">
+<h2><code>DMap</code></h2>
+<div class="{.left**">
+<p><strong><code>dependent-map</code></strong><br />
+<a href="https://hackage.haskell.org/package/dependent-map" class="uri">https://hackage.haskell.org/package/dependent-map</a></p>
+<p><strong><code>dependent-sum</code></strong><br />
+<a href="https://hackage.haskell.org/package/dependent-sum" class="uri">https://hackage.haskell.org/package/dependent-sum</a></p>
+<p><strong><code>dependent-sum-template</code></strong><br />
+<a href="https://hackage.haskell.org/package/dependent-sum-template" class="uri">https://hackage.haskell.org/package/dependent-sum-template</a></p>
+</div>
+</section><section id="wordpress-1" class="slide level2">
+<h2>Wordpress</h2>
+<div class="left">
+<p><strong>WordPress book</strong><br />
+<a href="https://github.com/WordPress/book/blob/master/Content/Part%201/2-b2-cafelog.md">https://github.com/WordPress/book/blob/master/Content/Part%201/2-b2-cafelog.md</a></p>
+<p><strong>WordPress REST API reference</strong><br />
+[https://developer.wordpress.org/rest-api/reference/](https://developer.wordpress.org/rest-api/reference/**</p>
+</div>
+</section><section id="images" class="slide level2">
+<h2>Images</h2>
+<div class="left">
+<p><strong>Turnstile</strong><br />
+<a href="https://www.procontrol.hu/en/category/details/id/180145-PayGate_M3E-2_coin_operated_PGM3E_mini_tripod_turnstile_toilet_entry_with_folding_arms" class="uri">https://www.procontrol.hu/en/category/details/id/180145-PayGate_M3E-2_coin_operated_PGM3E_mini_tripod_turnstile_toilet_entry_with_folding_arms</a></p>
+</div>
+</section></section>
+    </div>
+  </div>
+
+  <script src="reveal.js/lib/js/head.min.js"></script>
+  <script src="reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Transition style
+        transition: 'none', // none/fade/slide/convex/concave/zoom
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+              { src: 'reveal.js/plugin/notes/notes.js', async: true },
+		      { src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+        ]
+      });
+    </script>
+    </body>
+</html>

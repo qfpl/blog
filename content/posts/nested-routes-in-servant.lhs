@@ -1,7 +1,7 @@
 ---
 title: Nested routes in servant
 date: 2018-02-05
-authors: ajmccluskey
+authors: ajmcmiddlin
 ---
 
 One of the first Haskell apps I ever wrote was a servant app. It had three routes and I cargo culted
