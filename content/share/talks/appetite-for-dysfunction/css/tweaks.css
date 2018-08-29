@@ -1,0 +1,44 @@
+.reveal section img {
+    border: none;
+}
+
+div.slide-background div.turnstile {
+    background-size: 80%;
+    background-color: #daede5;
+    transition: none;
+}
+
+div.slide-background div.state-example {
+    background-size: 80%;
+    background-color: #e0d6bc;
+    transition: none;
+}
+
+div.slide-background div.wp-example {
+    background-size: contain;
+    transition: none;
+}
+
+.reveal pre code {
+    max-height: 80%;
+}
+
+.smaller-code pre code {
+    font-size: 90%;
+}
+
+blockquote, .left {
+    text-align: left;
+}
+
+h1.title {
+    font-size: 125%;
+}
+
+div.no-bullets li {
+    list-style: none;
+}
+
+div.left-align {
+    text-align: left;
+}
