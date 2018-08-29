@@ -1,5 +1,5 @@
 ---
-title: Andrew McCluskey
+title: Andrew McMiddlin
 ---
 
 Andrew's love affair with computing started early, when his mother bought a Commodore 64 having
@@ -25,3 +25,6 @@ tried out Clojure, having fond memories of Scheme, and was happy. Until he wasn'
 through a bioinformatics course using Clojure, Andrew's lack of discipline and Clojure's lack of
 types burned him, and he decided static typing was a good idea. Having heard people make bold claims
 about Haskell's type system, Andrew decided it was worth checking out. He hasn't looked back since.
+
+Andrew used to go by Andrew McCluskey (or ajmccluskey). If you see that name around, at least in
+reference to a software developer, there's a good chance it's referring to this guy.
