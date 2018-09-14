@@ -318,7 +318,7 @@ you to read through it and uncomment and/or set anything that takes your fancy. 
 your time zone is probably a good idea. To see an example of a full configuration with XMonad
 configured as the window manager, you can check out [my
 config](https://github.com/ajmcmiddlin/dot-files/blob/c687b94f8c4bb0007fc8ebac2c5cbb06564a1cd4/etc/nixos/configuration.nix.5520)
-on GitHub.
+on GitHub. Configurations files may vary between NixOS versions, so be sure to check that there are no version specific subtleties before borrowing heavily from another configuration.nix. (The above config does not specifically add cache.nixos.org to the binary cache; neglecting to include the binary cache in NixOS version 18.03 or higher will result in tonnes of compilation).
 
 ### Pull the trigger!
 
