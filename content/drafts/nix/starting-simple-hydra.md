@@ -517,9 +517,9 @@ For the impatient or curious, you can have a look at the setup we use at QFPL fo
 
 If you're looking at most of the code in this post and thinking that all it would take is some
 simple inputs and interpolation then you wouldn't need to write the same `nix` expressions every
-time. You would be correct, and a kindly soul by the Github handle of `ElvishJerricco` has done
-just that in [`simple-hydra`](https://github.com/ElvishJerricco/simple-hydra). This repo has a
-version of what we have worked through here, but abstracted so that you need only specify some
+time. You would be correct, and Will Fancher - known in some online communities as `ElvishJerricco` -
+has done just that in [`simple-hydra`](https://github.com/ElvishJerricco/simple-hydra). This repo
+has a version of what we have worked through here, but abstracted so that you need only specify some
 choices along with hostnames etc.
 
 For the sake of your own understanding, it is useful to work through it yourself first so you can
@@ -527,7 +527,7 @@ more readily experiment and learn about the inner workings.
 
 ### Going further
 
-For those looking for more advanced Hydra information, then the [Hydra Tutorial](https://github.com/peti/hydra-tutorial)
+For those looking for more advanced Hydra information, the [Hydra Tutorial](https://github.com/peti/hydra-tutorial)
 by Github user `peti` is an excellent resource. The tutorial is also worked through as part of a
 presentation linked to from the repo: ([presentation link](https://www.youtube.com/watch?v=RXV0Y5Bn-QQ)).
 
