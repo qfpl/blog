@@ -53,18 +53,17 @@
   padding: 1rem;
 }
 
-code {
-  color: #007A53;
-  background-color: #F5F5F5;
-}
-
-pre.sourceCode {
+pre {
   padding: 1rem;
   border: var(--d61-green) 2px solid;
   border-radius: 0.25rem;
   background-color: #F5F5F5;
 }
 
+code {
+  color: #007A53;
+  background-color: #F5F5F5;
+}
 
 body {
   display: flex;
@@ -73,7 +72,7 @@ body {
 }
 
 main {
-  flex: 1; 
+  flex: 1;
 }
 
 @font-face {
