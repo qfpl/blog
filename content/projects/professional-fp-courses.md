@@ -127,7 +127,7 @@ On completion of this course, participants will:
 
 #### What do you need to bring?
 
-1. A suitable development computer (e.g. laptop) for working through the exercises. You will also need to install the [Glasgow Haskell Compiler](http://www.haskell.org/ghc/) version 7.10 or higher on that machine. A copy of the `cabal` build tool is also required, this should be installed as part of your GHC install, however to ensure you have both, run the following commands:
+1. A suitable development computer (e.g. laptop) for working through the exercises. You will also need to install the [minimal Haskell Platform](https://www.haskell.org/downloads) version 7.10 or higher on that machine. This should include the Glasgow Haskell Compiler and the cabal-install build tool. To ensure you have both, run the following commands:
 
 ```
 $ ghc --version
