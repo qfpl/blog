@@ -158,7 +158,7 @@ Given a list of possibly `null` values, return either a list of definitely-not `
 
 ```csharp
 given(list) {
-var r = list.empty
+  var r = list.empty
   for(int i = 0; i < list.length; i++) {
     if(list[i] == null) 
       return null
