@@ -4,6 +4,8 @@ title: Functional Programming courses
 
 ### Introduction to Functional Programming
 
+<img class="ml-3 mt-3 border rounded float-right" src="/images/20180129-melbourne-01.jpg" alt="January 2018, Melbourne 01" style="width:400px" height="310px">
+
 This training course is targeted at professional software engineers within organisations who aspire to improve their programming skills and deploy those skills in a professional environment. The introductory course is generally considered intense since it covers a diverse range of the fundamental Functional Programming tools.
 
 The introductory training course runs over 3 full days and can be modified prior to meet any specific requests. For example, you might want to learn what monads are all about, and what practical application they have in production software. We can provide a specific focus on achieving this goal within the 3 days of the course.
@@ -13,10 +15,6 @@ After course completion, attendees are introduced to support forums to assist in
 Functional Programming is a skill and practice that promises to improve software development time, quality and lowering development costs by taking advantage of the mathematical principles of computer programming. This introductory course prepares your organisation to directly exploit these benefits.
 
 There is no prior knowledge of Functional Programming to attend the introductory training course. The only pre-requisite is bringing in your work laptop and general knowledge of navigating your operating environment on that laptop e.g. using a text editor and a command line.
-
-<div style="text-align:right">
-<img src="/images/20180129-melbourne-01.jpg" alt="January 2018, Melbourne 01" style="width:400px">
-</div>
 
 #### Agenda
 
@@ -46,14 +44,11 @@ The introductory FP course prepares you to overcome the initial learning barrier
 
 On completion of this course, attendees will be able to confidently explain the definition of Functional Programming and answer questions such as:
 
+
 * why would I use Functional Programming?
 * why do Functional Programmers use mathematics terminology for their practice?
 * how does Functional Programming save me money in software development?
 * by what means does Functional Programming improve software quality?
-
-<div style="text-align:left">
-<img src="/images/20180129-melbourne-00.jpg" alt="January 2018, Melbourne 00" style="width:500px">
-</div>
 
 #### What do you need to bring?
 
@@ -75,6 +70,8 @@ Catering and travel within Australia is included.
 
 ### Applied Functional Programming
 
+<img class="ml-3 mt-3 border rounded float-right" src="/images/20180129-melbourne-00.jpg" alt="January 2018, Melbourne 00" style="width:400px" height="310px">
+
 This is the follow-up course to the Introduction to Functional Programming, which is targeted toward programmers who have become proficient with navigating Functional Programming concepts and would like to progress to building a complete application. The Applied FP course activities involve writing (from scratch) a REST web application with a sqlite database backend.
 
 Similar to the introductory FP course, the applied FP course is run over 3 full days. Some participants of the applied FP course prefer a modification where the initial exercises are condensed to focus on the more advanced topics.
@@ -95,19 +92,19 @@ This agenda is a rough guide, only. The applied course is self-paced, with the i
 
 The overall ordering is as follows:
 
-* "Hello, World!" - Every project starts somewhere. We begin with defining the structure of our application and how to go about declaring project dependencies and configuration.
+* **"Hello, World!"** - Every project starts somewhere. We begin with defining the structure of our application and how to go about declaring project dependencies and configuration.
 
-* Type driven development - We take a specification and define a data type to represent it. Being able to almost directly translate a specification to a type that we can use to guide our development is a powerful Functional Programming feature. We demonstrate and discuss how such a type can improve and produce more robust and accurate software.
+* **Type driven development** - We take a specification and define a data type to represent it. Being able to almost directly translate a specification to a type that we can use to guide our development is a powerful Functional Programming feature. We demonstrate and discuss how such a type can improve and produce more robust and accurate software.
 
-* Testing - Functional Programming is immensely powerful, but this doesn't obviate the need for testing. Functional Programming has wonderful tools for testing and we lay the groundwork for them here. Covering the configuration as well as writing some of our own.
+* **Testing** - Functional Programming is immensely powerful, but this doesn't obviate the need for testing. Functional Programming has wonderful tools for testing and we lay the groundwork for them here. Covering the configuration as well as writing some of our own.
 
-* Database integration - In this, we cover how to create and maintain a connection to a database. We also visit techniques for handling the error conditions that may arise with database programming, and how to encode and decode the information. We use SQLite, for the sake of simplicity. Through discussion and example, we cover off some of the more advanced database packages that are available to functional programmers.
+* **Database integration** - In this, we cover how to create and maintain a connection to a database. We also visit techniques for handling the error conditions that may arise with database programming, and how to encode and decode the information. We use SQLite, for the sake of simplicity. Through discussion and example, we cover off some of the more advanced database packages that are available to functional programmers.
 
-* Abstracting error handling - Participants will, from first principles, create an entirely abstracted technique of error handling that is then applied to the application. This process demonstrates how Functional Programming allows you to abstract away code repetition in a way that is excludes certain classes of common software bugs that otherwise arise. All of the error handling that participants have been using up to this point will disappear. It is subsequently demonstrated to participants how to leverage the compiler and libraries, such that they never need to write this code themselves, saving immeasurable amounts of time and effort.
+* **Abstracting error handling** - Participants will, from first principles, create an entirely abstracted technique of error handling that is then applied to the application. This process demonstrates how Functional Programming allows you to abstract away code repetition in a way that is excludes certain classes of common software bugs that otherwise arise. All of the error handling that participants have been using up to this point will disappear. It is subsequently demonstrated to participants how to leverage the compiler and libraries, such that they never need to write this code themselves, saving immeasurable amounts of time and effort.
 
-* Configuration - Applications are rarely static, they are configurable through either files or direct input. This application is no different and the participants will add configuration to the application. Both file based and command line options are implemented.
+* **Configuration** - Applications are rarely static, they are configurable through either files or direct input. This application is no different and the participants will add configuration to the application. Both file based and command line options are implemented.
 
-* Abstracting argument passing - Similar to the process of removing the error handling code from the application, we will remove the need to pass around a common parameter through an application. Participants will have the lesson driven home that if you're repeating something when using Functional Programming, you are most likely able to abstract it away. Identifying these opportunities to ntake advantage of the tools of abstraction to improve software robustness is a critical component of the applied FP course.
+* **Abstracting argument passing** - Similar to the process of removing the error handling code from the application, we will remove the need to pass around a common parameter through an application. Participants will have the lesson driven home that if you're repeating something when using Functional Programming, you are most likely able to abstract it away. Identifying these opportunities to ntake advantage of the tools of abstraction to improve software robustness is a critical component of the applied FP course.
 
 * Finally we finish with a Q & A session that covers what the participants have learned, and what the next steps in learning and deploying their new skills in an organisation. The discussion covers topics such as already-established FP libraries and some more advanced programming techniques. The participants are also encouraged to engage in open discussion about Functional Programming and the techniques they've learned. Additional reference material for more advanced topics is also provided.
 
