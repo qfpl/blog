@@ -2,7 +2,7 @@
 title: Introduction to Functional Programming. Canberra, ACT. 18-20 July 2018
 date: 2018-04-26
 authors: tmorris schalmers
-project: courses
+project: professional-fp-courses
 ---
 
 Queensland Functional Programming Lab, a Data61/CSIRO and Queensland Government initiative, are running two free 3-day Functional Programming courses in Canberra, 18th to 20th July 2018:

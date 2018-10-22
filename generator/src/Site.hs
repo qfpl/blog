@@ -1,8 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
+
 import           Data.Monoid (mappend)
+import           Data.Time   (getCurrentTime)
 
 import           Hakyll
 
+import           Links
 import           People
 import           Posts
 import           Projects
@@ -17,6 +20,8 @@ main = do
   let
     pandocMathCompiler = pmcfCompiler pandocMathCompilerFns
     renderPandocMath = pmcfRenderPandoc pandocMathCompilerFns
+
+  nowish <- getCurrentTime
 
   hakyll $ do
     match "images/**" $ do
@@ -72,7 +77,10 @@ main = do
         route $ setExtension "html"
         compile $ do
             posts <- fmap (take 5) . recentFirst =<< loadAll "posts/**"
+            courseCtx <- getCourseLinksCtx nowish defaultContext
+
             let indexCtx =
+                    courseCtx                                `mappend`
                     constField "home-active" ""              `mappend`
                     listField "posts" postCtx (return posts) `mappend`
                     constField "title" "Home"                `mappend`

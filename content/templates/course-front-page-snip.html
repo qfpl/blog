@@ -1,0 +1,17 @@
+<div class="card-deck">
+
+  $for(courselinks)$
+
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title data61-bottom-line">
+        <a href="$url$"> $title$ </a>
+        $if(course-type)$
+        <div class="badge badge-secondary course-type-badge course-type-$course-type$"> </div>
+        $endif$
+      </h4>
+    </div>
+  </div>
+  $endfor$
+
+</div>

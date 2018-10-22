@@ -17,11 +17,13 @@ executable site
                   , Projects.Context
                   , Talks
                   , Talks.Common
+                  , Links
                   , Util.Order
                   , Util.Nick
                   , Util.Pandoc
                   , Util.Index
                   , Util.Items
+                  , Util.Time
   build-depends:    base == 4.*
                   , hakyll == 4.9.*
                   , pandoc
@@ -30,6 +32,7 @@ executable site
                   , latex-formulae-hakyll
                   , unordered-containers
                   , text
+                  , time
                   , aeson
                   , scientific
                   , filepath
