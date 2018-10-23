@@ -125,3 +125,23 @@ img.location-image  {
   height: 200px;
   max-width: 200px;
 }
+
+.course-type-badge {
+  float: right;
+}
+@media (max-width: 768px) {
+  .course-type-badge {
+    float: none;
+    margin: 0.5em 0 0.5em 0;
+  }
+}
+
+.course-type-both:after {
+  content: "Introductory & Applied";
+}
+.course-type-applied:after {
+  content: "Applied";
+}
+.course-type-intro:after {
+  content: "Introductory";
+}

@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Projects (
     projectRules
+  , getProjectLinks
   , module Projects.Context
   ) where
 
