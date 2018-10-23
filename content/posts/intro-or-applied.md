@@ -9,7 +9,7 @@ At QFPL, we often run Functional Programming courses, both to raise awareness fo
 
 During the Introductory FP Course, we cover fundamental concepts such as `Applicative` and `Monad` and why they are used. We investigate the degree of abstraction these concepts provide and discuss the practical consequences. Typically, after these concepts are introduced, participants have gained a hold on the general idea and why we might exploit them in our everyday software engineering. These ideas are introduced over a short period, and although it is not expected to achieve complete fluency, a participant is well-equipped to self-study these ideas in the long term.
 
-It is a pre-requisite that a general comfort (though not complete fluency) with these ideas to complete the Applied FP Course. If you are unsure what that might be like, following are some concrete questions to test yourself on.
+General comfort (though not complete fluency) with these ideas is therefore a prerequisite for the Applied FP Course. If you are unsure what that might be like, following are some concrete questions to test yourself on.
 
 1. Write a function with the following type: `Applicative f => [f a] -> f [a]`.
 
