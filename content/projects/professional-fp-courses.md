@@ -68,19 +68,21 @@ already but are in need of further training in a particular topic.
 <li class="list-group-item d-flex justify-content-between">
 <span><i class="fa fa-lg fa-fw fa-map-marker mr-1"></i>**Where:**</span><span>[Contact Us](/contact)</span>
 </li>
-<li class="list-group-item d-flex justify-content-between">
+<li class="list-group-item d-flex justify-content-between text-right">
 <span><i class="fa fa-lg fa-fw fa-dollar mr-1"></i>**Cost:**</span>
 
-* 5 to 10 attendees: $2500 per person
-* 10-20 attendees: $2000 per person
-* 20+ attendees: $1500 per person
+<ul class="list-unstyled">
+  <li>( 5-10<i class="fa fa-fw fa-lg fa-user"></i>)  <i class="fa fa-fw fa-lg fa-at"></i> $2500 / person</li>
+  <li>( 10-20 <i class="fa fa-fw fa-lg fa-user"></i>) <i class="fa fa-fw fa-lg fa-at"></i> $2000 / person</li>
+  <li>( 20+ <i class="fa fa-fw fa-lg fa-user"></i>) <i class="fa fa-fw fa-lg fa-at"></i> $1500 / person</li>
+</ul>
 
 </li>
-<li class="list-group-item d-flex justify-content-left">
+<li class="list-group-item d-flex justify-content-between text-right">
 <span><i class="fa fa-lg fa-fw fa-cutlery mr-1"></i>**Catering and Travel:**</span>
 <span>
 
-* within Australia , included in cost.
+* within Australia, it is included.
 * outside of Australia? [Contact us](/contact).
 
 </span>
@@ -95,7 +97,7 @@ Introduction to Functional Programming
 <span class="float-right">[[top](#top)]</span>
 </h2>
 
-<img class="ml-3 mt-3 border rounded float-right" src="/images/20180129-melbourne-01.jpg" alt="January 2018, Melbourne 01" style="width:400px" height="310px">
+<img class="img-fluid ml-3 mt-3 border rounded float-right" src="/images/20180129-melbourne-01.jpg" alt="January 2018, Melbourne 01" style="width:400px" height="310px">
 
 This training course is targeted at professional software engineers within organisations who aspire to improve their programming skills and deploy those skills in a professional environment. The introductory course is generally considered intense since it covers a diverse range of the fundamental Functional Programming tools.
 
@@ -154,7 +156,7 @@ Applied Functional Programming
 <span class="float-right">[[top](#top)]</span>
 </h2>
 
-<img class="ml-3 mt-3 border rounded float-right" src="/images/20180129-melbourne-00.jpg" alt="January 2018, Melbourne 00" style="width:400px" height="310px">
+<img class="img-fluid ml-3 mt-3 border rounded float-right" src="/images/20180129-melbourne-00.jpg" alt="January 2018, Melbourne 00" style="width:400px" height="310px">
 
 This is the follow-up course to the Introduction to Functional Programming, which is targeted toward programmers who have become proficient with navigating Functional Programming concepts and would like to progress to building a complete application. The Applied FP course activities involve writing (from scratch) a REST web application with a sqlite database backend.
 
