@@ -1,8 +1,99 @@
 ---
-title: Functional Programming courses
+title: Functional Programming Courses
 ---
+[](#top)
+All of our course material is open source and we encourage everyone to provide feedback. These courses are for you and the community, so if we can make them better then we want to know!
 
-### Introduction to Functional Programming
+Keep reading to find out more about our pricing options, or click on the links below to find out more about each course:
+
+* <h5>[Introductory Course](#intro)</h5>
+* <h5>[Applied FP Course](#applied)</h5>
+
+<h2 class="mt-4 data61-bottom-line">
+Course Pricing
+</h2>
+
+We have free and paid courses with the same content for each course.
+
+##### The Difference
+
+The timing and location of the free courses is based on demand. You are more than welcome to attend,
+we encourage it! But it is still open to the general public and we will run the course when and
+where we deem it the most beneficial. Additionally the content of the course will not be altered.
+
+If you pay for the course, then we come to you. We run a focussed version of the course for only your
+list of attendees. We're also able to tweak the course content to suit your needs. 
+
+Or maybe a boot camp for a specific focus, if you have internal Functional Programming skills
+already but are in need of further training in a particular topic.
+
+##### Course Tiers
+
+<div class="card-deck m-2">
+<div class="card data61-border">
+
+<div class="card-header data61-border">
+<h4>Free</h4>
+</div>
+
+<div class="card-body">
+<ul class="list-group list-group-flush">
+<li class="list-group-item d-flex justify-content-between">
+<span><i class="fa fa-lg fa-fw fa-calendar mr-1"></i>**When:**</span><span>TBD</span>
+</li>
+<li class="list-group-item d-flex justify-content-between">
+<span><i class="fa fa-lg fa-fw fa-map-marker mr-1"></i>**Where:**</span><span>TBD</span>
+</li>
+<li class="list-group-item d-flex justify-content-between">
+<span><i class="fa fa-lg fa-fw fa-dollar mr-1"></i>**Cost:**</span><span>Free!</span>
+</li>
+<li class="list-group-item d-flex justify-content-between">
+<span><i class="fa fa-lg fa-fw fa-cutlery mr-1"></i>**Catering and Travel:**</span><span>Lunch is on us!</span>
+</li>
+</ul>
+</div>
+</div> <!-- END FREE CARD -->
+
+<div class="card data61-border">
+
+<div class="card-header data61-border">
+<h4>Paid <span class="float-right">*<small>min 5 attendees</small></span></h4>
+</div>
+
+<div class="card-body">
+<ul class="list-group list-group-flush">
+<li class="list-group-item d-flex justify-content-between">
+<span><i class="fa fa-lg fa-fw fa-calendar mr-1"></i>**When:**</span><span>[Contact Us](/contact)</span>
+</li>
+<li class="list-group-item d-flex justify-content-between">
+<span><i class="fa fa-lg fa-fw fa-map-marker mr-1"></i>**Where:**</span><span>[Contact Us](/contact)</span>
+</li>
+<li class="list-group-item d-flex justify-content-between">
+<span><i class="fa fa-lg fa-fw fa-dollar mr-1"></i>**Cost:**</span>
+
+* 5 to 10 attendees: $2500 per person
+* 10-20 attendees: $2000 per person
+* 20+ attendees: $1500 per person
+
+</li>
+<li class="list-group-item d-flex justify-content-left">
+<span><i class="fa fa-lg fa-fw fa-cutlery mr-1"></i>**Catering and Travel:**</span>
+<span>
+
+* within Australia , included in cost.
+* outside of Australia? [Contact us](/contact).
+
+</span>
+</li>
+</ul>
+</div>
+</div> <!-- END PAID CARD -->
+</div>
+
+<h2 class="mt-4 data61-bottom-line"><a name="intro"></a>
+Introduction to Functional Programming
+<span class="float-right">[[top](#top)]</span>
+</h2>
 
 <img class="ml-3 mt-3 border rounded float-right" src="/images/20180129-melbourne-01.jpg" alt="January 2018, Melbourne 01" style="width:400px" height="310px">
 
@@ -58,17 +149,10 @@ On completion of this course, attendees will be able to confidently explain the 
 
 If there are any issues with this preparation, please [contact the QFPL](http://qfpl.io/contact) who will set you up.
 
-#### Pricing
-
-* up to 10 attendees: $2500 per person
-* 10-20 attendees: $2000 per person
-* 20+ attendees: $1500 per person
-
-Catering and travel within Australia is included.
-
----
-
-### Applied Functional Programming
+<h2 class="mt-4 data61-bottom-line"><a name="applied"></a>
+Applied Functional Programming
+<span class="float-right">[[top](#top)]</span>
+</h2>
 
 <img class="ml-3 mt-3 border rounded float-right" src="/images/20180129-melbourne-00.jpg" alt="January 2018, Melbourne 00" style="width:400px" height="310px">
 
@@ -141,18 +225,3 @@ compiled using version XXXXXXX of the Cabal library
 
 If there are any issues with this preparation, please [contact the QFPL](http://qfpl.io/contact) who will set you up.
 
-#### Pricing
-
-* up to 10 attendees: $2500 per person
-* 10-20 attendees: $2000 per person
-* 20+ attendees: $1500 per person
-
-Catering and travel within Australia is included.
-
-----
-
-#### Open-source course material
-
-Courses to kickstart or further your knowledge of functional programming. We have introductory courses for people starting out, and an applied course for those that are ready for more.
-
-All of our course material is open source and we encourage everyone to provide feedback through either issues or pull-requests. These courses are for you and the community, so if we can make them better then we want to know!
