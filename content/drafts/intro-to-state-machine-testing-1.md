@@ -1,7 +1,7 @@
 ---
 title: "Introduction to state machine testing: part 1"
-date: 2018-06-11
-authors: ajmccluskey
+date: 2018-10-26
+authors: ajmcmiddlin
 ---
 
 Testing can be hard. When working in a conventional imperative setting you end up with a soup of
