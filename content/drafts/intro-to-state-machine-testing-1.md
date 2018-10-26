@@ -32,23 +32,31 @@ testing. The short version is:
 It gets better. There's an excellent property-based testing library called
 [`hedgehog`](https://github.com/hedgehogqa/haskell-hedgehog) that includes facilities for state
 machine testing. One issue with `hedgehog` is that it's state machine testing capabilities aren't
-documented in detail, which can make it a little difficult to get started. I gave a [talk](/talks/)
-on this topic at [YOW! Lambda Jam](http://lambdajam.yowconference.com.au/) recently, however the 25
-minute talk slot made for a fairly fast paced talk. I'm now going to build upon that talk and
-provide a slower-paced introduction over a series of blog posts.
+documented in detail, which can make it a little difficult to get started. I gave a talk on this
+topic at [YOW! Lambda Jam](http://lambdajam.yowconference.com.au/)
+([slides](/share/talks/state-machine-testing/) and
+[video](https://www.youtube.com/watch?v=boBD1qhCQ94)) in May of 2018, however the 25 minute talk
+slot made for a fairly fast paced talk. I'm now going to build upon that talk and provide a
+slower-paced introduction over a series of blog posts.
 
 ## Parallel state machine testing: an example
 
 Now that you hopefully have a high level understanding of the problem we're trying to solve, I'd
 like to proceed with an example to whet your appetite for what's to come in this and future posts.
+If this example doesn't make sense, sit tight. Future posts are going to build up piece by piece.
 
-Lately I've been using state machine testing to test [WordPress](https://wordpress.org/). I'm doing
-this for two reasons. Firstly, I'd like to demonstrate that these techniques can be employed to test
-software that doesn't use functional programming. Secondly, I'd like to investigate how Haskell may
-be used to test messy APIs designed with dynamic programming languages in mind. The first bug I
-found during this testing is a good example of the power of state machine testing. After modelling a
-part of WordPress' API and state, hedgehog was able to find a concurrency issue and provide a
-minimal example to reproduce the issue.
+Earlier in 2018 I did some work using state machine testing to test
+[WordPress](https://wordpress.org/). I did this for two reasons. Firstly, I wanted to demonstrate
+that these techniques can be employed to test software that doesn't use functional programming.
+Secondly, I wanted to investigate how Haskell may be used to test messy APIs designed with dynamic
+programming languages in mind.
+
+The [first bug](https://core.trac.wordpress.org/ticket/44568) I found during this testing is a good
+example of the power of state machine testing. After modelling a part of WordPress' API and state,
+hedgehog was able to find a concurrency issue and provide a minimal example to reproduce the issue.
+As a side note, I later found out that
+[WordPress isn't at all thread safe](https://core.trac.wordpress.org/ticket/44568#comment:1),
+which makes this result unsurprising.
 
 Here's part of the output:
 
@@ -80,8 +88,7 @@ no valid interleaving
 
 So what is this telling us? The last line is telling us that there's "no valid interleaving". This
 is because we ran the tests in parallel, and no matter how we interleave the inputs the system's
-outputs always fails to match our expectations. If it's not clear what this means, we'll go into
-detail in a later post.
+outputs always fail to match our expectations.
 
 In the other output, hedgehog has provided a minimal example to reproduce the issue:
 
@@ -117,18 +124,21 @@ for a turnstile. You'll see it comprises:
 from Wikipedia" />
 
 If you squint a little, it seems that many common systems are state machines. Especially when one
-considers that the set of states and inputs don't have to be finite (we're not limited to finite
-state machines).
+considers that we're not limited to finite state machines. That is, we're not limited to testing
+systems with a finite number of states and inputs. Conversely, while systems with infinte state
+spaces are testable, we aren't required to model the entire state space. As we'll see in subsequent
+posts, we can start by modelling and testing a small subset of a system's state space and build up
+from there.
 
-For example, many video games can be modelled as state machines. In the case of an RPG, the states
-could comprise the product of the player's position in the world, inventory, health, and current
-quest. The inputs could be controller inputs from the player, or more abstract actions such as "pick
-up item". Finally, the initial state would be whatever initial values the game starts with.
+One common example of state machines being applied in software is video games. In the case of a role
+playing game (RPG), for example, the states could comprise the product of the player's position in
+the world, inventory, health, and current quest. The inputs could be controller inputs from the
+player, or more abstract actions such as "pick up item". Finally, the initial state would be
+whatever initial values the game starts with.
 
 We don't all get to work on games, so what about the humble web application? It's also a state
-machine. Its states are all the possible values the application state can have; its inputs are HTTP
-requests; and its initial state is whatever state it's in after starting up, but before receiving
-its first request.
+machine. Its states are the product of possible values in persisted storage and memory; its inputs
+are HTTP requests; and its initial state is whatever state it's in after a clean start.
 
 ## Property based testing
 
@@ -148,11 +158,35 @@ propReverse =
 This function defines a property. It uses a generator --- `Gen.list (Range.linear 0 100) Gen.alpha`
 --- to generate a random list of characters that is between 0 and 100 elements long. This random
 input is then used to test the property that the result of reversing the list twice, is always equal
-to the original list: `reverse (reverse xs) === xs`.
+to the original list: `reverse (reverse xs) === xs`. It's a small example, but this aptly captures
+the essence of property based testing. Generate random inputs, then test that some properties hold
+for a function given each of those inputs.
 
-It's a small example, but this aptly captures the essence of property based testing. Generate random
-inputs, then test that some properties hold for a function given each of those inputs. We'll see
-plenty more examples of properties as we work through state machine testing. If you want to dive a
+Another, more interesting example of a property based test comes from a colleague's project,
+[`hpython`](https://github.com/qfpl/hpython). This code is randomly generating python expressions,
+and then ensuring that the `python` interpreter agrees with `hpython`'s notion of validity.
+
+```haskell
+syntax_expr :: FilePath -> Property
+syntax_expr path =
+  property $ do
+    ex <- forAll $ Gen.resize 300 General.genExpr
+    let rex = showExpr ex
+    shouldSucceed <-
+      case validateExprIndentation' ex of
+        Failure errs -> annotateShow errs $> False
+        Success res ->
+          case validateExprSyntax' res of
+            Failure errs'' -> annotateShow errs'' $> False
+            Success _ -> pure True
+    annotateShow rex
+    runPython3
+      path
+      shouldSucceed
+      rex
+```
+
+We'll see plenty more examples of properties as we work through state machine testing. If you want to dive a
 little deeper into property testing before continuing you can take a look at [the examples in the
 Hedgehog repo](https://github.com/hedgehogqa/haskell-hedgehog/tree/master/hedgehog-example/src/Test/Example).
 
