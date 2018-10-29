@@ -1,6 +1,6 @@
 ---
 title: "Introduction to state machine testing: part 1"
-date: 2018-10-26
+date: 2018-10-29
 authors: ajmcmiddlin
 ---
 
