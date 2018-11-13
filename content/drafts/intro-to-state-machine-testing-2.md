@@ -149,10 +149,12 @@ under test. `state` is our model state.
 
 There are also two existential types that aren't part of the `Command` type, `input` and `output`.
 These are the types of the abstract input and the output produced by the application under test.
-Using existentials here allows us to provide a homogenous collection of commands for `hedgehog` to
-choose from when generating sequences of inputs. If you're not familiar with existential types then
-don't sweat the details --- just know that all `Command`s used in a property must use the same `n`,
-`m`, and `state`, but can differ on the `input` and `output`.
+Using existentials here allows us to provide a heterogeneous collection of commands for `hedgehog` to
+choose from when generating sequences of inputs. That is, the type of `input` and `output` may
+change across `Command`s in the same list, as those parameters are not included in `Command`'s type.
+If you're not familiar with existential types then don't sweat the details --- just know that all
+`Command`s used in a property must use the same `n`, `m`, and `state`, but can differ on the `input`
+and `output` types.
 
 The `Command` record contains three fields. `commandGen` tells `hedgehog` how to generate the input
 associated with this command. Given a value of the state it will optionally generate an input. The
