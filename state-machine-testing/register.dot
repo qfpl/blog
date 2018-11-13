@@ -1,0 +1,12 @@
+digraph {
+  # node [shape=circle,fontsize=8,fixedsize=true,width=0.9];
+
+  edge [fontsize=12];
+  rankdir=LR;
+  "n=0" -> "n=1" [label="register-first"]
+  "n=1" -> "n>0"
+  "n>0" -> "n>0" [label="register-first"]
+  "n>0":e -> "n+1":w [label="register"]
+  "n+1":s -> "n>0":se
+
+}
