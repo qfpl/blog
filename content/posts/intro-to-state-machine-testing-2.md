@@ -36,7 +36,7 @@ succeed once. Let's test it!
 
 The first thing we need to do is model enough of the registration process to be able to test it. We
 don't have to model the whole application, or even all of the registration functionality. All that's
-required is a model of that state that's relevant to the properties we're testing --- nothing more.
+required is a model of the state that's relevant to the properties we're testing --- nothing more.
 
 We'll start by drawing a state machine diagram for this functionality.
 
@@ -53,16 +53,15 @@ you. However, we're keeping the properties as simple as we can for now so that w
 
 ## State
 
-We have some states now, so let's tell `hedgehog` about them. `hedgehog` requires that you model
-states as a data type parameterised on a type constructor. The type constructor parameter isn't
-important for now, so we'll include it in code examples but otherwise ignore it until we need it.
+Our state is currently just a counter of the number of registered players, which is about as simple
+as it gets. Let's tell `hedgehog` about it. `hedgehog` requires that you model states as a data type
+parameterised on a type constructor. The type constructor parameter isn't important for now, so
+we'll include it in code examples but otherwise ignore it until we need it.
 
 ```haskell
 newtype LeaderboardState (v :: * -> *) =
   LeaderboardState Integer
 ```
-
-This is about as simple as it gets: our state is just a counter for the number of registrations.
 
 ## Inputs
 
@@ -90,11 +89,12 @@ player.
 didn't appear in our state machine diagram. The reason we've included it now is that we need some
 sort of side channel to interrogate the relevant part of the application state. If you've run into
 these sorts of problems before, you might be concerned that we're going to end up adding endpoints
-to the application just for testing purposes, which wouldn't be cool. This post is long enough
-without going into all the details, but I will allay your fears and say that's not what we've done.
-Instead, we've implemented a test API and composed it with the application's API to open up these
-side channels without adding them to the application being tested. I'll also say that `servant` and
-its ability to compose APIs and server implementations makes this particularly nice.
+to the application just for testing purposes, which is generally a sign that you've lost. This post
+is long enough without going into all the details, but I will allay your fears and say that that's
+not what we've done. Instead, we've implemented a test API and composed it with the application's
+API to open up these side channels without adding them to the application being tested. I'll also
+say that `servant` and its ability to compose APIs and server implementations makes this
+particularly nice.
 
 ## `HTraversable`
 
@@ -125,7 +125,7 @@ instance HTraversable GetPlayerCount where
 
 Looking back at our inputs, they're parameterised on some type constructor that didn't appear in our
 values. It's therefore not surprising that we don't do any mapping of type constructors in our
-`HTraversable` instances. Instead, we just wrap them up in the `Applicative`.
+`HTraversable` instances. Instead, we just wrap the inputs up in the `Applicative`.
 
 ## `Command`s
 
@@ -212,8 +212,8 @@ the input, and the output, it specifies a `Test ()`. That is to say, it tests ou
 how the state relates to the output from the application.
 
 The astute reader might have noticed that the `v` type parameter we saw earlier in our state and
-input types gets fixed to `Symbolic` and `Concrete` in these types. For reasons that will be made
-clear in the next post, we don't need to worry about which is which in this example.
+input types gets fixed to `Symbolic` or `Concrete` in some of these types. For reasons that will be
+made clear in the next post, we still don't need to care about this yet.
 
 ## Register first `Command`s
 
@@ -275,10 +275,13 @@ that point you're mostly testing that `hedgehog` works as expected, so we haven'
 
 ### `cRegisterFirstForbidden`
 
-As I mentioned earlier, it pays to have multiple commands for the same input whenever your
-expectations differ. We just saw in our first command that we used the `successClient` helper and
-`evalEither` to fail the test if registering the first user failed. Now we need to specify a similar
-command that expects failure whenever our first user has already been registered.
+As I alluded to earlier, it pays to have multiple commands for the same input whenever your
+expectations differ. If you don't do this, you'll end up handling multiple paths throughout your
+`Command`s, and that makes things much more complicated than they need to be.
+
+We just saw in our first command that we used the `successClient` helper and `evalEither` to fail
+the test if registering the first user failed. Now we need to specify a similar command that expects
+failure whenever our first user has already been registered.
 
 ```haskell
 cRegisterFirstForbidden
@@ -367,15 +370,15 @@ propRegFirst env reset =
   executeSequential initialState actions
 ```
 
-`propRegFirst` takes a client environment, `env`, that is used to run `servant-client` actions, as
-well as an IO action, `reset`, that we use to reset the app state between test runs. If we didn't reset
+`propRegFirst` takes a client environment (`env`) that is used to run `servant-client` actions, as
+well as an IO action (`reset`) that we use to reset the app state between test runs. If we didn't reset
 the state, each test would begin with the model state's initial value, and an application state that
 contained whatever was left over from previous runs. Not a good place to start when you're trying to
 ensure your model and application state always agree.
 
 `commands` lists the commands that `hedgehog` may select from when generating tests. The `ClientEnv`
 required to execute actions with `servant-client` is passed to each command, as they each need to
-run requests using `servant-client`. Given this list of possible commands, we can ask `hedgehog` to
+run requests using `servant-client`. Given this list of possible commands, we then ask `hedgehog` to
 generate a random sequence of between 1 and 100 of them for each test. We use `Gen.sequential`
 because this property is going to run each command in sequence --- that is, we won't attempt to run
 any of these commands in parallel. That's a topic for another post.
