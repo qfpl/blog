@@ -1,6 +1,6 @@
 ---
 title: "Introduction to state machine testing: part 2"
-date: 2018-11-13
+date: 2018-11-14
 authors: ajmcmiddlin
 ---
 
@@ -24,12 +24,13 @@ tag](https://github.com/qfpl/leaderboard/tree/itsm2).
 
 The part of `leaderboard` that has had the most attention is the registration and authentication,
 which is what we'll be focussing on with our tests. As it currently stands, the registration process
-is pretty simple. A special endpoint allows the first, and only the first, successful registration
-to happen without any other checks. This first user is unconditionally an administrator, which
-allows them to register subsequent users.
+is pretty simple. A special endpoint allows the first --- and only the first --- successful
+registration to happen without any other checks. This first user is unconditionally an
+administrator, which allows them to register subsequent users.
 
-Already we have a stateful property that we'd like to uphold: No matter what, the special endpoint
-for the first player registration should only succeed once. Let's test it!
+There's more to `leaderboard`'s API, but we've already uncovered a stateful property that we'd like
+to uphold: No matter what, the special endpoint for the first player registration should only
+succeed once. Let's test it!
 
 ## State machine
 
@@ -83,13 +84,23 @@ data GetPlayerCount (v :: * -> *) =
 ```
 
 `RegFirst` requires a `RegisterPlayer` value, which contains all the data we need to register a new
-player. `GetPlayerCount` is an input with no arguments --- as the name suggests it's just a getter.
+player.
+
+`GetPlayerCount` is an input with no arguments --- as the name suggests it's just a getter. It also
+didn't appear in our state machine diagram. The reason we've included it now is that we need some
+sort of side channel to interrogate the relevant part of the application state. If you've run into
+these sorts of problems before, you might be concerned that we're going to end up adding endpoints
+to the application just for testing purposes, which wouldn't be cool. This post is long enough
+without going into all the details, but I will allay your fears and say that's not what we've done.
+Instead, we've implemented a test API and composed it with the application's API to open up these
+side channels without adding them to the application being tested. I'll also say that `servant` and
+its ability to compose APIs and server implementations makes this particularly nice.
 
 ## `HTraversable`
 
 `hedgehog` requires every input type to have an instance of `HTraversable`. We're not going to go
 into why just yet. Instead, we're going to follow the types to satisfy `hedgehog` and move on. We'll
-take a closer look at it later.
+take a closer look at it in a later post.
 
 Here's the class definition for `HTraversable`.
 
@@ -183,10 +194,15 @@ As we can see, the `Callback` type has 3 constructors: `Require` for preconditio
 state updates, and `Ensure` for assertions.
 
 `Require` is a predicate on the current state and input that checks if it still makes sense to run a
-command. This is important when shrinking. If `hedgehog` finds a test failure and shrinks inputs to
-find a minimal example, it also shrinks the list of commands. If the list of commands changes, then
-the state is likely to change, which means that the checks performed in the generator using an old
-state may no longer be valid.
+command. This is important when shrinking. As with regular properties, if `hedgehog` finds a test
+failure in a state test it will attempt to shrink inputs and find a minimal example. In doing so,
+`hedgehog` will shrink both the values used in each input as well as the sequence of commands it
+runs. It follows that if the list of commands changes, then the state is likely to change. Given
+generators are only run once at the beginning of the test, and not before each shrink, checks
+performed in the generator using an old state may no longer be valid when shrinking. This is why we
+must check that it's still valid to run each command before testing a shrink. You'll notice as we
+progress that there is often a close relationship between the logic in command generators and
+`Require` callbacks, and this is why.
 
 `Update` is used to update the state we're tracking in our tests. Given the old state, the input,
 and the output, it produces a new state.
@@ -194,6 +210,10 @@ and the output, it produces a new state.
 Finally, `Ensure` is used to make assertions once a command has run. Given the old and new states,
 the input, and the output, it specifies a `Test ()`. That is to say, it tests our expectations about
 how the state relates to the output from the application.
+
+The astute reader might have noticed that the `v` type parameter we saw earlier in our state and
+input types gets fixed to `Symbolic` and `Concrete` in these types. For reasons that will be made
+clear in the next post, we don't need to worry about which is which in this example.
 
 ## Register first `Command`s
 
