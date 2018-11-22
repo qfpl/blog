@@ -1,5 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+import qualified GHC.IO.Encoding as E
+
 import           Data.Monoid (mappend)
 import           Data.Time   (getCurrentTime)
 
@@ -15,6 +17,7 @@ import           Util.Pandoc
 
 main :: IO ()
 main = do
+  E.setLocaleEncoding E.utf8
   -- TODO possibly load config from a file?
   pandocMathCompilerFns <- setupPandocMathCompiler $ PandocMathCompilerConfig 1000 ["prftree"]
   let
