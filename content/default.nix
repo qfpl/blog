@@ -11,7 +11,7 @@ let
     prftree
     scheme-basic
     collection-latexrecommended
-    collection-mathextra;
+    collection-mathscience;
   });
 
   activate = pkgs.writeScriptBin "activate" ''
