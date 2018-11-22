@@ -14,6 +14,7 @@ let
       foundation = nixpkgs.haskell.lib.dontCheck super.foundation;
       skylighting = nixpkgs.haskell.lib.dontCheck super.skylighting;
       concurrent-output = nixpkgs.haskell.lib.doJailbreak super.concurrent-output;
+      hakyll = nixpkgs.haskell.lib.doJailbreak super.hakyll;
     };
   };
 
