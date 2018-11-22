@@ -89,5 +89,5 @@ setupPandocMathCompiler pmcc = do
       in
         d
         { writerExtensions =
-            S.delete Ext_literate_haskell $ writerExtensions d
+            disableExtension Ext_literate_haskell $ writerExtensions d
         }
