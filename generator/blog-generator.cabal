@@ -25,7 +25,7 @@ executable site
                   , Util.Items
                   , Util.Time
   build-depends:    base == 4.*
-                  , hakyll == 4.9.*
+                  , hakyll == 4.12.*
                   , pandoc
                   , latex-formulae-image
                   , latex-formulae-pandoc
