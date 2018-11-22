@@ -13,7 +13,7 @@ let
       latex-formulae-hakyll = nixpkgs.haskell.lib.doJailbreak super.latex-formulae-hakyll;
       foundation = nixpkgs.haskell.lib.dontCheck super.foundation;
       skylighting = nixpkgs.haskell.lib.dontCheck super.skylighting;
-      concurrent-output = pkgs.haskell.lib.doJailbreak super.concurrent-output;
+      concurrent-output = nixpkgs.haskell.lib.doJailbreak super.concurrent-output;
     };
   };
 
