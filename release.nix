@@ -7,8 +7,8 @@ let
   defaultPkgs = import (systemPkgs.fetchFromGitHub {
     owner = "NixOS";
     repo = "nixpkgs";
-    rev = "bca2ee28db44bc2d2d1b5e97866ca4052d88e94f";
-    sha256 = "0l9jpnkvjcj9p181ns9g4gm57n3ni4q07ynkh80r6d6qidw8cwnq";
+    rev = "636b2b2da96ce1765d40ed7ef0588603c52a58c1";
+    sha256 = "08d6ln3m8vlzy9ybiiaf4zmv74k4ya3xgrfqh87paqf39i0777wb";
   }) {};
 
   pinnedpkgs =
