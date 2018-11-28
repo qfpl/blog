@@ -2,7 +2,11 @@ digraph {
   # node [shape=circle,fontsize=8,fixedsize=true,width=0.9];
 
   edge [fontsize=12];
+  "s" [shape=circle, style=filled, fillcolor=black];
   rankdir=LR;
+  {rank=same; "s", "n=0"}
+
+  "s" -> "n=0"
   "n=0" -> "n=1" [label="register-first"]
   "n=1" -> "n>0"
   "n>0" -> "n>0" [label="register-first"]
