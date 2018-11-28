@@ -149,3 +149,7 @@ img.location-image  {
 .course-type-intro:after {
   content: "Introductory";
 }
+
+a.sourceLine {
+  font-family: inherit;
+}
