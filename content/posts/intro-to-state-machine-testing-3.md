@@ -1,6 +1,6 @@
 ---
 title: "Introduction to state machine testing: part 3"
-date: 2018-11-27
+date: 2018-11-29
 authors: ajmcmiddlin
 ---
 
@@ -140,11 +140,12 @@ newtype Concrete a where
   Concrete :: a -> Concrete a
 ```
 
-`Symbolic` and `Concrete` both have kind `* -> *`, which means they may inhabit `v`. We can also see
-that the `a` in `Symbolic a` is a phantom type that is never inhabited. It just keeps track of the
-fact that this placeholder should be replaced by a value of type `a`. Finally, `Concrete` is just a
-`newtype` around an `a` such that it has the same kind as `Symbolic` and can replace `Symbolic`s
-whenever we get concrete values back from the application.
+`Symbolic` and `Concrete` both have kind `* -> *`, which means we can use them with `Var` and have
+`Var a Symbolic` and `Var a Concrete`. We can also see that the `a` in `Symbolic a` is a phantom
+type that is never inhabited. It just keeps track of the fact that this placeholder should be
+replaced by a value of type `a`. Finally, `Concrete` is just a `newtype` around an `a` such that it
+has the same kind as `Symbolic` and can replace `Symbolic`s whenever we get concrete values back
+from the application.
 
 
 When an input requires some previous output from our application, it gets wrapped up in a `Var` as
@@ -387,11 +388,13 @@ cRegister env =
           newAs = bool as (S.insert rsp as) (_lbrIsAdmin rp == Just True)
         in
           RegisterState newPs newAs
-    , Ensure $ \(RegisterState psOld asOld) (RegisterState psNew asNew)
-          (Register LeaderboardRegistration{..} _t) rsp -> do
+    , Ensure $ \(RegisterState psOld _) (RegisterState psNew _)
+          (Register LeaderboardRegistration{..} _t) _ -> do
         assert $ S.member _lbrEmail psNew
         assert $ S.notMember _lbrEmail psOld
         length psNew === length psOld + 1
+    , Ensure $ \(RegisterState _ asOld) (RegisterState _ asNew)
+          (Register LeaderboardRegistration{..} _t) rsp -> do
         let vRsp = Var (Concrete rsp)
         if _lbrIsAdmin == Just True
           then do
@@ -466,11 +469,20 @@ that we don't generate an email already in use, and we must add our new user's t
 admins if the user is to be an admin.
 
 ```haskell
-Ensure $ \(RegisterState psOld asOld) (RegisterState psNew asNew)
-    (Register LeaderboardRegistration{..} _t) rsp -> do
+Ensure $ \(RegisterState psOld _) (RegisterState psNew _)
+    (Register LeaderboardRegistration{..} _t) _ -> do
   assert $ S.member _lbrEmail psNew
   assert $ S.notMember _lbrEmail psOld
   length psNew === length psOld + 1
+```
+
+Finally, our post conditions. We check that our new set of player emails contains the one we
+registered, and that our previous state didn't contain that email. We also check that the number of
+player emails in our state has increased by one with this command.
+
+```haskell
+Ensure $ \(RegisterState _ asOld) (RegisterState _ asNew)
+    (Register LeaderboardRegistration{..} _t) rsp -> do
   let vRsp = Var (Concrete rsp)
   if _lbrIsAdmin == Just True
     then do
@@ -481,15 +493,15 @@ Ensure $ \(RegisterState psOld asOld) (RegisterState psNew asNew)
       success
 ```
 
-Finally, our post conditions. We check that our new set of player emails contains the one we
-registered, and that our previous state didn't contain that email. We also check that the number of
-player emails in our state has increased by one with this command. Finally, if our new player is to
-be an admin, we do similar checks with our set of admins. These are really just sanity checks to
-help catch bugs in our test code early rather than having them manifest in strange failures later.
-It's pretty easy to mess up a generator, `Require`, or `Update` and have `hedgehog` do some very
-unexpected things. The `cGetPlayerCount` command we defined in our last post is sticking around, and
-that'll take care of checking that our count agrees with the application's, which is the property
-we're actually testing.
+What's this? Another `Ensure`? Remember that our `Callback`s go in a list, and we can have more than
+one of each type. Sometimes, like in this case, I find it's a nice way to break things up. The
+checks here are very similar to the ones above, but only apply when the user is to be an admin.
+
+The `Ensure`s in this command are really just sanity checks to help catch bugs in our test code
+early rather than having them manifest in strange failures later. It's pretty easy to mess up a
+generator, `Require`, or `Update` and have `hedgehog` do some very unexpected things. The
+`cGetPlayerCount` command we defined in our last post is sticking around, and that'll take care of
+checking that our count agrees with the application's, which is the property we're actually testing.
 
 ## Updated property
 
@@ -539,7 +551,7 @@ propRegister env reset =
   executeSequential initialState actions
 ```
 
-## One more things
+## One more thing
 
 This post has gotten quite long already, but there's one last thing we need to do. If we were to try
 and compile our code as it stands, we'd get some type errors. All of the commands we defined in our
