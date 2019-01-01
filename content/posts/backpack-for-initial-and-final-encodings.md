@@ -1368,7 +1368,7 @@ _Add    = _Add' . _2
 ```
 We could fill in the `Prism`s and leave the `AddAnnotation` to be filled in later, and there is probably all sorts of other fun to be had in that space.
 
-In other areas, Ed has also done something interesting [here](https://github.com/ekmett/coda/blob/master/lib/coda-set/Elem.hsig) and [here](https://github.com/ekmett/coda/blob/master/lib/coda-set/Set/Internal.hs#L248).
+In other areas, Ed has also done something interesting [here](https://github.com/ekmett/coda/blob/4ba2cbe12dd9174857afe583e18e6328ec485982/src/set/Elem.hsig) and [here](https://github.com/ekmett/coda/blob/4ba2cbe12dd9174857afe583e18e6328ec485982/src/set/Set/Internal.hs#L248).
 
 This is a copy of the code for `Set` from `containers`, where the element type is fixed via a Backpack signature.
 The twist is that this will `{-# UNPACK #-}` the element type into the definition of the `Set`.
