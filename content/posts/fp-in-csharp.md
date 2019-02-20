@@ -422,7 +422,7 @@ What about `SelectMany`?
 The structure of `SelectMany` is:
 
 ```csharp
-T<B> Select<A, B>(T<A>, Func<A, T<B>>)
+T<B> SelectMany<A, B>(T<A>, Func<A, T<B>>)
 ```
 
 Therefore, our implementation will have this type:
