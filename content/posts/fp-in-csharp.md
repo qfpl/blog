@@ -445,7 +445,7 @@ There are many other candidates that fit this pattern of implementing `Select` a
 
 Things that can implement `Select` are called *covariant functors*. The implementation must satisfy a couple of additional constraints to be called this, and our implementations do satisfy it.
 
-Things that can implement noth `Select` and `SelectMany` are called *monads*, again with a couple of additional constraints which have been satisfied.
+Things that can implement both `Select` and `SelectMany` are called *monads*, again with a couple of additional constraints which have been satisfied.
 
 What can we do with them?
 
