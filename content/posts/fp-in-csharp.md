@@ -565,7 +565,7 @@ public static List<int> multiply(List<int> x, List<int> y) {
 
 Did you notice that we repeated the earlier code in `multiply` for `Optional`? The only change was that `Optional` turned into `List`. We'll look at that in a moment.
 
-Have you ever passed in the same argument to two different functions, both of which return `int`, then multiplied the result? The code would look like similar to this, perhaps with some variation. However, the general pattern is, "passing in the same value to two different functions, then combining their results using another function (such as multiplication)."
+Have you ever passed in the same argument to two different functions, both of which return `int`, then multiplied the result? The code would look similar to this, perhaps with some variation. However, the general pattern is, "passing in the same value to two different functions, then combining their results using another function (such as multiplication)."
 
 ```csharp
 public static Func<Q, int> multiply<Q>(Func<Q, int> f, Func<Q, int> g) {
