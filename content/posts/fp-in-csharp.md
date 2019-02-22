@@ -99,7 +99,7 @@ In summary, we can use church-encoding to implement data types. Let's look at so
 
 #### optional values
 
-The optional data type, sometimes called maybe, has seen a lot of discussion in recent years. It can be thought of intuitively as *a list with a maximum length of 1*. In other words, it has either 0 elements or it has 1 element.
+The `Optional` data type, sometimes called `Maybe`, has seen a lot of discussion in recent years. It can be thought of intuitively as *a list with a maximum length of 1*. In other words, it has either 0 elements or it has 1 element.
 
 In practical application, it can be thought of as a replacement for `null`. For example, instead of your methods returning `Bobble` which might be `null`, we instead return *a list of 0 or 1 `Bobble`s*.
 
