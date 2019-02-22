@@ -6,11 +6,11 @@ authors: tmorris
 
 In this article, we will look at some functional programming and data structure concepts, by demonstrating them using the C# programming language. Much of the code is for demonstration only, to help understand a concept. The code itself has some quirks that make it unusable in real code, but many of those quirks can be overcome (a topic for another time). The goal is to provide new tools and ideas to think about programs, which can be utilised in practice where appropriate.
 
-#### Church-encoding data structures
+### Church-encoding data structures
 
 Church-encoding is introduced here to also introduce some data structures, which will also be used later on, and it is easier (for demonstration) to use a church-encoding in C#. It is also an interesting topic in itself.
 
-###### booleans
+#### booleans
 
 Let's start simply. Suppose you had to write your own boolean data type.
 
@@ -97,7 +97,7 @@ public static Boolean And(Boolean p, Func<Boolean> q) {
 
 In summary, we can use church-encoding to implement data types. Let's look at some more data types
 
-###### optional values
+#### optional values
 
 The optional data type, sometimes called maybe, has seen a lot of discussion in recent years. It can be thought of intuitively as *a list with a maximum length of 1*. In other words, it has either 0 elements or it has 1 element.
 
@@ -238,7 +238,7 @@ So far we have encoded two data structures:
 
 What about a list of 0 or *many* values?
 
-###### lists
+#### lists
 
 What is the church-encoding for lists? There is a mechanical way to calculate it, but we can also intuit it.
 
@@ -367,7 +367,7 @@ We can use this function to implement a URL encoder. That is, given a list of ch
 
 ----
 
-#### Summary
+### Summary
 
 Let's summarise.
 
@@ -379,7 +379,7 @@ There are some emerging patterns here. In particular, the `Optional#Select` and 
 
 ----
 
-#### `Select` and `SelectMany`
+### `Select` and `SelectMany`
 
 Let's look at another one. But first, let's more concretely define that pattern.
 
@@ -451,7 +451,7 @@ What can we do with them?
 
 ----
 
-#### LINQ
+### LINQ
 
 There are many components to [LINQ](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/). We will focus on query operations; specifically those that utilise `Select` and `SelectMany`.
 
