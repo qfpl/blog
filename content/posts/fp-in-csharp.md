@@ -85,7 +85,7 @@ or convert to a `bool` as it is more commonly used in C#:
 }
 ```
 
-Essentially, we can replicate all the functionality of a boolean by this method, without information loss in either direction. We say that `Boolean` data type is *isomorphic* to `bool`, though it is implemented differently.
+Essentially, we can replicate all the functionality of a boolean by this method, without information loss in either direction. We say that the `Boolean` data type is *isomorphic* to `bool`, though it is implemented differently.
 
 It might be pointed out that there is a slight difference in the evaluation of the function arguments. For example, the `&&` operation on `bool` does not evaluate its second argument if the first argument is `false`. This does not hold for our `Boolean` data type. We can resolve this discrepancy using `Func`:
 
