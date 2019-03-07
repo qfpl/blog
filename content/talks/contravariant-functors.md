@@ -7,4 +7,5 @@ author: gwilson
 author-name: George Wilson
 code-url: https://github.com/qfpl/contravariant-functors-ylj-2018
 slides-base: contravariant.pdf
+video-url: https://www.youtube.com/watch?v=IJ_bVVsQhvc
 ---

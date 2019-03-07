@@ -7,4 +7,5 @@ author: gwilson
 author-name: George Wilson
 code-url: https://github.com/qfpl/comma-police-ylj-2018
 slides-base: sv.pdf
+video-url: https://www.youtube.com/watch?v=zP-DgjIcCho
 ---

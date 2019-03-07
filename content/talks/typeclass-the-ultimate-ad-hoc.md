@@ -7,4 +7,5 @@ author: gwilson
 author-name: George Wilson
 code-url: https://github.com/qfpl/typeclass-the-ultimate-ad-hoc
 slides-base: slides.pdf
+video-url: https://www.youtube.com/watch?v=2EdQFCP5mZ8
 ---
