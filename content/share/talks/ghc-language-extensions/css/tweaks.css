@@ -1,0 +1,69 @@
+.reveal section img {
+    border: none;
+}
+
+.reveal pre code {
+    max-height: 80%;
+}
+
+.wider-code pre {
+    width: 105%;
+}
+
+.smaller-code pre code {
+    font-size: 90%;
+}
+
+blockquote, .left {
+    text-align: left;
+}
+
+h1.title {
+    font-size: 125%;
+}
+
+div.no-bullets li {
+    list-style: none;
+}
+
+div.left-align {
+    text-align: left;
+}
+
+div.left {
+    text-align: left;
+    font-size: 0.8em;
+}
+
+/* Something that fades IN with no layout should have `display: none` until it's the current fragment */
+.reveal .slides section .fragment.no-layout {
+    display: none;
+}
+
+.reveal .slides section span.fragment.current-fragment.no-layout {
+    display: inline;
+}
+
+/* Something that fades OUT with no layout should display normally until it's the current fragment */
+.reveal .slides section span.fragment.fade-out.no-layout {
+    display: inline;
+}
+
+.reveal .slides section .fragment.fade-out.current-fragment.no-layout {
+    display: none;
+}
+
+/* Start displayed, then fade semi-out */
+.reveal .slides section .fragment.fade-semi-out {
+    opacity: 1;
+    visibility: inherit;
+}
+
+.reveal .slides section .fragment.fade-semi-out.visible {
+    opacity: 0.5;
+    visibility: inherit;
+}
+
+.strikethrough {
+    text-decoration: line-through;
+}
