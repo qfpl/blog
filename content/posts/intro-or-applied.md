@@ -135,4 +135,4 @@ General comfort (though not complete fluency) with these ideas is therefore a pr
       readFile name >>= ((,) name)
     ```
 
-If you can confidently answer these questions, then the Applied FP Course is for you. If you feel you need to brush up on these ideas, then the Introductory FP Course will cover them off.
+If you are confident in exploring a process to answer these questions (though not necessarily arrive at a correct answer), then the Applied FP Course is for you. If you feel you need to brush up on these ideas, then the Introductory FP Course will cover them off.
