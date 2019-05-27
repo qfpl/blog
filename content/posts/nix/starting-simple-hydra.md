@@ -75,7 +75,7 @@ name `my-hydra` here, and we'll need to use that name again when we write our ma
 supports quite a few different environemnts. Check out the [NixOps Manual](https://nixos.org/nixops/manual/) 
 for more information on supported target environments.
 
-          deployment.targetEnv = "virtualbox**;
+          deployment.targetEnv = "virtualbox";
 
 Click here to find out more about why `deployment` and similar attributes are used this way:
 <a class="btn btn-info" role="button" data-toggle="collapse" href="#attrsetAside" aria-expanded="false" aria-controls="attrsetAside">
