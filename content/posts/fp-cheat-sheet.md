@@ -227,6 +227,7 @@ given(list) {
     }
     r.append(s)
   }
+  return r
 }
 ```
 
