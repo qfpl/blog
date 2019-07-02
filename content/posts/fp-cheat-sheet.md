@@ -53,8 +53,8 @@ Given a function `func`, and two lists `list1` and `list2`, loops first through
 ```csharp
 given(func, list1, list2) {
   var r = List.empty
-  for(int i = 0; i < list1.length; i++) {
-    for(int j = 0; j < list2.length; j++) {
+  for(var i = 0; i < list1.length; i++) {
+    for(var j = 0; j < list2.length; j++) {
       r += list1[i].func(list2[j])
     }
   }
@@ -164,7 +164,7 @@ Given a list of possibly `null` values, return either a list of definitely-not `
 // notnull [1,2,3]
 given(list) {
   var r = List.empty
-  for(int i = 0; i < list.length; i++) {
+  for(var i = 0; i < list.length; i++) {
     if(list[i] == null) 
       return null
     else 
@@ -194,7 +194,7 @@ Given a list of functions (or *instances of an interface*), and a value (`x`), c
 // [100,198,33]
 given(list, x) {
   var r = List.empty
-  for(int i = 0; i < list.length; i++) {
+  for(var i = 0; i < list.length; i++) {
     r.add(list[i].apply(x))
   }
   return r
@@ -220,9 +220,9 @@ Given a list of lists, produce a list of lists, where each element of each input
 // [[1,3,6],[1,3,7],[1,4,6],[1,4,7],[1,5,6],[1,5,7],[2,3,6],[2,3,7],[2,4,6],[2,4,7],[2,5,6],[2,5,7]]
 given(list) {
   var r = List.empty;
-  for(int i = 0; i < list.length; i++) {
+  for(var i = 0; i < list.length; i++) {
     var s = List.empty
-    for(int j = 0; j < list[i].length; j++) {
+    for(var j = 0; j < list[i].length; j++) {
       s.add(list[i][j])
     }
     r.append(s)
