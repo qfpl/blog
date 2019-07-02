@@ -33,6 +33,7 @@ i2s n
 * [liftA2 on reader]
 * [sequence on Maybe with list]
 * [sequence on reader with list]
+* [sequence on list with list]
 * [join on reader]
 * [kleisli composition on Maybe]
 * [kleisli composition on reader]
@@ -157,6 +158,10 @@ liftA2 (+) p q
 Given a list of possibly `null` values, return either a list of definitely-not `null` values, or `null` itself.
 
 ```csharp
+// >>> given([notnull 1,null,notnull 3])
+// null
+// >>> given([notnull 1,notnull 2,notnull 3])
+// notnull [1,2,3]
 given(list) {
   var r = List.empty
   for(int i = 0; i < list.length; i++) {
@@ -169,19 +174,24 @@ given(list) {
 }
 ```
 
-This can be written using the `sequence` function, which is overloaded on many values, including `Maybe`. Since `Maybe` values have either 0 values or 1 value, it can be used as a type-safe `null` value. Therefore the `sequence` function will accept a list of `Maybe` values, and return a `Maybe` list of values.
+This can be written using the `sequence` function, which is overloaded on many values, including `Maybe`. Since `Maybe` values have either 0 values or 1 value inside, it can be used as a type-safe `null` value. Therefore the `sequence` function will accept a list of `Maybe` values, and return a `Maybe` list of values.
 
 ```haskell
 sequence list
+
+sequence [Just 1,Nothing,Just 3] == Nothing
+sequence [Just 1,Just 2,Just 3] == Just [1,2,3]
 ```
 
 ----
 
 ### sequence on reader with list
 
-Given a list of functions (or *instances of an interface*), and a value (`x`), collect the results of having applied that each function to that value.
+Given a list of functions (or *instances of an interface*), and a value (`x`), collect the results of having applied each function to that value.
 
 ```csharp
+// >>> given([(+1),(*2),(/3)], 99)
+// [100,198,33]
 given(list, x) {
   var r = List.empty
   for(int i = 0; i < list.length; i++) {
@@ -191,10 +201,42 @@ given(list, x) {
 }
 ```
 
-Since the `sequence` function is overloaded, as we have seen it work on `Maybe` values, it can also work on values that are functions accepting one argument, since that meets the same pattern as `Maybe` as far as `sequence` is concerned.
+Since the `sequence` function is overloaded, as we have also seen it work on `Maybe` values and, it can also work on values that are functions accepting one argument, since that meets the same pattern as `Maybe` as far as `sequence` is concerned.
 
 ```haskell
 sequence list x
+
+sequence [(+1),(*2),(/3)] 99 == [100,198,33]
+```
+
+----
+
+### sequence on list with list
+
+Given a list of lists, produce a list of lists, where each element of each input list appears (in order), with each element of the other lists. This is also known as *the cartesian product*.
+
+```csharp
+// >>> given([[1,2],[3,4,5],[6,7]])
+// [[1,3,6],[1,3,7],[1,4,6],[1,4,7],[1,5,6],[1,5,7],[2,3,6],[2,3,7],[2,4,6],[2,4,7],[2,5,6],[2,5,7]]
+given(list) {
+  var r = List.empty;
+  for(int i = 0; i < list.length; i++) {
+    var s = List.empty
+    for(int j = 0; j < list[i].length; j++) {
+      s.add(list[i][j])
+    }
+    r.append(s)
+  }
+}
+```
+
+The `sequence` function is also overloaded on `[]` values, not just `Maybe` and functions that accept an argument. Actually, it's overloaded on many other things. These things are called *applicative functors* and `sequence` works on all of them. 
+
+
+```haskell
+sequence list
+
+sequence [[1,2], [3,4]] == [[1,3],[1,4],[2,3],[2,4]]
 ```
 
 ----
