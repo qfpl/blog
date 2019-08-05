@@ -35,8 +35,8 @@ slaves.
 This tutorial was tested on a machine running `NixOS`, which is not required, but you _will_ need:
 
 - [`Nix`](https://nixos.org/nix),
-- [`NixPkgs`](https://nixos.org/nixpkgs), 
-- and [`NixOps`](https://nixos.org/nixops). 
+- [`NixPkgs`](https://nixos.org/nixpkgs),
+- and [`NixOps`](https://nixos.org/nixops).
 
 To install `nixops`:
 ```
@@ -72,7 +72,7 @@ name `my-hydra` here, and we'll need to use that name again when we write our ma
         { config, pkgs, ... }: {
 
 `NixOps` lets you choose your deployment target, ours being VirtualBox. `NixOps`
-supports quite a few different environemnts. Check out the [NixOps Manual](https://nixos.org/nixops/manual/) 
+supports quite a few different environemnts. Check out the [NixOps Manual](https://nixos.org/nixops/manual/)
 for more information on supported target environments.
 
           deployment.targetEnv = "virtualbox";
@@ -122,7 +122,7 @@ This capability allows you to have all of the settings you want and you need onl
 precise ones you need to alter. This can then be combined with other `attrset`s that alter other
 settings for a long chain of overrides to end up with a final set. Such as this contrived example:
 
-    defaultMachineConf 
+    defaultMachineConf
     // ({ machine.cpus = 2; })          # "hardware" settings in one file
     // ({ machine.os.user = "Sally"; }) # "software" settings in a different file
 
@@ -146,7 +146,7 @@ a time daemon, `ntp`. Then set the access controls for SSH, disallowing SFTP and
 authentication.
 
           services.nixosManual.showManual         = false;
-          services.ntp.enable                     = false;
+          services.ntp.enable                     = true;
           services.openssh.allowSFTP              = false;
           services.openssh.passwordAuthentication = false;
 
@@ -169,7 +169,7 @@ In this example we're going to copy across an RSA public key from a pair. This a
 
 We put all of the above in a file named `simple_hydra_vbox.nix`, this will form part of the input
 for our `nixops` command later on. This is the machine, but that isn't much good without a
-definition for what will actually be _running_ on the machine. 
+definition for what will actually be _running_ on the machine.
 
 Next we will define the `NixOS` configuration that will be running on our virtual machine. This will
 include our Hydra service, as well as its dependencies, with some caveats because we're running on a
@@ -190,7 +190,7 @@ name.
 
     # START: simple_hydra.nix
     {
-      my-hydra = 
+      my-hydra =
         { config, pkgs, ...}: {
 
 As Hydra is able to send emails for various events, so our machine will need some sort of email
@@ -339,7 +339,7 @@ store, replacing them with hard links to a single copy.
       automatic = true;
       dates = "15 3 * * *"; # [1]
     };
-    
+
     nix.autoOptimiseStore = true;
 
 \[1\]: This is a [CRON](https://crontab.guru/#15_3_*_*_*) schedule. To find out more you can read the [`crontab` manual](http://man7.org/linux/man-pages/man5/crontab.5.html) or the [Wikipedia page](https://en.wikipedia.org/wiki/Cron).
@@ -356,14 +356,14 @@ processes.
 
 The `supportedFeatures` property is a list of "Features" that this build machine supports. If a
 derivation is submitted that requires features that are not supported on a given build machine then
-it will not be built. 
+it will not be built.
 
         nix.buildMachines = [
           {
             hostName = "localhost";
             systems = [ "x86_64-linux" "i686-linux" ];
             maxJobs = 6;
-            # for building VirtualBox VMs as build artifacts, you might need other 
+            # for building VirtualBox VMs as build artifacts, you might need other
             # features depending on what you are doing
             supportedFeatures = [ ];
           }
@@ -397,7 +397,7 @@ If that completes without error, you can then issue the following command to `Ni
     Network UUID: 5537e9ba-cabf-11e8-80d0-d481d7517abf
     Network description: Unnamed NixOps network
     Nix expressions: /path/to/simple_hydra.nix /path/to/simple_hydra_vbox.nix
-    
+
     +----------|---------------|------------|-------------|------------+
     | Name     |     Status    | Type       | Resource Id | IP address |
     +----------|---------------|------------|-------------|------------+
@@ -418,7 +418,7 @@ fetch a cup of your favourite beverage.
 
 The `--force-reboot` is required to ensure the Hydra services are started correctly. If you do not
 include it then the deployment phase will complete successfully, but it will report an error as not
-all of the services will have been initiated correctly. 
+all of the services will have been initiated correctly.
 
 This flag is also required to ensure everything ticks over as required, as there are some `nixops`
 errors that can be avoided or resolved by simply power cycling the machine.
@@ -429,7 +429,7 @@ you don't provide this information then `nixops` will return this error:
     error: state file contains multiple deployments, so you should specify which one to use using ‘-d’, or set the environment variable NIXOPS_DEPLOYMENT
 
 You can set the environment variable `NIXOPS_DEPLOYMENT` to `simple_hydra` if you don't want to
-include the `-d simple_hydra` information every time. 
+include the `-d simple_hydra` information every time.
 
     $ nixops deploy -d simple_hydra --force-reboot
 
@@ -447,7 +447,7 @@ Once the machine is deployed, you can check its status using `$ nixops info -d s
     Network UUID: c58245b3-cac2-11e8-9346-d481d7517abf
     Network description: Unnamed NixOps network
     Nix expressions: /path/to/simple_hydra.nix /path/to/simple_hydra_vbox.nix
-    
+
     +----------|-----------------|------------|------------------------------------------------------|----------------+
     | Name     |      Status     | Type       | Resource Id                                          | IP address     |
     +----------|-----------------|------------|------------------------------------------------------|----------------+
@@ -455,7 +455,7 @@ Once the machine is deployed, you can check its status using `$ nixops info -d s
     +----------|-----------------|------------|------------------------------------------------------|----------------+
 
 This deployment depends on the files containing the nix expressions that were used to create it, if
-those files disappear then you will not be able to destroy or update the machine via `NixOps`. 
+those files disappear then you will not be able to destroy or update the machine via `NixOps`.
 
 If you want to make changes to these machines or configuration, such as adding a CPU, or changing
 the port for the Hydra web UI. You make the change in those files, then you only have to issue the
