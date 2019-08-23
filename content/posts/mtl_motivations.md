@@ -9,8 +9,12 @@ authors: bkolera
 When you are starting out with functional programming, it is very easy to find things like
 [EventWriterT](http://hackage.haskell.org/package/reflex-0.6.1/docs/Reflex-EventWriter-Base.html#t:EventWriterT) 
 and [EventWriter](http://hackage.haskell.org/package/reflex-0.6.1/docs/Reflex-EventWriter-Class.html#t:EventWriter)
-to be very confusing. What even are they? And what problems motivate ending up with things like this? If you have 
-heard of monad-transformers and mtl but don't quite understand what they are or what they are for, this article 
+to be very confusing. 
+
+  - What even are they? 
+  - What problems motivate ending up with things like this? 
+
+If you have heard of monad-transformers and mtl but don't quite understand what they are or what they are for, this article 
 may be helpful to you! 
 
 Note: To get the most of this artcle, it is best if you already understand basic haskell syntax, typeclasses and Functor/Applicative/Monad. 
@@ -116,11 +120,10 @@ so we have to make a different tranformer for every kind of behaviour that we wa
 
 # WriterT
 
-WriterT gives us a way to collect data during our program that we can't access in our program 
-but we can have it once we've run our program. It's kind of like a logger in you can emit things
+WriterT gives us a way to collect data during our program that we can't access until our WriterT program is complete. It's kind of like a logger in the sense that you can emit things
 to the set of things that have been emitted as your program runs, but it is not like a logger 
 in that there is no logging to a console or any other side effect during your program. It's more like 
-an append-only collection that you can access once everything is done than it is a logging framework. 
+an append-only hidden collection than it is a logging framework. 
 
 Lets change our program so that we log out each step. This is a super contrived example and you probably shouldn't use Writer this way, but it shows Writer and also stacking the transformers deeper.
 
@@ -209,7 +212,7 @@ Here we are not dealing with concrete transformers but using functions built aro
 "I need a monad that can throw an error, but I don't care about anything else" which means that the bulk of our code doesn't care about the
 concrete transformers that are underneath. 
 
-But the concrete transformers are still there: we just delay making a decision about it till right in main. As you can see, our main didn't change
+But the concrete transformers are still there: we just delay making a decision about it till the main function. As you can see, our main didn't change
 compared to the transformers version because mtl defines all the right instances for WriterT, ExceptT and IO to make
 `WriterT [Text] (ExceptT OurErrors IO) a` fit `(MonadError OurErrors m, MonadIO m, Monadwriter [Text] m) => m a! :)
 
@@ -227,8 +230,8 @@ There is a catch to using mtl style constraints. Because of how the types are sp
 type inference so that you get what you want without having to annotate types) it means that you can only have one MonadWriter constraint 
 in your function and everything needs to have the same log type. There are two ways around this which are outside the scope of this article:
 
-- ClassyMtl style constraints where you defer the concreteness of the error / writer types with classy lenses and prisms. See this article for more info: https://carlo-hamalainen.net/2015/07/20/classy-mtl/
-- Newtyping WriterT/ExceptT/Etc and defining all the instances that are needed again (basically copying and pasting your own MonadWriter with a newtype). Obelisk does this here: https://github.com/obsidiansystems/obelisk/blob/develop/lib/route/src/Obelisk/Route/Frontend.hs#L271 wrapping up an event writer (so that obelisk users can still use EventWriter) and creating a specialised SetRoute class for operations on that eventwriter. 
+- ClassyMtl style constraints where you defer the concreteness of the error / writer types with classy lenses and prisms. See [this article](https://carlo-hamalainen.net/2015/07/20/classy-mtl/) for more info.
+- Newtyping WriterT/ExceptT/Etc and defining all the instances that are needed again (basically copying and pasting your own MonadWriter with a newtype). Obelisk does this [here](https://github.com/obsidiansystems/obelisk/blob/develop/lib/route/src/Obelisk/Route/Frontend.hs#L271) wrapping up an event writer (so that obelisk users can still use EventWriter) and creating a specialised SetRoute class for operations on that eventwriter. 
 
 # EventWriterT and EventWriter
 
