@@ -5,5 +5,6 @@ venue: "YOW! Lambda Jam"
 venue-link: http://lambdajam.yowconference.com.au/
 author: gwilson
 author-name: George Wilson
+code-url: https://github.com/qfpl/fp-in-education-slides
 slides-base: functional-programming-in-education.pdf
 ---
