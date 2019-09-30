@@ -28,3 +28,5 @@ about Haskell's type system, Andrew decided it was worth checking out. He hasn't
 
 Andrew used to go by Andrew McCluskey (or ajmccluskey). If you see that name around, at least in
 reference to a software developer, there's a good chance it's referring to this guy.
+
+Andrew has moved on from the Queensland Functional Programming Lab.
