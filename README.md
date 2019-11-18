@@ -1,6 +1,6 @@
 This is the QFPL team blog.
 
-You can build the contents of the blog locally with: 
+You can build the contents of the blog locally with:
 ```
 nix-build release.nix -A blog
 ```

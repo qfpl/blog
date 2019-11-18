@@ -18,8 +18,8 @@ let
 
   inherit (pinnedpkgs) pkgs;
 
-  reflex-tutorial = import <reflex-tutorial>;
-  growing-a-datepicker = import <growing-a-datepicker>;
+  reflex-tutorial = import ./reflex-tutorial { nixpkgs = pkgs; };
+  growing-a-datepicker = import ./growing-a-datepicker { nixpkgs = pkgs; };
 
   # Import the nix package for our site generator
   generator = import ./generator {
@@ -35,6 +35,7 @@ let
   jobs = rec {
     inherit generator;
     inherit blog;
+    inherit reflex-tutorial;
   };
 in
   jobs
