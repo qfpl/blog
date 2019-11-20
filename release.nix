@@ -4,7 +4,7 @@
 let
   inherit (nixpkgs) pkgs;
 
-  reflex-tutorial = import ./reflex-tutorial { inherit nixpkgs; };
+  reflex-tutorial = import ./nix/reflex-tutorial.nix;
   growing-a-datepicker = import ./nix/growing-a-datepicker.nix { inherit nixpkgs; };
 
   # Import the nix package for our site generator

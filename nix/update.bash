@@ -5,3 +5,6 @@ nix-prefetch-git https://github.com/NixOS/nixpkgs > nixpkgs.json
 nix-prefetch-git \
     https://github.com/qfpl/growing-a-datepicker > \
     growing-a-datepicker.json
+nix-prefetch-git \
+    https://github.com/qfpl/reflex-tutorial > \
+    reflex-tutorial.json
