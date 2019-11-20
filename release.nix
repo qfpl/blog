@@ -1,11 +1,11 @@
 { nixpkgs ? import ./nix/nixpkgs.nix
-, compiler ? "ghc844"
+, compiler ? "default"
 }:
 let
   inherit (nixpkgs) pkgs;
 
   reflex-tutorial = import ./reflex-tutorial { inherit nixpkgs; };
-  growing-a-datepicker = import ./growing-a-datepicker { inherit nixpkgs; };
+  growing-a-datepicker = import ./nix/growing-a-datepicker.nix { inherit nixpkgs; };
 
   # Import the nix package for our site generator
   generator = import ./generator { inherit nixpkgs compiler; };

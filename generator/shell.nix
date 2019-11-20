@@ -1,5 +1,5 @@
 { nixpkgs ? import ../nix/nixpkgs.nix
-, compiler ? "ghc844"
+, compiler ? "default"
 }:
 
 let
