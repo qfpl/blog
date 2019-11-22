@@ -1,31 +1,14 @@
-{ nixpkgs ? "default"
-, compiler ? "ghc802"
+{ nixpkgs ? import ./nix/nixpkgs.nix
+, compiler ? "default"
 }:
 let
+  inherit (nixpkgs) pkgs;
 
-  systemPkgs = import <nixpkgs> {};
-  defaultPkgs = import (systemPkgs.fetchFromGitHub {
-    owner = "NixOS";
-    repo = "nixpkgs";
-    rev = "636b2b2da96ce1765d40ed7ef0588603c52a58c1";
-    sha256 = "08d6ln3m8vlzy9ybiiaf4zmv74k4ya3xgrfqh87paqf39i0777wb";
-  }) {};
-
-  pinnedpkgs =
-    if nixpkgs == "default"
-      then defaultPkgs
-      else systemPkgs;
-
-  inherit (pinnedpkgs) pkgs;
-
-  reflex-tutorial = import <reflex-tutorial>;
-  growing-a-datepicker = import <growing-a-datepicker>;
+  reflex-tutorial = import ./nix/reflex-tutorial.nix;
+  growing-a-datepicker = import ./nix/growing-a-datepicker.nix { inherit nixpkgs; };
 
   # Import the nix package for our site generator
-  generator = import ./generator {
-    nixpkgs = pkgs;
-    compiler = compiler;
-  };
+  generator = import ./generator { inherit nixpkgs compiler; };
 
   # Import the nix package for our generated site
   blog = import ./content {

@@ -30,19 +30,18 @@ in
       mkdir -p ./drafts/reflex
       ln -sv ${reflex-tutorial}/drafts/reflex/basics ./drafts/reflex/basics
       mkdir -p ./posts/reflex
-      ln -sv ${reflex-tutorial}/posts/reflex/basics ./posts/reflex/basics
+      #ln -sv ${reflex-tutorial}/posts/reflex/basics ./posts/reflex/basics
       mkdir -p ./css/reflex
       ln -sv ${reflex-tutorial}/css/reflex/basics ./css/reflex/basics
-      ln -sv ${reflex-tutorial}/css/reflex/basics-exercises ./css/reflex/basics-exercises
+      #ln -sv ${reflex-tutorial}/css/reflex/basics-exercises ./css/reflex/basics-exercises
       mkdir -p ./js/reflex
       ln -sv ${reflex-tutorial}/js/reflex/basics ./js/reflex/basics
-      ln -sv ${reflex-tutorial}/js/reflex/basics-exercises ./js/reflex/basics-exercises
+      #ln -sv ${reflex-tutorial}/js/reflex/basics-exercises ./js/reflex/basics-exercises
 
       ln -sv ${growing-a-datepicker}/drafts/reflex/widget ./drafts/reflex/widget
       ln -sv ${growing-a-datepicker}/posts/reflex/widget ./posts/reflex/widget
       ln -sv ${growing-a-datepicker}/css/reflex/growing-a-datepicker ./css/reflex/growing-a-datepicker
       ln -sv ${growing-a-datepicker}/js/reflex/growing-a-datepicker ./js/reflex/growing-a-datepicker
-
     '';
 
     buildPhase = ''
@@ -62,5 +61,3 @@ in
 
     buildInputs = [generator mytexlive pkgs.imagemagick pkgs.ghostscript pkgs.glibcLocales];
   }
-
-
