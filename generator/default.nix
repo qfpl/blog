@@ -8,6 +8,11 @@ let
              then pkgs.haskellPackages
              else pkgs.haskell.packages.${compiler};
 
+  # Present in nixpkgs master but not release-19.09. Try removing when
+  # 20.03 comes out.
+  unmarkBroken = drv:
+    pkgs.haskell.lib.overrideCabal drv (_: { broken = false; });
+
   modifiedHaskellPackages = haskellPackages.override {
     overrides = self: super: with pkgs.haskell.lib; {
       latex-formulae-image = overrideCabal (super.callHackageDirect {
