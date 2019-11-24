@@ -2,13 +2,13 @@ This is the QFPL team blog.
 
 You can build the contents of the blog locally with:
 ```
-nix-build release.nix -A blog
+nix-build -I . release.nix -A blog
 ```
 where the output will be in `result/blog`
 
 You can build the site generator with:
 ```
-nix-build release.nix -A generator
+nix-build -I . release.nix -A generator
 ```
 where the output will be the executable  `result/site`
 
