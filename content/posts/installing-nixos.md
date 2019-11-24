@@ -257,7 +257,7 @@ NixOS also needs to know that we're using EFI, however this was correctly config
 automatically.
 
 ```
-boot.loader.systemd-boot.enable to true
+boot.loader.systemd-boot.enable = true;
 ```
 
 I also use network manager and its associated applet to manage my networking. If you'd like to do
