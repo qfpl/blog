@@ -1,6 +1,6 @@
 ---
 title: Automatic Testing of Haskell Projects with Travis CI
-date: 2019-11-24
+date: 2019-11-26
 project: infra
 authors: gwilson
 ---
