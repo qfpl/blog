@@ -15,6 +15,8 @@ Course Pricing
 
 We have free and paid courses with the same content for each course.
 
+Update as of February 2020: QFPL has come to a close, and so the free courses are no longer offered.  It is possible that Data61 may run public courses for a fee in the future, although at the time of writing that it is unclear how likely that is.
+
 ##### The Difference
 
 The timing and location of the free courses is based on demand. You are more than welcome to attend,
@@ -33,7 +35,7 @@ already but are in need of further training in a particular topic.
 <div class="card data61-border">
 
 <div class="card-header data61-border">
-<h4>Free</h4>
+<h4>Free - no longer offered as of February 2020</h4>
 </div>
 
 <div class="card-body">
