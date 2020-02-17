@@ -151,7 +151,7 @@ On completion of this course, attendees will be able to confidently explain the 
 
 2. A copy of the introductory FP course material on that machine. The material is open-source and [available on github](https://github.com/data61/fp-course/).
 
-If there are any issues with this preparation, please [contact the QFPL](http://qfpl.io/contact) who will set you up.
+If there are any issues with this preparation, please [contact the QFPL](/contact) who will set you up.
 
 <h2 class="mt-4 data61-bottom-line"><a name="applied"></a>
 Applied Functional Programming
@@ -227,5 +227,5 @@ compiled using version XXXXXXX of the Cabal library
 
 3. Working install of SQLite ([https://www.sqlite.org/quickstart.html](https://www.sqlite.org/quickstart.html)).
 
-If there are any issues with this preparation, please [contact the QFPL](http://qfpl.io/contact) who will set you up.
+If there are any issues with this preparation, please [contact the QFPL](/contact) who will set you up.
 
