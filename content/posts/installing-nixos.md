@@ -244,13 +244,12 @@ It is of critical importance that we tell NixOS we have a LUKS encrypted partiti
 decrypted before we can access any LVM partitions. We do that like so.
 
 ```
-boot.initrd.luks.devices = [
-  { 
-    name = "root";
+boot.initrd.luks.devices = {
+  root = { 
     device = "/dev/nvme0n1p2";
     preLVM = true;
-  }
-];
+  };
+};
 ```
 
 NixOS also needs to know that we're using EFI, however this was correctly configured for me
