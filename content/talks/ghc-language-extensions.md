@@ -6,5 +6,5 @@ venue-link: http://lambdajam.yowconference.com.au/
 author: ajmcmiddlin
 author-name: Andrew McMiddlin
 code-url: https://github.com/qfpl/ghc-extensions-talk
-slides-base: index.html
+slides-base: slides.pdf
 ---
