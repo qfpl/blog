@@ -317,7 +317,7 @@ RT and do more than heat your CPU
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Vehicle</span> <span class="fu">=</span> <span class="dt">Car</span>
              <span class="fu">|</span> <span class="dt">Bicycle</span>
              <span class="fu">|</span> <span class="dt">MotorBike</span>
-             
+
 <span class="ot">describeVehicle ::</span> <span class="dt">Vehicle</span> <span class="ot">-&gt;</span> <span class="dt">String</span>
 describeVehicle <span class="dt">Car</span> <span class="fu">=</span>
   <span class="st">&quot;Closed in people container on 3 or more wheels&quot;</span>
@@ -656,7 +656,7 @@ foo.quux.nil?</code></pre></div>
   <span class="kw">def</span> with_bar(bar)
     <span class="dv">self</span>.new(bar, <span class="dv">self</span>.baz)
   <span class="kw">end</span>
-  
+
   <span class="kw">def</span> total
     <span class="dv">self</span>.bar + <span class="dv">self</span>.baz
   <span class="kw">end</span>
@@ -672,7 +672,7 @@ foo.quux.nil?</code></pre></div>
 <h2>Modules</h2>
 <div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">module</span> <span class="dt">TicTacToe</span>
   <span class="dt">Game</span> = <span class="dt">Struct</span>.new(<span class="st">:board</span>, <span class="st">:next_symbol</span>, <span class="st">:winner</span>)
-  
+
   <span class="kw">def</span> <span class="dv">self</span>.finished?(game)
     !game.winner.nil? || board_full?(game.board)
   <span class="kw">end</span>
@@ -798,7 +798,7 @@ addThreeMaybes h keys <span class="fu">=</span>
                 (M.lookup k h)
   <span class="kw">in</span>
     fmap sum <span class="fu">.</span> traverse f <span class="fu">$</span> keys
-    
+
 <span class="co">-- &quot;foo&quot; and &quot;baz&quot; aren&#39;t keys in the map</span>
 addThreeValidations someMap [<span class="st">&quot;foo&quot;</span>, <span class="st">&quot;bar&quot;</span>, <span class="st">&quot;baz&quot;</span>]
 <span class="co">-- =&gt; AccFailure [ &quot;Couldn&#39;t find key: foo&quot;,</span>
@@ -824,18 +824,18 @@ addValidation h keys <span class="fu">=</span>
     fmap sum <span class="fu">.</span> traverse f <span class="fu">$</span> keys</code></pre></div>
 </section><section id="section-48" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">                  
-     
-                      
-    
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">
+
+
+
     fmap sum <span class="fu">.</span> traverse f <span class="fu">$</span> keys
 
-                      
-     
-                                                           
-                          
-                              
-    
+
+
+
+
+
+
     fmap sum <span class="fu">.</span> traverse f <span class="fu">$</span> keys</code></pre></div>
 </section><section id="section-49" class="slide level2">
 <h2></h2>
@@ -852,7 +852,7 @@ addValidation h keys <span class="fu">=</span>
 <h2></h2>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">addMaybes h keys <span class="fu">=</span>
   addThings (<span class="ot">`M.lookup`</span> h) keys
-  
+
 addValidations h keys <span class="fu">=</span>
   <span class="kw">let</span>
     validatedLookup k <span class="fu">=</span>
@@ -865,7 +865,7 @@ addValidations h keys <span class="fu">=</span>
 <h2></h2>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">addMultiplesOf n ns <span class="fu">=</span>
   addThings (<span class="fu">*</span>) ns n
-  
+
 <span class="co">-- &gt; addMultiplesOf 5 [1,2,3]</span>
 <span class="co">-- 30</span></code></pre></div>
 </section><section id="section-52" class="slide level2">
@@ -960,7 +960,7 @@ addValidations h keys <span class="fu">=</span>
 <p>Register by 26 Jan (<a href="https://notify.qfpl.io">notify.qfpl.io</a>)</p>
 </section><section id="need-help" class="slide level2">
 <h2>Need help?</h2>
-<p>#qfpl on Freenode</p>
+<p>#qfpl on Libera</p>
 </section></section>
 <section><section id="credits" class="titleslide slide level1"><h1>Credits</h1></section><section id="images" class="slide level2">
 <h2>Images</h2>

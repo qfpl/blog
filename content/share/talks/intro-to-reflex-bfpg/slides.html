@@ -105,7 +105,7 @@ There is something nice and functional about being able to work with something t
 <!--
 ##
 
-The assumption made by a lot of FP approaches to the virtual DOM is that the DOM is stateless 
+The assumption made by a lot of FP approaches to the virtual DOM is that the DOM is stateless
 
 ##
 
@@ -188,7 +188,7 @@ These come from mouse clicks and key presses and clock ticks
 
 ##
 
-We have a library that does 
+We have a library that does
 
 > - high performance management of state
 > - where the pieces of state are first class values
@@ -280,12 +280,12 @@ So we're dealing with something like event-sourcing ...
 <div id="examples-events-frame">
 
 </div>
-<!-- 
-## 
+<!--
+##
 
 `Event`s derived from other `Event`s can occur in the same frame.
 
-## 
+##
 
 There is an obvious way that this can happen
 -->
@@ -321,8 +321,8 @@ We can create an `Event` which fires in _some_ of the frames that another `Event
 The simplest way to do that is to filter an `Event` with a predicate:
 -->
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">ffilter ::</span> <span class="dt">Reflex</span> t
-        <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) 
-        <span class="ot">-&gt;</span> <span class="dt">Event</span> t a 
+        <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>)
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> t a
         <span class="ot">-&gt;</span> <span class="dt">Event</span> t a</code></pre></div>
 </section><section id="section-18" class="slide level2">
 <h2></h2>
@@ -335,9 +335,9 @@ isRed <span class="dt">Blue</span> <span class="fu">=</span> <span class="dt">Fa
 </div>
 </section><section id="section-19" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">fmapMaybe ::</span> <span class="dt">Reflex</span> t 
-          <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Maybe</span> b) 
-          <span class="ot">-&gt;</span> <span class="dt">Event</span> t a 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">fmapMaybe ::</span> <span class="dt">Reflex</span> t
+          <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Maybe</span> b)
+          <span class="ot">-&gt;</span> <span class="dt">Event</span> t a
           <span class="ot">-&gt;</span> <span class="dt">Event</span> t b</code></pre></div>
 </section><section id="section-20" class="slide level2">
 <h2></h2>
@@ -351,28 +351,28 @@ parseColour _      <span class="fu">=</span> <span class="dt">Nothing</span></co
 </div>
 </section><section id="section-21" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">fmapMaybe    ::</span> <span class="dt">Reflex</span> t 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">fmapMaybe    ::</span> <span class="dt">Reflex</span> t
              <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Maybe</span> b)
              <span class="ot">-&gt;</span> <span class="dt">Event</span> t a
              <span class="ot">-&gt;</span> <span class="dt">Event</span> t b</code></pre></div>
 </section><section id="section-22" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">fmapMaybe<span class="ot"> id ::</span> <span class="dt">Reflex</span> t 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">fmapMaybe<span class="ot"> id ::</span> <span class="dt">Reflex</span> t
              <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Maybe</span> b)
              <span class="ot">-&gt;</span> <span class="dt">Event</span> t a
              <span class="ot">-&gt;</span> <span class="dt">Event</span> t b</code></pre></div>
 </section><section id="section-23" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">fmapMaybe<span class="ot"> id ::</span> <span class="dt">Reflex</span> t 
-             <span class="ot">=&gt;</span> 
-                <span class="dt">Event</span> t (<span class="dt">Maybe</span> c) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">fmapMaybe<span class="ot"> id ::</span> <span class="dt">Reflex</span> t
+             <span class="ot">=&gt;</span>
+                <span class="dt">Event</span> t (<span class="dt">Maybe</span> c)
              <span class="ot">-&gt;</span> <span class="dt">Event</span> t c</code></pre></div>
 <!--
 ##
 
 ```haskell
-fanEither :: Reflex t 
-          => Event t (Either a b) 
+fanEither :: Reflex t
+          => Event t (Either a b)
           -> (Event t a, Event t b)
 ```
 
@@ -504,7 +504,7 @@ t <span class="ot">-&gt;</span> a</code></pre></div>
      <span class="ot">-&gt;</span> m (<span class="dt">Behavior</span> t a)</code></pre></div>
 </section><section id="section-38" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">tag ::</span> <span class="dt">Reflex</span> t 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">tag ::</span> <span class="dt">Reflex</span> t
     <span class="ot">=&gt;</span> <span class="dt">Behavior</span> t a
     <span class="ot">-&gt;</span> <span class="dt">Event</span> t b
     <span class="ot">-&gt;</span> <span class="dt">Event</span> t a</code></pre></div>
@@ -617,29 +617,29 @@ We can see that by sampling from the `Behavior` when any of the buttons are pres
 </div>
 </section><section id="section-56" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">attach          ::</span> <span class="dt">Reflex</span> t 
-                <span class="ot">=&gt;</span> 
-                   <span class="dt">Behavior</span> t a 
-                <span class="ot">-&gt;</span> <span class="dt">Event</span> t b 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">attach          ::</span> <span class="dt">Reflex</span> t
+                <span class="ot">=&gt;</span>
+                   <span class="dt">Behavior</span> t a
+                <span class="ot">-&gt;</span> <span class="dt">Event</span> t b
                 <span class="ot">-&gt;</span> <span class="dt">Event</span> t (a, b)</code></pre></div>
 </section><section id="section-57" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">attachWith      ::</span> <span class="dt">Reflex</span> t 
-                <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> b <span class="ot">-&gt;</span> c) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">attachWith      ::</span> <span class="dt">Reflex</span> t
+                <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> b <span class="ot">-&gt;</span> c)
                 <span class="ot">-&gt;</span> <span class="dt">Behavior</span> t a
                 <span class="ot">-&gt;</span> <span class="dt">Event</span> t b
                 <span class="ot">-&gt;</span> <span class="dt">Event</span> t c</code></pre></div>
 </section><section id="section-58" class="slide level2">
 <h2></h2>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">attachWithMaybe ::</span> <span class="dt">Reflex</span> t
-                <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> b <span class="ot">-&gt;</span> <span class="dt">Maybe</span> c) 
+                <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> b <span class="ot">-&gt;</span> <span class="dt">Maybe</span> c)
                 <span class="ot">-&gt;</span> <span class="dt">Behavior</span> t a
                 <span class="ot">-&gt;</span> <span class="dt">Event</span> t b
                 <span class="ot">-&gt;</span> <span class="dt">Event</span> t c</code></pre></div>
 </section><section id="section-59" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">gate            ::</span> <span class="dt">Reflex</span> t 
-                <span class="ot">=&gt;</span> 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">gate            ::</span> <span class="dt">Reflex</span> t
+                <span class="ot">=&gt;</span>
                    <span class="dt">Behavior</span> t <span class="dt">Bool</span>
                 <span class="ot">-&gt;</span> <span class="dt">Event</span> t a
                 <span class="ot">-&gt;</span> <span class="dt">Event</span> t a</code></pre></div>
@@ -797,13 +797,13 @@ pure <span class="fu">$</span> f <span class="fu">&lt;$&gt;</span> b</code></pre
 </div>
 </section><section id="section-84" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">instance</span> <span class="dt">Reflex</span> t <span class="ot">=&gt;</span> 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">instance</span> <span class="dt">Reflex</span> t <span class="ot">=&gt;</span>
          <span class="dt">Monad</span> (<span class="dt">Behavior</span> t) <span class="kw">where</span> <span class="fu">..</span></code></pre></div>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">instance</span> (<span class="dt">Reflex</span> t, <span class="dt">Monoid</span> a) <span class="ot">=&gt;</span> 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">instance</span> (<span class="dt">Reflex</span> t, <span class="dt">Monoid</span> a) <span class="ot">=&gt;</span>
          <span class="dt">Monoid</span> (<span class="dt">Behavior</span> t a) <span class="kw">where</span> <span class="fu">..</span></code></pre></div>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">instance</span> (<span class="dt">Reflex</span> t, <span class="dt">Num</span> a) <span class="ot">=&gt;</span> 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">instance</span> (<span class="dt">Reflex</span> t, <span class="dt">Num</span> a) <span class="ot">=&gt;</span>
          <span class="dt">Num</span> (<span class="dt">Behavior</span> t a) <span class="kw">where</span> <span class="fu">..</span></code></pre></div>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">instance</span> (<span class="dt">Reflex</span> t, <span class="dt">IsString</span> a) <span class="ot">=&gt;</span> 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">instance</span> (<span class="dt">Reflex</span> t, <span class="dt">IsString</span> a) <span class="ot">=&gt;</span>
          <span class="dt">IsString</span> (<span class="dt">Behavior</span> t a) <span class="kw">where</span> <span class="fu">..</span></code></pre></div>
 </section></section>
 <section><section id="dynamic" class="titleslide slide level1"><h1><code>Dynamic</code></h1></section><section id="section-85" class="slide level2">
@@ -817,18 +817,18 @@ pure <span class="fu">$</span> f <span class="fu">&lt;$&gt;</span> b</code></pre
 <h2></h2>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Dynamic</span> t a
 
-  <span class="fu">~</span> 
+  <span class="fu">~</span>
 
 (<span class="dt">Event</span> t a, <span class="dt">Behavior</span> t a) </code></pre></div>
 </section><section id="section-87" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">updated ::</span> <span class="dt">Reflex</span> t 
-        <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> t a 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">updated ::</span> <span class="dt">Reflex</span> t
+        <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> t a
         <span class="ot">-&gt;</span> <span class="dt">Event</span> t a</code></pre></div>
 </section><section id="section-88" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">current ::</span> <span class="dt">Reflex</span> t 
-        <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> t a 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">current ::</span> <span class="dt">Reflex</span> t
+        <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> t a
         <span class="ot">-&gt;</span> <span class="dt">Behavior</span> t a</code></pre></div>
 <!--
 ##
@@ -853,42 +853,42 @@ We construct `Dynamic`s directly rather than combining `Event`s and `Behavior`s 
 -->
 </section><section id="section-89" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">hold        ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
-            <span class="ot">=&gt;</span> 
-               a 
-            <span class="ot">-&gt;</span> <span class="dt">Event</span> t a 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">hold        ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
+            <span class="ot">=&gt;</span>
+               a
+            <span class="ot">-&gt;</span> <span class="dt">Event</span> t a
             <span class="ot">-&gt;</span> m (<span class="dt">Behavior</span> t a)</code></pre></div>
 </section><section id="section-90" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">holdDyn     ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
-            <span class="ot">=&gt;</span> 
-               a 
-            <span class="ot">-&gt;</span> <span class="dt">Event</span> t a 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">holdDyn     ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
+            <span class="ot">=&gt;</span>
+               a
+            <span class="ot">-&gt;</span> <span class="dt">Event</span> t a
             <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span>  t a)</code></pre></div>
 </section><section id="section-91" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">foldDyn     ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m, <span class="dt">MonadFix</span> m) 
-            <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> b <span class="ot">-&gt;</span> b) 
-            <span class="ot">-&gt;</span> b 
-            <span class="ot">-&gt;</span> <span class="dt">Event</span> t a 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">foldDyn     ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m, <span class="dt">MonadFix</span> m)
+            <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> b <span class="ot">-&gt;</span> b)
+            <span class="ot">-&gt;</span> b
+            <span class="ot">-&gt;</span> <span class="dt">Event</span> t a
             <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span>  t b)</code></pre></div>
 </section><section id="section-92" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">foldDyn<span class="ot"> ($) ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m, <span class="dt">MonadFix</span> m) 
-            <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> b <span class="ot">-&gt;</span> b) 
-            <span class="ot">-&gt;</span> b 
-            <span class="ot">-&gt;</span> <span class="dt">Event</span> t a 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">foldDyn<span class="ot"> ($) ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m, <span class="dt">MonadFix</span> m)
+            <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> b <span class="ot">-&gt;</span> b)
+            <span class="ot">-&gt;</span> b
+            <span class="ot">-&gt;</span> <span class="dt">Event</span> t a
             <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span>  t b)</code></pre></div>
 </section><section id="section-93" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">foldDyn<span class="ot"> ($) ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m, <span class="dt">MonadFix</span> m) 
-            <span class="ot">=&gt;</span> 
-               c 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">foldDyn<span class="ot"> ($) ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m, <span class="dt">MonadFix</span> m)
+            <span class="ot">=&gt;</span>
+               c
             <span class="ot">-&gt;</span> <span class="dt">Event</span> t (c <span class="ot">-&gt;</span> c)
             <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span>  t c)</code></pre></div>
 </section><section id="section-94" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m, <span class="dt">MonadFix</span> m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m, <span class="dt">MonadFix</span> m)
         <span class="ot">=&gt;</span>
 
            m (<span class="dt">Dynamic</span> t <span class="dt">Int</span>)
@@ -899,7 +899,7 @@ counter             <span class="fu">=</span>
  </code></pre></div>
 </section><section id="section-95" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m, <span class="dt">MonadFix</span> m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m, <span class="dt">MonadFix</span> m)
         <span class="ot">=&gt;</span> <span class="dt">Event</span> t ()
 
         <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> t <span class="dt">Int</span>)
@@ -910,7 +910,7 @@ counter             <span class="fu">=</span>
  </code></pre></div>
 </section><section id="section-96" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m, <span class="dt">MonadFix</span> m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m, <span class="dt">MonadFix</span> m)
         <span class="ot">=&gt;</span> <span class="dt">Event</span> t ()
 
         <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> t <span class="dt">Int</span>)
@@ -921,62 +921,62 @@ counter eAdd        <span class="fu">=</span>
  </code></pre></div>
 </section><section id="section-97" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m, <span class="dt">MonadFix</span> m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m, <span class="dt">MonadFix</span> m)
         <span class="ot">=&gt;</span> <span class="dt">Event</span> t ()
 
         <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> t <span class="dt">Int</span>)
 counter eAdd        <span class="fu">=</span>
   foldDyn (<span class="fu">$</span>) <span class="dv">0</span>
-  
-  
+
+
    </code></pre></div>
 </section><section id="section-98" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m, <span class="dt">MonadFix</span> m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m, <span class="dt">MonadFix</span> m)
         <span class="ot">=&gt;</span> <span class="dt">Event</span> t ()
 
         <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> t <span class="dt">Int</span>)
 counter eAdd        <span class="fu">=</span>
   foldDyn (<span class="fu">$</span>) <span class="dv">0</span>                 <span class="fu">$</span>
       (<span class="fu">+</span> <span class="dv">1</span>)   <span class="fu">&lt;$</span> eAdd
-  
+
    </code></pre></div>
 </section><section id="section-99" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m, <span class="dt">MonadFix</span> m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m, <span class="dt">MonadFix</span> m)
         <span class="ot">=&gt;</span> <span class="dt">Event</span> t ()
         <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
         <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> t <span class="dt">Int</span>)
 counter eAdd        <span class="fu">=</span>
   foldDyn (<span class="fu">$</span>) <span class="dv">0</span>                 <span class="fu">$</span>
       (<span class="fu">+</span> <span class="dv">1</span>)   <span class="fu">&lt;$</span> eAdd
-  
+
    </code></pre></div>
 </section><section id="section-100" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m, <span class="dt">MonadFix</span> m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m, <span class="dt">MonadFix</span> m)
         <span class="ot">=&gt;</span> <span class="dt">Event</span> t ()
         <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
         <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> t <span class="dt">Int</span>)
 counter eAdd eClear <span class="fu">=</span>
   foldDyn (<span class="fu">$</span>) <span class="dv">0</span>                 <span class="fu">$</span>
       (<span class="fu">+</span> <span class="dv">1</span>)   <span class="fu">&lt;$</span> eAdd
-  
+
    </code></pre></div>
 </section><section id="section-101" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m, <span class="dt">MonadFix</span> m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m, <span class="dt">MonadFix</span> m)
         <span class="ot">=&gt;</span> <span class="dt">Event</span> t ()
         <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
         <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> t <span class="dt">Int</span>)
 counter eAdd eClear <span class="fu">=</span>
   foldDyn (<span class="fu">$</span>) <span class="dv">0</span> <span class="fu">.</span> mergeWith (<span class="fu">.</span>) <span class="fu">$</span> [
       (<span class="fu">+</span> <span class="dv">1</span>)   <span class="fu">&lt;$</span> eAdd
-  
+
     ] </code></pre></div>
 </section><section id="section-102" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m, <span class="dt">MonadFix</span> m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m, <span class="dt">MonadFix</span> m)
         <span class="ot">=&gt;</span> <span class="dt">Event</span> t ()
         <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
         <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> t <span class="dt">Int</span>)
@@ -987,7 +987,7 @@ counter eAdd eClear <span class="fu">=</span>
     ]</code></pre></div>
 </section><section id="section-103" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m, <span class="dt">MonadFix</span> m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m, <span class="dt">MonadFix</span> m)
         <span class="ot">=&gt;</span> <span class="dt">Event</span> t ()
         <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
         <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> t <span class="dt">Int</span>)
@@ -1001,15 +1001,15 @@ counter eAdd eClear <span class="fu">=</span>
 </div>
 </section><section id="section-104" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">instance</span> <span class="dt">Reflex</span> t <span class="ot">=&gt;</span> 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">instance</span> <span class="dt">Reflex</span> t <span class="ot">=&gt;</span>
          <span class="dt">Functor</span> (<span class="dt">Dynamic</span> t) <span class="kw">where</span> <span class="fu">...</span>
-<span class="kw">instance</span> <span class="dt">Reflex</span> t <span class="ot">=&gt;</span> 
+<span class="kw">instance</span> <span class="dt">Reflex</span> t <span class="ot">=&gt;</span>
          <span class="dt">Applicative</span> (<span class="dt">Dynamic</span> t) <span class="kw">where</span> <span class="fu">...</span>
-<span class="kw">instance</span> <span class="dt">Reflex</span> t <span class="ot">=&gt;</span> 
+<span class="kw">instance</span> <span class="dt">Reflex</span> t <span class="ot">=&gt;</span>
          <span class="dt">Monad</span> (<span class="dt">Dynamic</span> t) <span class="kw">where</span> <span class="fu">...</span></code></pre></div>
 </section><section id="section-105" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">samplePair ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">samplePair ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
            <span class="ot">=&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
            <span class="ot">-&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
            <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
@@ -1021,7 +1021,7 @@ samplePair eInput1 eInput2 eSample <span class="fu">=</span> <span class="kw">do
   pure <span class="fu">$</span> tag bPair eSample</code></pre></div>
 </section><section id="section-106" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">samplePair ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">samplePair ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
            <span class="ot">=&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
            <span class="ot">-&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
 
@@ -1033,7 +1033,7 @@ samplePair eInput1 eInput2         <span class="fu">=</span> <span class="kw">do
   pure <span class="fu">$</span> tag bPair eSample</code></pre></div>
 </section><section id="section-107" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">samplePair ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">samplePair ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
            <span class="ot">=&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
            <span class="ot">-&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
 
@@ -1045,7 +1045,7 @@ samplePair eInput1 eInput2         <span class="fu">=</span> <span class="kw">do
  </code></pre></div>
 </section><section id="section-108" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">samplePair ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">samplePair ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
            <span class="ot">=&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
            <span class="ot">-&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
 
@@ -1057,7 +1057,7 @@ samplePair eInput1 eInput2         <span class="fu">=</span> <span class="kw">do
  </code></pre></div>
 </section><section id="section-109" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">samplePair ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">samplePair ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
            <span class="ot">=&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
            <span class="ot">-&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
 
@@ -1069,7 +1069,7 @@ samplePair eInput1 eInput2         <span class="fu">=</span> <span class="kw">do
  </code></pre></div>
 </section><section id="section-110" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">samplePair ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">samplePair ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
            <span class="ot">=&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
            <span class="ot">-&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
 
@@ -1081,7 +1081,7 @@ samplePair eInput1 eInput2         <span class="fu">=</span> <span class="kw">do
  </code></pre></div>
 </section><section id="section-111" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">samplePair ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">samplePair ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
            <span class="ot">=&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
            <span class="ot">-&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
 
@@ -1093,7 +1093,7 @@ samplePair eInput1 eInput2         <span class="fu">=</span> <span class="kw">do
  </code></pre></div>
 </section><section id="section-112" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">samplePair ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">samplePair ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
            <span class="ot">=&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
            <span class="ot">-&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
 
@@ -1105,7 +1105,7 @@ samplePair eInput1 eInput2         <span class="fu">=</span> <span class="kw">do
  </code></pre></div>
 </section><section id="section-113" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">samplePair ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">samplePair ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
            <span class="ot">=&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
            <span class="ot">-&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
 
@@ -1117,7 +1117,7 @@ samplePair eInput1 eInput2         <span class="fu">=</span> <span class="kw">do
  </code></pre></div>
 </section><section id="section-114" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">splitPair ::</span> <span class="dt">Reflex</span> t 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">splitPair ::</span> <span class="dt">Reflex</span> t
           <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> t (<span class="dt">Colour</span>, <span class="dt">Colour</span>)
           <span class="ot">-&gt;</span> (<span class="dt">Dynamic</span> t <span class="dt">Colour</span>, <span class="dt">Dynamic</span> t <span class="dt">Colour</span>)
 splitPair dPair <span class="fu">=</span>
@@ -1133,8 +1133,8 @@ splitPair dPair <span class="fu">=</span>
 ##
 
 It can be helpful to use this while pulling things apart:-->
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">holdUniqDyn ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m, <span class="dt">MonadFix</span> m, <span class="dt">Eq</span> a) 
-            <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> t a 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">holdUniqDyn ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m, <span class="dt">MonadFix</span> m, <span class="dt">Eq</span> a)
+            <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> t a
             <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> t a)</code></pre></div>
 <!--
 . . .
@@ -1143,7 +1143,7 @@ It removes `Event` firings when the value hasn't changed.
 -->
 </section><section id="section-116" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">splitPair ::</span>  <span class="dt">Reflex</span> t 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">splitPair ::</span>  <span class="dt">Reflex</span> t
           <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> t (<span class="dt">Colour</span>, <span class="dt">Colour</span>)
           <span class="ot">-&gt;</span>   (<span class="dt">Dynamic</span> t <span class="dt">Colour</span>, <span class="dt">Dynamic</span> t <span class="dt">Colour</span>)
 splitPair dPair <span class="fu">=</span>
@@ -1233,8 +1233,8 @@ This means some dependencies can be loops, which is fine
 We just need a way to specify them
 -->
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">
-<span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadFix</span> m, <span class="dt">MonadHold</span> t m) 
-        <span class="ot">=&gt;</span> 
+<span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadFix</span> m, <span class="dt">MonadHold</span> t m)
+        <span class="ot">=&gt;</span>
            <span class="dt">Event</span> t ()
         <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
         <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> t <span class="dt">Int</span>)
@@ -1245,12 +1245,12 @@ counter        eAdd eClear <span class="fu">=</span>  <span class="kw">do</span>
       (<span class="fu">+</span> <span class="dv">1</span>)   <span class="fu">&lt;$</span>                         eAdd
     , const <span class="dv">0</span> <span class="fu">&lt;$</span>                         eClear
     ]
-    
+
   pure dCount</code></pre></div>
 </section><section id="section-124" class="slide level2">
 <h2></h2>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">
-<span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadFix</span> m, <span class="dt">MonadHold</span> t m) 
+<span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadFix</span> m, <span class="dt">MonadHold</span> t m)
         <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> t <span class="dt">Int</span>
         <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
         <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
@@ -1262,12 +1262,12 @@ counter        eAdd eClear <span class="fu">=</span>  <span class="kw">do</span>
       (<span class="fu">+</span> <span class="dv">1</span>)   <span class="fu">&lt;$</span>                         eAdd
     , const <span class="dv">0</span> <span class="fu">&lt;$</span>                         eClear
     ]
-    
+
   pure dCount</code></pre></div>
 </section><section id="section-125" class="slide level2">
 <h2></h2>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">
-<span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadFix</span> m, <span class="dt">MonadHold</span> t m) 
+<span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadFix</span> m, <span class="dt">MonadHold</span> t m)
         <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> t <span class="dt">Int</span>
         <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
         <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
@@ -1279,12 +1279,12 @@ counter dLimit eAdd eClear <span class="fu">=</span>  <span class="kw">do</span>
       (<span class="fu">+</span> <span class="dv">1</span>)   <span class="fu">&lt;$</span>                         eAdd
     , const <span class="dv">0</span> <span class="fu">&lt;$</span>                         eClear
     ]
-    
+
   pure dCount</code></pre></div>
 </section><section id="section-126" class="slide level2">
 <h2></h2>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">
-<span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadFix</span> m, <span class="dt">MonadHold</span> t m) 
+<span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadFix</span> m, <span class="dt">MonadHold</span> t m)
         <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> t <span class="dt">Int</span>
         <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
         <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
@@ -1296,12 +1296,12 @@ counter dLimit eAdd eClear <span class="fu">=</span>  <span class="kw">do</span>
       (<span class="fu">+</span> <span class="dv">1</span>)   <span class="fu">&lt;$</span> gate _                  eAdd
     , const <span class="dv">0</span> <span class="fu">&lt;$</span>                         eClear
     ]
-    
+
   pure dCount</code></pre></div>
 </section><section id="section-127" class="slide level2">
 <h2></h2>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">
-<span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadFix</span> m, <span class="dt">MonadHold</span> t m) 
+<span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadFix</span> m, <span class="dt">MonadHold</span> t m)
         <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> t <span class="dt">Int</span>
         <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
         <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
@@ -1313,12 +1313,12 @@ counter dLimit eAdd eClear <span class="fu">=</span>  <span class="kw">do</span>
       (<span class="fu">+</span> <span class="dv">1</span>)   <span class="fu">&lt;$</span> gate _                  eAdd
     , const <span class="dv">0</span> <span class="fu">&lt;$</span>                         eClear
     ]
-    
+
   pure dCount</code></pre></div>
 </section><section id="section-128" class="slide level2">
 <h2></h2>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">
-<span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadFix</span> m, <span class="dt">MonadHold</span> t m) 
+<span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadFix</span> m, <span class="dt">MonadHold</span> t m)
         <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> t <span class="dt">Int</span>
         <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
         <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
@@ -1330,12 +1330,12 @@ counter dLimit eAdd eClear <span class="fu">=</span>  <span class="kw">do</span>
       (<span class="fu">+</span> <span class="dv">1</span>)   <span class="fu">&lt;$</span> gate (current dLimitOK) eAdd
     , const <span class="dv">0</span> <span class="fu">&lt;$</span>                         eClear
     ]
-    
+
   pure dCount</code></pre></div>
 </section><section id="section-129" class="slide level2">
 <h2></h2>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">{-# LANGUAGE RecursiveDo #-}</span>
-<span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadFix</span> m, <span class="dt">MonadHold</span> t m) 
+<span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadFix</span> m, <span class="dt">MonadHold</span> t m)
         <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> t <span class="dt">Int</span>
         <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
         <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
@@ -1347,14 +1347,14 @@ counter dLimit eAdd eClear <span class="fu">=</span>  <span class="kw">do</span>
       (<span class="fu">+</span> <span class="dv">1</span>)   <span class="fu">&lt;$</span> gate (current dLimitOK) eAdd
     , const <span class="dv">0</span> <span class="fu">&lt;$</span>                         eClear
     ]
-    
+
   pure dCount</code></pre></div>
 </section><section id="section-130" class="slide level2">
 <h2></h2>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">{-# LANGUAGE RecursiveDo #-}</span>
-<span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadFix</span> m, <span class="dt">MonadHold</span> t m) 
-        <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> t <span class="dt">Int</span> 
-        <span class="ot">-&gt;</span> <span class="dt">Event</span> t () 
+<span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadFix</span> m, <span class="dt">MonadHold</span> t m)
+        <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> t <span class="dt">Int</span>
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
         <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
         <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> t <span class="dt">Int</span>)
 counter dLimit eAdd eClear <span class="fu">=</span> mdo
@@ -1369,9 +1369,9 @@ counter dLimit eAdd eClear <span class="fu">=</span> mdo
 </section><section id="section-131" class="slide level2">
 <h2></h2>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">{-# LANGUAGE RecursiveDo #-}</span>
-<span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadFix</span> m, <span class="dt">MonadHold</span> t m) 
-        <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> t <span class="dt">Int</span> 
-        <span class="ot">-&gt;</span> <span class="dt">Event</span> t () 
+<span class="ot">counter ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadFix</span> m, <span class="dt">MonadHold</span> t m)
+        <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> t <span class="dt">Int</span>
+        <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
         <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
         <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> t <span class="dt">Int</span>)
 counter dLimit eAdd eClear <span class="fu">=</span> mdo
@@ -1392,18 +1392,18 @@ counter dLimit eAdd eClear <span class="fu">=</span> mdo
 <!--
 We layout DOM elements using a monad that is supplied by `reflex-dom`
 
-## 
+##
 
 We'll be introducing some pieces of TodoMVC as we go
 
 ##
 -->
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">el ::</span> <span class="dt">DomBuilder</span> t m 
-   <span class="ot">=&gt;</span> <span class="dt">Text</span> 
-   <span class="ot">-&gt;</span> m a 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">el ::</span> <span class="dt">DomBuilder</span> t m
+   <span class="ot">=&gt;</span> <span class="dt">Text</span>
+   <span class="ot">-&gt;</span> m a
    <span class="ot">-&gt;</span> m a</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">text ::</span> <span class="dt">DomBuilder</span> t m 
-     <span class="ot">=&gt;</span> <span class="dt">Text</span> 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">text ::</span> <span class="dt">DomBuilder</span> t m
+     <span class="ot">=&gt;</span> <span class="dt">Text</span>
      <span class="ot">-&gt;</span> m ()</code></pre></div>
 </section><section id="section-133" class="slide level2">
 <h2></h2>
@@ -1419,7 +1419,7 @@ We can use Dynamics to set up the JS to listen for changes and to make them happ
 
 ##
 
-Thanks to some internal magic, if you don't use an `Event` from a component then no listeners are set up for that `Event` 
+Thanks to some internal magic, if you don't use an `Event` from a component then no listeners are set up for that `Event`
 
 ##
 
@@ -1431,17 +1431,17 @@ And we have finer grain control of what undergoes rendering changes
 -->
 </section><section id="section-134" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">button ::</span> <span class="dt">DomBuilder</span> t m 
-       <span class="ot">=&gt;</span> <span class="dt">Text</span> 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">button ::</span> <span class="dt">DomBuilder</span> t m
+       <span class="ot">=&gt;</span> <span class="dt">Text</span>
        <span class="ot">-&gt;</span> m (<span class="dt">Event</span> t ())</code></pre></div>
 </section><section id="section-135" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">MonadWidget</span> t m 
-         <span class="ot">=&gt;</span> <span class="dt">Text</span> 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">MonadWidget</span> t m
+         <span class="ot">=&gt;</span> <span class="dt">Text</span>
          <span class="ot">-&gt;</span> m (<span class="dt">Event</span> t ())
 todoItem placeholder <span class="fu">=</span>
   el <span class="st">&quot;div&quot;</span> <span class="fu">$</span> <span class="kw">do</span>
-    el <span class="st">&quot;div&quot;</span> <span class="fu">$</span> 
+    el <span class="st">&quot;div&quot;</span> <span class="fu">$</span>
       text placeholder
     button <span class="st">&quot;Remove&quot;</span></code></pre></div>
 <div id="examples-dom-todoitem-1" class="demo">
@@ -1449,8 +1449,8 @@ todoItem placeholder <span class="fu">=</span>
 </div>
 </section><section id="section-136" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">dynText ::</span> (<span class="dt">PostBuild</span> t m, <span class="dt">DomBuilder</span> t m) 
-        <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> t <span class="dt">Text</span> 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">dynText ::</span> (<span class="dt">PostBuild</span> t m, <span class="dt">DomBuilder</span> t m)
+        <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> t <span class="dt">Text</span>
         <span class="ot">-&gt;</span> m ()</code></pre></div>
 </section><section id="section-137" class="slide level2">
 <h2></h2>
@@ -1472,31 +1472,31 @@ todoItem placeholder <span class="fu">=</span>
 
   eRemove <span class="ot">&lt;-</span> todoItem <span class="st">&quot;TODO&quot;</span>
 
-  dLabel <span class="ot">&lt;-</span> holdDyn <span class="st">&quot;&quot;</span> <span class="fu">$</span> 
+  dLabel <span class="ot">&lt;-</span> holdDyn <span class="st">&quot;&quot;</span> <span class="fu">$</span>
     <span class="st">&quot;Removed:&quot;</span> <span class="fu">&lt;$</span> eRemove
 
   pure ()</code></pre></div>
 </section><section id="section-139" class="slide level2">
 <h2></h2>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">el <span class="st">&quot;div&quot;</span> <span class="fu">$</span> mdo
-  el <span class="st">&quot;div&quot;</span> <span class="fu">$</span> 
+  el <span class="st">&quot;div&quot;</span> <span class="fu">$</span>
     dynText dLabel
 
   eRemove <span class="ot">&lt;-</span> todoItem <span class="st">&quot;TODO&quot;</span>
 
-  dLabel <span class="ot">&lt;-</span> holdDyn <span class="st">&quot;&quot;</span> <span class="fu">$</span> 
+  dLabel <span class="ot">&lt;-</span> holdDyn <span class="st">&quot;&quot;</span> <span class="fu">$</span>
     <span class="st">&quot;Removed:&quot;</span> <span class="fu">&lt;$</span> eRemove
 
   pure ()</code></pre></div>
 </section><section id="section-140" class="slide level2">
 <h2></h2>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">el <span class="st">&quot;div&quot;</span> <span class="fu">$</span> mdo
-  el <span class="st">&quot;div&quot;</span> <span class="fu">$</span> 
+  el <span class="st">&quot;div&quot;</span> <span class="fu">$</span>
     dynText dLabel
 
   eRemove <span class="ot">&lt;-</span> todoItem <span class="st">&quot;TODO&quot;</span>
 
-  dLabel <span class="ot">&lt;-</span> holdDyn <span class="st">&quot;&quot;</span> <span class="fu">$</span> 
+  dLabel <span class="ot">&lt;-</span> holdDyn <span class="st">&quot;&quot;</span> <span class="fu">$</span>
     <span class="st">&quot;Removed:&quot;</span> <span class="fu">&lt;$</span> eRemove
 
   pure ()</code></pre></div>
@@ -1505,36 +1505,36 @@ todoItem placeholder <span class="fu">=</span>
 </div>
 </section><section id="section-141" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">elAttr    ::</span>  <span class="dt">DomBuilder</span> t m 
-          <span class="ot">=&gt;</span> <span class="dt">Text</span> 
-          <span class="ot">-&gt;</span>            <span class="dt">Map</span> <span class="dt">Text</span> <span class="dt">Text</span> 
-          <span class="ot">-&gt;</span> m a 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">elAttr    ::</span>  <span class="dt">DomBuilder</span> t m
+          <span class="ot">=&gt;</span> <span class="dt">Text</span>
+          <span class="ot">-&gt;</span>            <span class="dt">Map</span> <span class="dt">Text</span> <span class="dt">Text</span>
+          <span class="ot">-&gt;</span> m a
           <span class="ot">-&gt;</span> m a</code></pre></div>
 </section><section id="section-142" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">elDynAttr ::</span> (<span class="dt">DomBuilder</span> t m, <span class="dt">PostBuild</span> t m) 
-          <span class="ot">=&gt;</span> <span class="dt">Text</span> 
-          <span class="ot">-&gt;</span> <span class="dt">Dynamic</span> t (<span class="dt">Map</span> <span class="dt">Text</span> <span class="dt">Text</span>) 
-          <span class="ot">-&gt;</span> m a 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">elDynAttr ::</span> (<span class="dt">DomBuilder</span> t m, <span class="dt">PostBuild</span> t m)
+          <span class="ot">=&gt;</span> <span class="dt">Text</span>
+          <span class="ot">-&gt;</span> <span class="dt">Dynamic</span> t (<span class="dt">Map</span> <span class="dt">Text</span> <span class="dt">Text</span>)
+          <span class="ot">-&gt;</span> m a
           <span class="ot">-&gt;</span> m a</code></pre></div>
 </section><section id="section-143" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">elClass    ::</span>  <span class="dt">DomBuilder</span> t m 
-           <span class="ot">=&gt;</span> <span class="dt">Text</span> 
-           <span class="ot">-&gt;</span>           <span class="dt">Text</span> 
-           <span class="ot">-&gt;</span> m a 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">elClass    ::</span>  <span class="dt">DomBuilder</span> t m
+           <span class="ot">=&gt;</span> <span class="dt">Text</span>
+           <span class="ot">-&gt;</span>           <span class="dt">Text</span>
+           <span class="ot">-&gt;</span> m a
            <span class="ot">-&gt;</span> m a</code></pre></div>
 </section><section id="section-144" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">elDynClass ::</span> (<span class="dt">DomBuilder</span> t m, <span class="dt">PostBuild</span> t m) 
-           <span class="ot">=&gt;</span> <span class="dt">Text</span> 
-           <span class="ot">-&gt;</span> <span class="dt">Dynamic</span> t <span class="dt">Text</span> 
-           <span class="ot">-&gt;</span> m a 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">elDynClass ::</span> (<span class="dt">DomBuilder</span> t m, <span class="dt">PostBuild</span> t m)
+           <span class="ot">=&gt;</span> <span class="dt">Text</span>
+           <span class="ot">-&gt;</span> <span class="dt">Dynamic</span> t <span class="dt">Text</span>
+           <span class="ot">-&gt;</span> m a
            <span class="ot">-&gt;</span> m a</code></pre></div>
 </section><section id="section-145" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">MonadWidget</span> t m 
-         <span class="ot">=&gt;</span> <span class="dt">Text</span> 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">MonadWidget</span> t m
+         <span class="ot">=&gt;</span> <span class="dt">Text</span>
          <span class="ot">-&gt;</span> m (<span class="dt">Event</span> t ())
 todoItem placeholder <span class="fu">=</span>
   el      <span class="st">&quot;div&quot;</span>             <span class="fu">$</span>  <span class="kw">do</span>
@@ -1550,8 +1550,8 @@ todoItem placeholder <span class="fu">=</span>
     pure eRemove</code></pre></div>
 </section><section id="section-146" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">MonadWidget</span> t m 
-         <span class="ot">=&gt;</span> <span class="dt">Text</span> 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">MonadWidget</span> t m
+         <span class="ot">=&gt;</span> <span class="dt">Text</span>
          <span class="ot">-&gt;</span> m (<span class="dt">Event</span> t ())
 todoItem placeholder <span class="fu">=</span>
   elClass <span class="st">&quot;div&quot;</span>             <span class="fu">$</span>  <span class="kw">do</span>
@@ -1567,8 +1567,8 @@ todoItem placeholder <span class="fu">=</span>
     pure eRemove</code></pre></div>
 </section><section id="section-147" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">MonadWidget</span> t m 
-         <span class="ot">=&gt;</span> <span class="dt">Text</span> 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">MonadWidget</span> t m
+         <span class="ot">=&gt;</span> <span class="dt">Text</span>
          <span class="ot">-&gt;</span> m (<span class="dt">Event</span> t ())
 todoItem placeholder <span class="fu">=</span>
   elClass <span class="st">&quot;div&quot;</span> <span class="st">&quot;todo-item&quot;</span> <span class="fu">$</span>  <span class="kw">do</span>
@@ -1584,8 +1584,8 @@ todoItem placeholder <span class="fu">=</span>
     pure eRemove</code></pre></div>
 </section><section id="section-148" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">MonadWidget</span> t m 
-         <span class="ot">=&gt;</span> <span class="dt">Text</span> 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">MonadWidget</span> t m
+         <span class="ot">=&gt;</span> <span class="dt">Text</span>
          <span class="ot">-&gt;</span> m (<span class="dt">Event</span> t ())
 todoItem placeholder <span class="fu">=</span>
   elClass <span class="st">&quot;div&quot;</span> <span class="st">&quot;todo-item&quot;</span> <span class="fu">$</span>  <span class="kw">do</span>
@@ -1601,8 +1601,8 @@ todoItem placeholder <span class="fu">=</span>
     pure eRemove</code></pre></div>
 </section><section id="section-149" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">MonadWidget</span> t m 
-         <span class="ot">=&gt;</span> <span class="dt">Text</span> 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">MonadWidget</span> t m
+         <span class="ot">=&gt;</span> <span class="dt">Text</span>
          <span class="ot">-&gt;</span> m (<span class="dt">Event</span> t ())
 todoItem placeholder <span class="fu">=</span>
   elClass <span class="st">&quot;div&quot;</span> <span class="st">&quot;todo-item&quot;</span> <span class="fu">$</span> mdo
@@ -1618,8 +1618,8 @@ todoItem placeholder <span class="fu">=</span>
     pure eRemove</code></pre></div>
 </section><section id="section-150" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">MonadWidget</span> t m 
-         <span class="ot">=&gt;</span> <span class="dt">Text</span> 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">MonadWidget</span> t m
+         <span class="ot">=&gt;</span> <span class="dt">Text</span>
          <span class="ot">-&gt;</span> m (<span class="dt">Event</span> t ())
 todoItem placeholder <span class="fu">=</span>
   elClass <span class="st">&quot;div&quot;</span> <span class="st">&quot;todo-item&quot;</span> <span class="fu">$</span> mdo
@@ -1635,8 +1635,8 @@ todoItem placeholder <span class="fu">=</span>
     pure eRemove</code></pre></div>
 </section><section id="section-151" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">MonadWidget</span> t m 
-         <span class="ot">=&gt;</span> <span class="dt">Text</span> 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">MonadWidget</span> t m
+         <span class="ot">=&gt;</span> <span class="dt">Text</span>
          <span class="ot">-&gt;</span> m (<span class="dt">Event</span> t ())
 todoItem placeholder <span class="fu">=</span>
   elClass <span class="st">&quot;div&quot;</span> <span class="st">&quot;todo-item&quot;</span> <span class="fu">$</span> mdo
@@ -1655,22 +1655,22 @@ todoItem placeholder <span class="fu">=</span>
 </div>
 </section><section id="section-152" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">CheckboxConfig</span> t <span class="fu">=</span> 
-  <span class="dt">CheckboxConfig</span> { 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">CheckboxConfig</span> t <span class="fu">=</span>
+  <span class="dt">CheckboxConfig</span> {
 <span class="ot">      _checkboxConfig_setValue   ::</span> <span class="dt">Event</span>   t <span class="dt">Bool</span>
     ,<span class="ot"> _checkboxConfig_attributes ::</span> <span class="dt">Dynamic</span> t (<span class="dt">Map</span> <span class="dt">Text</span> <span class="dt">Text</span>)
     }</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">instance</span> <span class="dt">Reflex</span> t <span class="ot">=&gt;</span> <span class="dt">Default</span> (<span class="dt">CheckboxConfig</span> t) <span class="kw">where</span> <span class="fu">...</span></code></pre></div>
 </section><section id="section-153" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">checkbox ::</span> (<span class="fu">...</span>) 
-         <span class="ot">=&gt;</span> <span class="dt">Bool</span> 
-         <span class="ot">-&gt;</span> <span class="dt">CheckboxConfig</span> t 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">checkbox ::</span> (<span class="fu">...</span>)
+         <span class="ot">=&gt;</span> <span class="dt">Bool</span>
+         <span class="ot">-&gt;</span> <span class="dt">CheckboxConfig</span> t
          <span class="ot">-&gt;</span> m (<span class="dt">Checkbox</span> t)</code></pre></div>
 </section><section id="section-154" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Checkbox</span> t <span class="fu">=</span> 
-  <span class="dt">Checkbox</span> { 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Checkbox</span> t <span class="fu">=</span>
+  <span class="dt">Checkbox</span> {
 <span class="ot">     _checkbox_value  ::</span> <span class="dt">Dynamic</span> t <span class="dt">Bool</span>
    ,<span class="ot"> _checkbox_change ::</span> <span class="dt">Event</span>   t <span class="dt">Bool</span>
    }</code></pre></div>
@@ -1692,48 +1692,48 @@ makeLenses <span class="ch">&#39;&#39;</span><span class="dt">TodoItemConfig</sp
 makeLenses <span class="ch">&#39;&#39;</span><span class="dt">TodoItem</span></code></pre></div>
 </section><section id="section-156" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">MonadWidget</span> t m 
-         <span class="ot">=&gt;</span> <span class="dt">TodoItemConfig</span> 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">MonadWidget</span> t m
+         <span class="ot">=&gt;</span> <span class="dt">TodoItemConfig</span>
          <span class="ot">-&gt;</span> m (<span class="dt">TodoItem</span> t)
 todoItem (<span class="dt">TodoItemConfig</span> dText) <span class="fu">=</span>
   elClass <span class="st">&quot;div&quot;</span> <span class="st">&quot;todo-item&quot;</span> <span class="fu">$</span> mdo
-  
-  
-  
+
+
+
 
     elDynClass <span class="st">&quot;div&quot;</span> dRemoveClass <span class="fu">$</span>
       dynText dText
 
     eRemove <span class="ot">&lt;-</span> button <span class="st">&quot;Remove&quot;</span>
-    dRemoveClass <span class="ot">&lt;-</span> holdDyn <span class="st">&quot;&quot;</span> <span class="fu">$</span> 
+    dRemoveClass <span class="ot">&lt;-</span> holdDyn <span class="st">&quot;&quot;</span> <span class="fu">$</span>
       <span class="st">&quot;removed&quot;</span> <span class="fu">&lt;$</span> eRemove
 
-    pure <span class="fu">$</span> 
+    pure <span class="fu">$</span>
       <span class="dt">TodoItem</span>           eRemove</code></pre></div>
 </section><section id="section-157" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">MonadWidget</span> t m 
-         <span class="ot">=&gt;</span> <span class="dt">TodoItemConfig</span> 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">MonadWidget</span> t m
+         <span class="ot">=&gt;</span> <span class="dt">TodoItemConfig</span>
          <span class="ot">-&gt;</span> m (<span class="dt">TodoItem</span> t)
 todoItem (<span class="dt">TodoItemConfig</span> dText) <span class="fu">=</span>
   elClass <span class="st">&quot;div&quot;</span> <span class="st">&quot;todo-item&quot;</span> <span class="fu">$</span> mdo
     cb <span class="ot">&lt;-</span> checkbox <span class="dt">False</span> def
-  
-  
+
+
 
     elDynClass <span class="st">&quot;div&quot;</span> dRemoveClass <span class="fu">$</span>
       dynText dText
 
     eRemove <span class="ot">&lt;-</span> button <span class="st">&quot;Remove&quot;</span>
-    dRemoveClass <span class="ot">&lt;-</span> holdDyn <span class="st">&quot;&quot;</span> <span class="fu">$</span> 
+    dRemoveClass <span class="ot">&lt;-</span> holdDyn <span class="st">&quot;&quot;</span> <span class="fu">$</span>
       <span class="st">&quot;removed&quot;</span> <span class="fu">&lt;$</span> eRemove
 
-    pure <span class="fu">$</span> 
+    pure <span class="fu">$</span>
       <span class="dt">TodoItem</span>           eRemove</code></pre></div>
 </section><section id="section-158" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">MonadWidget</span> t m 
-         <span class="ot">=&gt;</span> <span class="dt">TodoItemConfig</span> 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">MonadWidget</span> t m
+         <span class="ot">=&gt;</span> <span class="dt">TodoItemConfig</span>
          <span class="ot">-&gt;</span> m (<span class="dt">TodoItem</span> t)
 todoItem (<span class="dt">TodoItemConfig</span> dText) <span class="fu">=</span>
   elClass <span class="st">&quot;div&quot;</span> <span class="st">&quot;todo-item&quot;</span> <span class="fu">$</span> mdo
@@ -1745,15 +1745,15 @@ todoItem (<span class="dt">TodoItemConfig</span> dText) <span class="fu">=</span
       dynText dText
 
     eRemove <span class="ot">&lt;-</span> button <span class="st">&quot;Remove&quot;</span>
-    dRemoveClass <span class="ot">&lt;-</span> holdDyn <span class="st">&quot;&quot;</span> <span class="fu">$</span> 
+    dRemoveClass <span class="ot">&lt;-</span> holdDyn <span class="st">&quot;&quot;</span> <span class="fu">$</span>
       <span class="st">&quot;removed&quot;</span> <span class="fu">&lt;$</span> eRemove
 
-    pure <span class="fu">$</span> 
+    pure <span class="fu">$</span>
       <span class="dt">TodoItem</span>           eRemove</code></pre></div>
 </section><section id="section-159" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">MonadWidget</span> t m 
-         <span class="ot">=&gt;</span> <span class="dt">TodoItemConfig</span> 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">MonadWidget</span> t m
+         <span class="ot">=&gt;</span> <span class="dt">TodoItemConfig</span>
          <span class="ot">-&gt;</span> m (<span class="dt">TodoItem</span> t)
 todoItem (<span class="dt">TodoItemConfig</span> dText) <span class="fu">=</span>
   elClass <span class="st">&quot;div&quot;</span> <span class="st">&quot;todo-item&quot;</span> <span class="fu">$</span> mdo
@@ -1765,15 +1765,15 @@ todoItem (<span class="dt">TodoItemConfig</span> dText) <span class="fu">=</span
       dynText dText
 
     eRemove <span class="ot">&lt;-</span> button <span class="st">&quot;Remove&quot;</span>
-    dRemoveClass <span class="ot">&lt;-</span> holdDyn <span class="st">&quot;&quot;</span> <span class="fu">$</span> 
+    dRemoveClass <span class="ot">&lt;-</span> holdDyn <span class="st">&quot;&quot;</span> <span class="fu">$</span>
       <span class="st">&quot;removed&quot;</span> <span class="fu">&lt;$</span> eRemove
 
-    pure <span class="fu">$</span> 
+    pure <span class="fu">$</span>
       <span class="dt">TodoItem</span> dComplete eRemove</code></pre></div>
 </section><section id="section-160" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">MonadWidget</span> t m 
-         <span class="ot">=&gt;</span> <span class="dt">TodoItemConfig</span> 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">MonadWidget</span> t m
+         <span class="ot">=&gt;</span> <span class="dt">TodoItemConfig</span>
          <span class="ot">-&gt;</span> m (<span class="dt">TodoItem</span> t)
 todoItem (<span class="dt">TodoItemConfig</span> dText) <span class="fu">=</span>
   elClass <span class="st">&quot;div&quot;</span> <span class="st">&quot;todo-item&quot;</span> <span class="fu">$</span> mdo
@@ -1785,10 +1785,10 @@ todoItem (<span class="dt">TodoItemConfig</span> dText) <span class="fu">=</span
       dynText dText
 
     eRemove <span class="ot">&lt;-</span> button <span class="st">&quot;Remove&quot;</span>
-    dRemoveClass <span class="ot">&lt;-</span> holdDyn <span class="st">&quot;&quot;</span> <span class="fu">$</span> 
+    dRemoveClass <span class="ot">&lt;-</span> holdDyn <span class="st">&quot;&quot;</span> <span class="fu">$</span>
       <span class="st">&quot;removed&quot;</span> <span class="fu">&lt;$</span> eRemove
 
-    pure <span class="fu">$</span> 
+    pure <span class="fu">$</span>
       <span class="dt">TodoItem</span> dComplete eRemove</code></pre></div>
 <div id="examples-dom-todoitem-4" class="demo">
 
@@ -1804,7 +1804,7 @@ todoItem (<span class="dt">TodoItemConfig</span> dText) <span class="fu">=</span
 
 
 
-    elDynClass <span class="st">&quot;div&quot;</span>                    dRemoveClass  <span class="fu">$</span> 
+    elDynClass <span class="st">&quot;div&quot;</span>                    dRemoveClass  <span class="fu">$</span>
       dynText dText
   <span class="fu">...</span></code></pre></div>
 </section><section id="section-162" class="slide level2">
@@ -1818,7 +1818,7 @@ todoItem (<span class="dt">TodoItemConfig</span> dText) <span class="fu">=</span
 
 
 
-    elDynClass <span class="st">&quot;div&quot;</span>                    dRemoveClass  <span class="fu">$</span> 
+    elDynClass <span class="st">&quot;div&quot;</span>                    dRemoveClass  <span class="fu">$</span>
       dynText dText
   <span class="fu">...</span></code></pre></div>
 </section><section id="section-163" class="slide level2">
@@ -1832,7 +1832,7 @@ todoItem (<span class="dt">TodoItemConfig</span> dText) <span class="fu">=</span
 
       dCompleteClass <span class="fu">=</span> mkCompleteClass <span class="fu">&lt;$&gt;</span> dComplete
 
-    elDynClass <span class="st">&quot;div&quot;</span>                    dRemoveClass  <span class="fu">$</span> 
+    elDynClass <span class="st">&quot;div&quot;</span>                    dRemoveClass  <span class="fu">$</span>
       dynText dText
   <span class="fu">...</span></code></pre></div>
 </section><section id="section-164" class="slide level2">
@@ -1846,7 +1846,7 @@ todoItem (<span class="dt">TodoItemConfig</span> dText) <span class="fu">=</span
 
       dCompleteClass <span class="fu">=</span> mkCompleteClass <span class="fu">&lt;$&gt;</span> dComplete
 
-    elDynClass <span class="st">&quot;div&quot;</span> (dCompleteClass <span class="fu">&lt;&gt;</span> dRemoveClass) <span class="fu">$</span> 
+    elDynClass <span class="st">&quot;div&quot;</span> (dCompleteClass <span class="fu">&lt;&gt;</span> dRemoveClass) <span class="fu">$</span>
       dynText dText
   <span class="fu">...</span></code></pre></div>
 </section><section id="section-165" class="slide level2">
@@ -1860,7 +1860,7 @@ todoItem (<span class="dt">TodoItemConfig</span> dText) <span class="fu">=</span
 
       dCompleteClass <span class="fu">=</span> mkCompleteClass <span class="fu">&lt;$&gt;</span> dComplete
 
-    elDynClass <span class="st">&quot;div&quot;</span> (dCompleteClass <span class="fu">&lt;&gt;</span> dRemoveClass) <span class="fu">$</span> 
+    elDynClass <span class="st">&quot;div&quot;</span> (dCompleteClass <span class="fu">&lt;&gt;</span> dRemoveClass) <span class="fu">$</span>
       dynText dText
   <span class="fu">...</span></code></pre></div>
 <div id="examples-dom-todoitem-5" class="demo">
@@ -1868,31 +1868,31 @@ todoItem (<span class="dt">TodoItemConfig</span> dText) <span class="fu">=</span
 </div>
 </section><section id="section-166" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">TextInputConfig</span> t <span class="fu">=</span> 
-  <span class="dt">TextInputConfig</span> { 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">TextInputConfig</span> t <span class="fu">=</span>
+  <span class="dt">TextInputConfig</span> {
 <span class="ot">      _textInputConfig_inputType    ::</span> <span class="dt">Text</span>
     ,<span class="ot"> _textInputConfig_initialValue ::</span> <span class="dt">Text</span>
     ,<span class="ot"> _textInputConfig_setValue     ::</span> <span class="dt">Event</span> t <span class="dt">Text</span>
-    ,<span class="ot"> _textInputConfig_attributes   ::</span> 
+    ,<span class="ot"> _textInputConfig_attributes   ::</span>
         <span class="dt">Dynamic</span> t (<span class="dt">Map</span> <span class="dt">Text</span> <span class="dt">Text</span>)
     }</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">instance</span> <span class="dt">Reflex</span> t <span class="ot">=&gt;</span> <span class="dt">Default</span> (<span class="dt">TextInputConfig</span> t) <span class="kw">where</span> <span class="fu">...</span></code></pre></div>
 </section><section id="section-167" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">textInput ::</span> (<span class="fu">...</span>) 
-          <span class="ot">=&gt;</span> <span class="dt">TextInputConfig</span> t 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">textInput ::</span> (<span class="fu">...</span>)
+          <span class="ot">=&gt;</span> <span class="dt">TextInputConfig</span> t
           <span class="ot">-&gt;</span> m (<span class="dt">TextInput</span> t)</code></pre></div>
 </section><section id="section-168" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">TextInput</span> t <span class="fu">=</span> 
-  <span class="dt">TextInput</span> { 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">TextInput</span> t <span class="fu">=</span>
+  <span class="dt">TextInput</span> {
 <span class="ot">      _textInput_value          ::</span> <span class="dt">Dynamic</span> t <span class="dt">Text</span>
     ,<span class="ot"> _textInput_input          ::</span> <span class="dt">Event</span> t <span class="dt">Text</span>
     ,<span class="ot"> _textInput_keypress       ::</span> <span class="dt">Event</span> t <span class="dt">Word</span>
     ,<span class="ot"> _textInput_keydown        ::</span> <span class="dt">Event</span> t <span class="dt">Word</span>
     ,<span class="ot"> _textInput_keyup          ::</span> <span class="dt">Event</span> t <span class="dt">Word</span>
     ,<span class="ot"> _textInput_hasFocus       ::</span> <span class="dt">Dynamic</span> t <span class="dt">Bool</span>
-    ,<span class="ot"> _textInput_builderElement ::</span> 
+    ,<span class="ot"> _textInput_builderElement ::</span>
         <span class="dt">InputElement</span> <span class="dt">EventResult</span> <span class="dt">GhcjsDomSpace</span> t
     }</code></pre></div>
 </section><section id="section-169" class="slide level2">
@@ -1902,7 +1902,7 @@ todoItem (<span class="dt">TodoItemConfig</span> dText) <span class="fu">=</span
   m (<span class="dt">Event</span> t <span class="dt">Text</span>)
 addItem <span class="fu">=</span>  <span class="kw">do</span>
   ti <span class="ot">&lt;-</span> textInput <span class="fu">$</span>
-    def                                                      
+    def
 
 
 
@@ -2068,15 +2068,15 @@ addItem <span class="fu">=</span> mdo
 </div>
 </section><section id="section-179" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchPromptly ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
-               <span class="ot">=&gt;</span> <span class="dt">Event</span> a 
-               <span class="ot">-&gt;</span> <span class="dt">Event</span> (<span class="dt">Event</span> a) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchPromptly ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
+               <span class="ot">=&gt;</span> <span class="dt">Event</span> a
+               <span class="ot">-&gt;</span> <span class="dt">Event</span> (<span class="dt">Event</span> a)
                <span class="ot">-&gt;</span> m (<span class="dt">Event</span> a)</code></pre></div>
 </section><section id="section-180" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
-             <span class="ot">=&gt;</span> 
-             
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
+             <span class="ot">=&gt;</span>
+
 
                 m (<span class="dt">Event</span> t <span class="dt">Colour</span>, <span class="dt">Event</span> t <span class="dt">Colour</span>)
 switchColour                          <span class="fu">=</span> <span class="kw">do</span>
@@ -2094,9 +2094,9 @@ switchColour                          <span class="fu">=</span> <span class="kw"
   </code></pre></div>
 </section><section id="section-181" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
              <span class="ot">=&gt;</span> <span class="dt">Event</span> t ()
-             
+
 
              <span class="ot">-&gt;</span> m (<span class="dt">Event</span> t <span class="dt">Colour</span>, <span class="dt">Event</span> t <span class="dt">Colour</span>)
 switchColour                          <span class="fu">=</span> <span class="kw">do</span>
@@ -2114,9 +2114,9 @@ switchColour                          <span class="fu">=</span> <span class="kw"
   </code></pre></div>
 </section><section id="section-182" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
              <span class="ot">=&gt;</span> <span class="dt">Event</span> t ()
-             
+
 
              <span class="ot">-&gt;</span> m (<span class="dt">Event</span> t <span class="dt">Colour</span>, <span class="dt">Event</span> t <span class="dt">Colour</span>)
 switchColour eSwitch1                 <span class="fu">=</span> <span class="kw">do</span>
@@ -2134,7 +2134,7 @@ switchColour eSwitch1                 <span class="fu">=</span> <span class="kw"
   </code></pre></div>
 </section><section id="section-183" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
              <span class="ot">=&gt;</span> <span class="dt">Event</span> t ()
              <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
 
@@ -2154,7 +2154,7 @@ switchColour eSwitch1                 <span class="fu">=</span> <span class="kw"
   </code></pre></div>
 </section><section id="section-184" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
              <span class="ot">=&gt;</span> <span class="dt">Event</span> t ()
              <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
 
@@ -2174,7 +2174,7 @@ switchColour eSwitch1 eSwitch2        <span class="fu">=</span> <span class="kw"
   </code></pre></div>
 </section><section id="section-185" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
              <span class="ot">=&gt;</span> <span class="dt">Event</span> t ()
              <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
              <span class="ot">-&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
@@ -2194,7 +2194,7 @@ switchColour eSwitch1 eSwitch2        <span class="fu">=</span> <span class="kw"
   </code></pre></div>
 </section><section id="section-186" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
              <span class="ot">=&gt;</span> <span class="dt">Event</span> t ()
              <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
              <span class="ot">-&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
@@ -2214,7 +2214,7 @@ switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw"
   </code></pre></div>
 </section><section id="section-187" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
              <span class="ot">=&gt;</span> <span class="dt">Event</span> t ()
              <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
              <span class="ot">-&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
@@ -2234,7 +2234,7 @@ switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw"
   pure (eOut1, eOut2)</code></pre></div>
 </section><section id="section-188" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
              <span class="ot">=&gt;</span> <span class="dt">Event</span> t ()
              <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
              <span class="ot">-&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
@@ -2254,7 +2254,7 @@ switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw"
   pure (eOut1, eOut2)</code></pre></div>
 </section><section id="section-189" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
              <span class="ot">=&gt;</span> <span class="dt">Event</span> t ()
              <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
              <span class="ot">-&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
@@ -2274,7 +2274,7 @@ switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw"
   pure (eOut1, eOut2)</code></pre></div>
 </section><section id="section-190" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
              <span class="ot">=&gt;</span> <span class="dt">Event</span> t ()
              <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
              <span class="ot">-&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
@@ -2294,7 +2294,7 @@ switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw"
   pure (eOut1, eOut2)</code></pre></div>
 </section><section id="section-191" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
              <span class="ot">=&gt;</span> <span class="dt">Event</span> t ()
              <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
              <span class="ot">-&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
@@ -2314,7 +2314,7 @@ switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw"
   pure (eOut1, eOut2)</code></pre></div>
 </section><section id="section-192" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
              <span class="ot">=&gt;</span> <span class="dt">Event</span> t ()
              <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
              <span class="ot">-&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
@@ -2334,7 +2334,7 @@ switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw"
   pure (eOut1, eOut2)</code></pre></div>
 </section><section id="section-193" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
              <span class="ot">=&gt;</span> <span class="dt">Event</span> t ()
              <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
              <span class="ot">-&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
@@ -2354,7 +2354,7 @@ switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw"
   pure (eOut1, eOut2)</code></pre></div>
 </section><section id="section-194" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
              <span class="ot">=&gt;</span> <span class="dt">Event</span> t ()
              <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
              <span class="ot">-&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
@@ -2374,10 +2374,10 @@ switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw"
   pure (eOut1, eOut2)</code></pre></div>
 </section><section id="section-195" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
-             <span class="ot">=&gt;</span> <span class="dt">Event</span> t () 
-             <span class="ot">-&gt;</span> <span class="dt">Event</span> t () 
-             <span class="ot">-&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span> 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
+             <span class="ot">=&gt;</span> <span class="dt">Event</span> t ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
              <span class="ot">-&gt;</span> m (<span class="dt">Event</span> t <span class="dt">Colour</span>, <span class="dt">Event</span> t <span class="dt">Colour</span>)
 switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw">do</span>
 
@@ -2394,46 +2394,46 @@ switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw"
   pure (eOut1, eOut2)</code></pre></div>
 </section><section id="section-196" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchPromptly ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
-               <span class="ot">=&gt;</span> <span class="dt">Event</span> a 
-               <span class="ot">-&gt;</span> <span class="dt">Event</span>    (<span class="dt">Event</span> a) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchPromptly ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
+               <span class="ot">=&gt;</span> <span class="dt">Event</span> a
+               <span class="ot">-&gt;</span> <span class="dt">Event</span>    (<span class="dt">Event</span> a)
                <span class="ot">-&gt;</span> m (<span class="dt">Event</span> a)</code></pre></div>
 </section><section id="section-197" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switch         ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
-               <span class="ot">=&gt;</span> <span class="dt">Event</span> a 
-               <span class="ot">-&gt;</span> <span class="dt">Event</span>    (<span class="dt">Event</span> a) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switch         ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
+               <span class="ot">=&gt;</span> <span class="dt">Event</span> a
+               <span class="ot">-&gt;</span> <span class="dt">Event</span>    (<span class="dt">Event</span> a)
                <span class="ot">-&gt;</span> m (<span class="dt">Event</span> a)</code></pre></div>
 </section><section id="section-198" class="slide level2">
 <h2></h2>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switch         ::</span>  <span class="dt">Reflex</span> t
-               <span class="ot">=&gt;</span> <span class="dt">Event</span> a 
-               <span class="ot">-&gt;</span> <span class="dt">Event</span>    (<span class="dt">Event</span> a) 
+               <span class="ot">=&gt;</span> <span class="dt">Event</span> a
+               <span class="ot">-&gt;</span> <span class="dt">Event</span>    (<span class="dt">Event</span> a)
                <span class="ot">-&gt;</span> m (<span class="dt">Event</span> a)</code></pre></div>
 </section><section id="section-199" class="slide level2">
 <h2></h2>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switch         ::</span>  <span class="dt">Reflex</span> t
-               <span class="ot">=&gt;</span> <span class="dt">Event</span> a 
-               <span class="ot">-&gt;</span> <span class="dt">Event</span>    (<span class="dt">Event</span> a) 
+               <span class="ot">=&gt;</span> <span class="dt">Event</span> a
+               <span class="ot">-&gt;</span> <span class="dt">Event</span>    (<span class="dt">Event</span> a)
                <span class="ot">-&gt;</span>    <span class="dt">Event</span> a</code></pre></div>
 </section><section id="section-200" class="slide level2">
 <h2></h2>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switch         ::</span>  <span class="dt">Reflex</span> t
-               <span class="ot">=&gt;</span> 
-                  <span class="dt">Event</span>    (<span class="dt">Event</span> a) 
+               <span class="ot">=&gt;</span>
+                  <span class="dt">Event</span>    (<span class="dt">Event</span> a)
                <span class="ot">-&gt;</span>    <span class="dt">Event</span> a</code></pre></div>
 </section><section id="section-201" class="slide level2">
 <h2></h2>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switch         ::</span>  <span class="dt">Reflex</span> t
-               <span class="ot">=&gt;</span> 
+               <span class="ot">=&gt;</span>
                   <span class="dt">Behavior</span> (<span class="dt">Event</span> a)
                <span class="ot">-&gt;</span>    <span class="dt">Event</span> a</code></pre></div>
 </section><section id="section-202" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
-             <span class="ot">=&gt;</span> <span class="dt">Event</span> t () 
-             <span class="ot">-&gt;</span> <span class="dt">Event</span> t () 
-             <span class="ot">-&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span> 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
+             <span class="ot">=&gt;</span> <span class="dt">Event</span> t ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
              <span class="ot">-&gt;</span> m (<span class="dt">Event</span> t <span class="dt">Colour</span>, <span class="dt">Event</span> t <span class="dt">Colour</span>)
 switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw">do</span>
 
@@ -2450,10 +2450,10 @@ switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw"
   pure (       eOut1,        eOut2)</code></pre></div>
 </section><section id="section-203" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
-             <span class="ot">=&gt;</span> <span class="dt">Event</span> t () 
-             <span class="ot">-&gt;</span> <span class="dt">Event</span> t () 
-             <span class="ot">-&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span> 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
+             <span class="ot">=&gt;</span> <span class="dt">Event</span> t ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
              <span class="ot">-&gt;</span> m (<span class="dt">Event</span> t <span class="dt">Colour</span>, <span class="dt">Event</span> t <span class="dt">Colour</span>)
 switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw">do</span>
 
@@ -2470,10 +2470,10 @@ switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw"
   pure (       eOut1,        eOut2)</code></pre></div>
 </section><section id="section-204" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
-             <span class="ot">=&gt;</span> <span class="dt">Event</span> t () 
-             <span class="ot">-&gt;</span> <span class="dt">Event</span> t () 
-             <span class="ot">-&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span> 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
+             <span class="ot">=&gt;</span> <span class="dt">Event</span> t ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
              <span class="ot">-&gt;</span> m (<span class="dt">Event</span> t <span class="dt">Colour</span>, <span class="dt">Event</span> t <span class="dt">Colour</span>)
 switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw">do</span>
 
@@ -2490,10 +2490,10 @@ switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw"
   pure (       eOut1,        eOut2)</code></pre></div>
 </section><section id="section-205" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m) 
-             <span class="ot">=&gt;</span> <span class="dt">Event</span> t () 
-             <span class="ot">-&gt;</span> <span class="dt">Event</span> t () 
-             <span class="ot">-&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span> 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">switchColour ::</span> (<span class="dt">Reflex</span> t, <span class="dt">MonadHold</span> t m)
+             <span class="ot">=&gt;</span> <span class="dt">Event</span> t ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> t ()
+             <span class="ot">-&gt;</span> <span class="dt">Event</span> t <span class="dt">Colour</span>
              <span class="ot">-&gt;</span> m (<span class="dt">Event</span> t <span class="dt">Colour</span>, <span class="dt">Event</span> t <span class="dt">Colour</span>)
 switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw">do</span>
 
@@ -2510,36 +2510,36 @@ switchColour eSwitch1 eSwitch2 eInput <span class="fu">=</span> <span class="kw"
   pure (switch eOut1, switch eOut2)</code></pre></div>
 </section><section id="section-206" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">widget1 ::</span> <span class="dt">MonadWidget</span> t m 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">widget1 ::</span> <span class="dt">MonadWidget</span> t m
    <span class="ot">=&gt;</span> m (<span class="dt">Event</span> t <span class="dt">Text</span>)
 widget1 <span class="fu">=</span> <span class="kw">do</span>
 
   </code></pre></div>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">widget2 ::</span> <span class="dt">MonadWidget</span> t m 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">widget2 ::</span> <span class="dt">MonadWidget</span> t m
    <span class="ot">=&gt;</span> m (<span class="dt">Event</span> t <span class="dt">Text</span>)
 widget2 <span class="fu">=</span> <span class="kw">do</span>
 
   </code></pre></div>
 </section><section id="section-207" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">widget1 ::</span> <span class="dt">MonadWidget</span> t m 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">widget1 ::</span> <span class="dt">MonadWidget</span> t m
    <span class="ot">=&gt;</span> m (<span class="dt">Event</span> t <span class="dt">Text</span>)
 widget1 <span class="fu">=</span> <span class="kw">do</span>
   eClick <span class="ot">&lt;-</span> button <span class="st">&quot;OK&quot;</span>
   pure <span class="fu">$</span> <span class="st">&quot;OK&quot;</span> <span class="fu">&lt;$</span> eClick</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">widget2 ::</span> <span class="dt">MonadWidget</span> t m 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">widget2 ::</span> <span class="dt">MonadWidget</span> t m
    <span class="ot">=&gt;</span> m (<span class="dt">Event</span> t <span class="dt">Text</span>)
 widget2 <span class="fu">=</span> <span class="kw">do</span>
 
   </code></pre></div>
 </section><section id="section-208" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">widget1 ::</span> <span class="dt">MonadWidget</span> t m 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">widget1 ::</span> <span class="dt">MonadWidget</span> t m
    <span class="ot">=&gt;</span> m (<span class="dt">Event</span> t <span class="dt">Text</span>)
 widget1 <span class="fu">=</span> <span class="kw">do</span>
   eClick <span class="ot">&lt;-</span> button <span class="st">&quot;OK&quot;</span>
   pure <span class="fu">$</span> <span class="st">&quot;OK&quot;</span> <span class="fu">&lt;$</span> eClick</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">widget2 ::</span> <span class="dt">MonadWidget</span> t m 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">widget2 ::</span> <span class="dt">MonadWidget</span> t m
    <span class="ot">=&gt;</span> m (<span class="dt">Event</span> t <span class="dt">Text</span>)
 widget2 <span class="fu">=</span> <span class="kw">do</span>
   ti <span class="ot">&lt;-</span> textInput def
@@ -2696,7 +2696,7 @@ widget2 <span class="fu">=</span> <span class="kw">do</span>
     eText <span class="fu">=</span> leftmost [eText1, eText2]
 
 
-  
+
   </code></pre></div>
 </section><section id="section-216" class="slide level2">
 <h2></h2>
@@ -2749,9 +2749,9 @@ widget2 <span class="fu">=</span> <span class="kw">do</span>
 </div>
 </section><section id="section-219" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">widgetHold ::</span> (<span class="dt">MonadAdjust</span> t m, <span class="dt">MonadHold</span> t m) 
-           <span class="ot">=&gt;</span> m a 
-           <span class="ot">-&gt;</span> <span class="dt">Event</span> t (m a) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">widgetHold ::</span> (<span class="dt">MonadAdjust</span> t m, <span class="dt">MonadHold</span> t m)
+           <span class="ot">=&gt;</span> m a
+           <span class="ot">-&gt;</span> <span class="dt">Event</span> t (m a)
            <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> t a)</code></pre></div>
 </section><section id="section-220" class="slide level2">
 <h2></h2>
@@ -2958,8 +2958,8 @@ widget2 <span class="fu">=</span> <span class="kw">do</span>
 </div>
 </section><section id="section-230" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">dyn ::</span> (<span class="dt">MonadAdjust</span> t m, <span class="dt">PostBuild</span> t m) 
-    <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> t (m a) 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">dyn ::</span> (<span class="dt">MonadAdjust</span> t m, <span class="dt">PostBuild</span> t m)
+    <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> t (m a)
     <span class="ot">-&gt;</span> m (<span class="dt">Event</span> t a)</code></pre></div>
 </section><section id="section-231" class="slide level2">
 <h2></h2>
@@ -3082,11 +3082,11 @@ widget2 <span class="fu">=</span> <span class="kw">do</span>
 </div>
 </section><section id="section-238" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">newtype</span> <span class="dt">Workflow</span> t m a <span class="fu">=</span> <span class="dt">Workflow</span> { 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">newtype</span> <span class="dt">Workflow</span> t m a <span class="fu">=</span> <span class="dt">Workflow</span> {
 <span class="ot">    unWorkflow ::</span> m (a, <span class="dt">Event</span> t (<span class="dt">Workflow</span> t m a))
   }</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">workflow ::</span> (<span class="dt">DomBuilder</span> t m, <span class="dt">MonadFix</span> m, <span class="dt">MonadHold</span> t m) 
-         <span class="ot">=&gt;</span> <span class="dt">Workflow</span> t m a 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">workflow ::</span> (<span class="dt">DomBuilder</span> t m, <span class="dt">MonadFix</span> m, <span class="dt">MonadHold</span> t m)
+         <span class="ot">=&gt;</span> <span class="dt">Workflow</span> t m a
          <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> t a)</code></pre></div>
 </section><section id="section-239" class="slide level2">
 <h2></h2>
@@ -3180,7 +3180,7 @@ widget2 <span class="fu">=</span> <span class="kw">do</span>
 </section></section>
 <section><section id="collections" class="titleslide slide level1"><h1>Collections</h1></section><section id="section-244" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">addItemWidget ::</span> <span class="dt">MonadWidget</span> t m 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">addItemWidget ::</span> <span class="dt">MonadWidget</span> t m
               <span class="ot">=&gt;</span> m (<span class="dt">Event</span> t <span class="dt">Text</span>)</code></pre></div>
 </section><section id="section-245" class="slide level2">
 <h2></h2>
@@ -3229,14 +3229,14 @@ widget2 <span class="fu">=</span> <span class="kw">do</span>
   <span class="fu">...</span></code></pre></div>
 </section><section id="section-248" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">MonadWidget</span> t m 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">todoItem ::</span> <span class="dt">MonadWidget</span> t m
             <span class="co">-- The value of the text for the item</span>
          <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> t <span class="dt">Text</span>
             <span class="co">-- Fires when item should be removed</span>
          <span class="ot">-&gt;</span> m (<span class="dt">Event</span> t ())</code></pre></div>
 </section><section id="section-249" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">dMap 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">dMap
 <span class="ot">  ::</span> <span class="dt">Dynamic</span> t (<span class="dt">Map</span> <span class="dt">Int</span> <span class="dt">Text</span>)
 
 
@@ -3250,7 +3250,7 @@ widget2 <span class="fu">=</span> <span class="kw">do</span>
   </code></pre></div>
 </section><section id="section-250" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">dMap 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">dMap
 <span class="ot">  ::</span> <span class="dt">Dynamic</span> t (<span class="dt">Map</span> <span class="dt">Int</span> <span class="dt">Text</span>)
 
 todoItem
@@ -3264,21 +3264,21 @@ todoItem
     </code></pre></div>
 </section><section id="section-251" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">dMap 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">dMap
 <span class="ot">  ::</span> <span class="dt">Dynamic</span> t (<span class="dt">Map</span> <span class="dt">Int</span> <span class="dt">Text</span>)
 
-todoItem 
+todoItem
 <span class="ot">  ::</span> <span class="dt">MonadWidget</span> t m
   <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> t <span class="dt">Text</span>
   <span class="ot">-&gt;</span> m (<span class="dt">Event</span> t ())
 
-list 
+list
 <span class="ot">  ::</span>         <span class="dt">Dynamic</span> t (<span class="dt">Map</span> k v     )
-  <span class="ot">-&gt;</span>   (<span class="dt">Dynamic</span> t v <span class="ot">-&gt;</span> m a   ) 
+  <span class="ot">-&gt;</span>   (<span class="dt">Dynamic</span> t v <span class="ot">-&gt;</span> m a   )
   <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> t (<span class="dt">Map</span> k a         ))</code></pre></div>
 </section><section id="section-252" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">dMap 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">dMap
 <span class="ot">  ::</span> <span class="dt">Dynamic</span> t (<span class="dt">Map</span> <span class="dt">Int</span> <span class="dt">Text</span>)
 
 todoItem
@@ -3286,13 +3286,13 @@ todoItem
   <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> t <span class="dt">Text</span>
   <span class="ot">-&gt;</span> m (<span class="dt">Event</span> t ())
 
-list dMap 
+list dMap
   <span class="ot">::</span>
-       (<span class="dt">Dynamic</span> t <span class="dt">Text</span> <span class="ot">-&gt;</span> m a) 
+       (<span class="dt">Dynamic</span> t <span class="dt">Text</span> <span class="ot">-&gt;</span> m a)
   <span class="ot">-&gt;</span> m (<span class="dt">Dynamic</span> t (<span class="dt">Map</span> <span class="dt">Int</span> a       ))</code></pre></div>
 </section><section id="section-253" class="slide level2">
 <h2></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">dMap 
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">dMap
 <span class="ot">  ::</span> <span class="dt">Dynamic</span> t (<span class="dt">Map</span> <span class="dt">Int</span> <span class="dt">Text</span>)
 
 todoItem
@@ -3300,19 +3300,19 @@ todoItem
   <span class="ot">=&gt;</span> <span class="dt">Dynamic</span> t <span class="dt">Text</span>
   <span class="ot">-&gt;</span> m (<span class="dt">Event</span> t ())
 
-list dMap todoItem 
+list dMap todoItem
   <span class="ot">::</span>
 
      m (<span class="dt">Dynamic</span> t (<span class="dt">Map</span> <span class="dt">Int</span> (<span class="dt">Event</span> t ())))</code></pre></div>
 </section><section id="section-254" class="slide level2">
 <h2></h2>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">  <span class="co">-- Dynamic t (Map Int (Event t ()))</span>
-  dmItems <span class="ot">&lt;-</span>           list dMap <span class="fu">$</span> \dv <span class="ot">-&gt;</span> 
+  dmItems <span class="ot">&lt;-</span>           list dMap <span class="fu">$</span> \dv <span class="ot">-&gt;</span>
                          todoItem dv</code></pre></div>
 </section><section id="section-255" class="slide level2">
 <h2></h2>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">  <span class="co">-- Dynamic t (Map Int (Event t ()))</span>
-  dmItems <span class="ot">&lt;-</span> el <span class="st">&quot;ul&quot;</span> <span class="fu">.</span> list dMap <span class="fu">$</span> \dv <span class="ot">-&gt;</span> 
+  dmItems <span class="ot">&lt;-</span> el <span class="st">&quot;ul&quot;</span> <span class="fu">.</span> list dMap <span class="fu">$</span> \dv <span class="ot">-&gt;</span>
                el <span class="st">&quot;li&quot;</span> <span class="fu">.</span> todoItem <span class="fu">$</span> dv</code></pre></div>
 </section><section id="section-256" class="slide level2">
 <h2></h2>
@@ -3323,7 +3323,7 @@ list dMap todoItem
 <h2></h2>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">  <span class="kw">let</span>
     eRemoves <span class="fu">=</span>
-    
+
 
 
 
@@ -3337,7 +3337,7 @@ list dMap todoItem
 <h2></h2>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">  <span class="kw">let</span>
     eRemoves <span class="fu">=</span>
-    
+
 
 
 
@@ -3351,7 +3351,7 @@ list dMap todoItem
 <h2></h2>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">  <span class="kw">let</span>
     eRemoves <span class="fu">=</span>
-    
+
 
 
 
@@ -3365,7 +3365,7 @@ list dMap todoItem
 <h2></h2>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">  <span class="kw">let</span>
     eRemoves <span class="fu">=</span>
-    
+
 
       <span class="co">-- Event t (Map Int ())</span>
       switch <span class="fu">.</span>
@@ -3396,7 +3396,7 @@ list dMap todoItem
 
 
 
-  dmItems <span class="ot">&lt;-</span> el <span class="st">&quot;ul&quot;</span> <span class="fu">.</span> list dMap <span class="fu">$</span> \dv <span class="ot">-&gt;</span> 
+  dmItems <span class="ot">&lt;-</span> el <span class="st">&quot;ul&quot;</span> <span class="fu">.</span> list dMap <span class="fu">$</span> \dv <span class="ot">-&gt;</span>
     el <span class="st">&quot;li&quot;</span>  todoItem <span class="fu">$</span> dv
 
 
@@ -3414,7 +3414,7 @@ list dMap todoItem
 
     ]
 
-  dmItems <span class="ot">&lt;-</span> el <span class="st">&quot;ul&quot;</span> <span class="fu">.</span> list dMap <span class="fu">$</span> \dv <span class="ot">-&gt;</span> 
+  dmItems <span class="ot">&lt;-</span> el <span class="st">&quot;ul&quot;</span> <span class="fu">.</span> list dMap <span class="fu">$</span> \dv <span class="ot">-&gt;</span>
     el <span class="st">&quot;li&quot;</span>  todoItem <span class="fu">$</span> dv
 
 
@@ -3432,7 +3432,7 @@ list dMap todoItem
 
     ]
 
-  dmItems <span class="ot">&lt;-</span> el <span class="st">&quot;ul&quot;</span> <span class="fu">.</span> list dMap <span class="fu">$</span> \dv <span class="ot">-&gt;</span> 
+  dmItems <span class="ot">&lt;-</span> el <span class="st">&quot;ul&quot;</span> <span class="fu">.</span> list dMap <span class="fu">$</span> \dv <span class="ot">-&gt;</span>
     el <span class="st">&quot;li&quot;</span>  todoItem <span class="fu">$</span> dv
 
   <span class="kw">let</span>
@@ -3450,7 +3450,7 @@ list dMap todoItem
     , flip (foldr Map.delete) <span class="fu">&lt;$&gt;</span> eRemoves
     ]
 
-  dmItems <span class="ot">&lt;-</span> el <span class="st">&quot;ul&quot;</span> <span class="fu">.</span> list dMap <span class="fu">$</span> \dv <span class="ot">-&gt;</span> 
+  dmItems <span class="ot">&lt;-</span> el <span class="st">&quot;ul&quot;</span> <span class="fu">.</span> list dMap <span class="fu">$</span> \dv <span class="ot">-&gt;</span>
     el <span class="st">&quot;li&quot;</span>  todoItem <span class="fu">$</span> dv
 
   <span class="kw">let</span>
@@ -3478,7 +3478,7 @@ TODO add clear complete
 </section></section>
 <section><section id="conclusion" class="titleslide slide level1"><h1>Conclusion</h1></section><section id="section-267" class="slide level2">
 <h2></h2>
-<p>reflex-frp on Freenode</p>
+<p>reflex-frp on Libera</p>
 </section><section id="section-268" class="slide level2">
 <h2></h2>
 <p>QuickRef.md</p>
