@@ -70,7 +70,7 @@ liftA2 func list1 list2
 
 The `liftA2` function applies to "one loop within one more loop". You can correlate the number `2` with the number of loops. There are other `liftA*` functions for embedding more inner loops.
 
-This general pattern is called *Applicative Functor* and is described in the paper, [Applicative Programming With Effects](http://www.staff.city.ac.uk/~ross/papers/Applicative.html). 
+This general pattern is called *Applicative Functor* and is described in the paper, [Applicative Programming With Effects](http://www.staff.city.ac.uk/~ross/papers/Applicative.html).
 
 ----
 
@@ -129,7 +129,7 @@ This can be written using `>>=` but not `liftA2`.
 
 ```haskell
 x >>= \a ->
-test x >>= \b ->
+test a >>= \b ->
 pure (a + b)
 ```
 
@@ -165,9 +165,9 @@ Given a list of possibly `null` values, return either a list of definitely-not `
 given(list) {
   var r = List.empty
   for(var i = 0; i < list.length; i++) {
-    if(list[i] == null) 
+    if(list[i] == null)
       return null
-    else 
+    else
       r.add(list[i])
   }
   return r
@@ -231,7 +231,7 @@ given(list) {
 }
 ```
 
-The `sequence` function is also overloaded on `[]` values, not just `Maybe` and functions that accept an argument. Actually, it's overloaded on many other things. These things are called *applicative functors* and `sequence` works on all of them. 
+The `sequence` function is also overloaded on `[]` values, not just `Maybe` and functions that accept an argument. Actually, it's overloaded on many other things. These things are called *applicative functors* and `sequence` works on all of them.
 
 
 ```haskell
